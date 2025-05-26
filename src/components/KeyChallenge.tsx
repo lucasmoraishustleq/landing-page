@@ -1,10 +1,13 @@
-function KeyChallenge() {
+import "./KeyChallenge.css";
+
+export default function KeyChallenge() {
   return (
-    <section id="key-challenge">
-      <h2>Key Challenge</h2>
-      <p>Most businesses fail to gain traction in the US market due to poor localization and lack of digital strategy. We fix that.</p>
+    <section id="key-challenge" className="key-challenge">
+      <h2>The Challenge We Solve</h2>
+      <p>
+        Brands often struggle to scale digitally due to poor strategy and inconsistent execution.
+        HustleQ bridges that gap by uniting creativity with performance marketing.
+      </p>
     </section>
   );
 }
-
-export default KeyChallenge;

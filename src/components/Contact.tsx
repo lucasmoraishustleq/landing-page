@@ -1,10 +1,11 @@
-function Contact() {
+import "./Contact.css";
+
+export default function Contact() {
   return (
-    <section id="contact">
-      <h2>Contact Us</h2>
-      <p>Email: contact@hustleqai.com</p>
+    <section id="contact" className="contact">
+      <h2>Let’s Connect</h2>
+      <p>Have a project in mind? Let’s talk about how we can help you grow.</p>
+      <a href="#contact-form" className="contact-button">Contact Us</a>
     </section>
   );
 }
-
-export default Contact;
