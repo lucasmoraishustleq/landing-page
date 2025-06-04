@@ -1,8 +1,8 @@
 import "./Help.css";
-import { helpContent } from "./Help"
+import { helpContent } from "./HelpContent"
 import logoImage from "../../assets/logo-branca.png";
 
-export default function Help() {
+function Help() {
   return (
     <section id="help" className="help">
       <h2 className="help-title">
@@ -16,3 +16,5 @@ export default function Help() {
     </section>
   );
 }
+
+export default Help;

@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { contactContent } from "./Contact"
+import React, { useState } from "react";
+import { contactContent } from "./ContactContent"
 import emailjs from '@emailjs/browser';
 
 import "./Contact.css";

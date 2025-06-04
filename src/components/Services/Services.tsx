@@ -1,5 +1,5 @@
 import './Services.css';
-import { servicesContent } from './Services';
+import { servicesContent } from './ServicesContent';
 
 function Services() {
   return (
