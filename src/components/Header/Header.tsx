@@ -22,14 +22,14 @@ function Header() {
         </a>
 
         <nav className={`nav ${isMobileMenuOpen ? 'open' : ''}`}>
-          <a href="#hero" onClick={handleNavClick}>{ headerContent.home }</a>
           <a href="#about" onClick={handleNavClick}>{ headerContent.about }</a>
           <a href="#services" onClick={handleNavClick}>{ headerContent.services }</a>
-          <a href="#contact" onClick={handleNavClick}>{ headerContent.helpUs } </a>
+          <a href="#help" onClick={handleNavClick}>{ headerContent.help } </a>
           <a href="#culture" onClick={handleNavClick}>{ headerContent.culture }</a>
           <a href="#key-challenge" onClick={handleNavClick}>{ headerContent.keyChallenge }</a>
           <a href="#founders" onClick={handleNavClick}>{ headerContent.founders }</a>
           <a href="#waitlist" onClick={handleNavClick}>{ headerContent.waitlist }</a>
+          <a href="#contact" onClick={handleNavClick}>{ headerContent.contact }</a>
 
         </nav>
 

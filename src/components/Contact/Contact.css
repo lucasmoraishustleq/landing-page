@@ -1,4 +1,4 @@
-.contact-section {
+.contact {
   padding: 80px 20px;
   background-color: white;
   color: blank;
@@ -55,7 +55,7 @@
 }
 
 @media (max-width: 768px) {
-  .contact-section {
+  .contact {
     border-radius: 0;
   }
 }

@@ -22,7 +22,7 @@ function Contact() {
 
 
   return (
-    <section className="contact-section">
+    <section id="contact" className="contact">
       <h2 className="contact-title">{ contactContent.title }</h2>
       {!submitted ? (
         <form onSubmit={handleSubmit} className="contact-form">
