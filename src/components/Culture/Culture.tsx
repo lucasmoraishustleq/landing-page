@@ -1,8 +1,8 @@
 import "./Culture.css";
-import { cultureContent } from "./Culture";
+import { cultureContent } from "./CultureContent";
 import cultureImage from "../../assets/culture.png";
 
-export default function Culture() {
+function Culture() {
   return (
     <section id="culture" className="culture-section">
       <div className="culture-text-container">
@@ -21,3 +21,5 @@ export default function Culture() {
     </section>
   );
 }
+
+export default Culture;

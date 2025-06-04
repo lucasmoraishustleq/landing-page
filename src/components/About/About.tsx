@@ -1,5 +1,5 @@
 import './About.css';
-import { aboutContent } from './About'
+import { aboutContent } from './AboutContent'
 
 const About = () => {
   return (

@@ -1,7 +1,7 @@
 import "./KeyChallenge.css";
-import { keyChallengeContent } from "./KeyChallenge";
+import { keyChallengeContent } from "./KeyChallengeContent";
 
-export default function KeyChallenge() {
+function KeyChallenge() {
   return (
     <section id="key-challenge" className="key-challenge">
       <h2>{ keyChallengeContent.title }</h2>
@@ -26,3 +26,5 @@ export default function KeyChallenge() {
     </section>
   );
 }
+
+export default KeyChallenge;

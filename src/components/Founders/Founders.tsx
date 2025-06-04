@@ -1,9 +1,9 @@
 import "./Founders.css";
-import { foundersContent } from "./Founders";
+import { foundersContent } from "./FoundersContent";
 import izaImage from "../../assets/iza.jpg";
 import lucasImage from "../../assets/lucas.jpg";
 
-export default function Founders() {
+function Founders() {
   return (
     <section id="founders" className="founders">
       <h2 className="founders-title">{ foundersContent.title }</h2>
@@ -24,3 +24,5 @@ export default function Founders() {
     </section>
   );
 }
+
+export default Founders;

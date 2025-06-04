@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import './Waitlist.css';
-import { waitlistContent } from './Waitlist';
+import { waitlistContent } from './WaitlistContent';
 
 const Waitlist = () => {
   const [email, setEmail] = useState('');

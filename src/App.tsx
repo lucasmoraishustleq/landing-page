@@ -9,7 +9,7 @@ import WaitList from "./components/Waitlist/Waitlist";
 import Culture from "./components/Culture/Culture";
 import KeyChallenge from "./components/KeyChallenge/KeyChallenge";
 import Founders from "./components/Founders/Founders";
-import Footer from "./components/Footer/Footer";
+// import Footer from "./components/Footer/Footer";
 import Contact from "./components/Contact/Contact";
 
 function App() {
@@ -28,7 +28,7 @@ function App() {
         <WaitList />
         <Contact />
       </main>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }

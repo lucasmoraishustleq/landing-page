@@ -1,5 +1,5 @@
 import "./Hero.css";
-import { heroContent } from "./Hero";
+import { heroContent } from "./HeroContent";
 
 function Hero() {
   return (
