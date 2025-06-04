@@ -17,7 +17,7 @@ function App() {
     <>
       <Header />
       <main>
-      <div style={{ height: "150px" }}></div>
+      <div className="space-header"></div>
         <Hero />
         <About />
         <Services />
