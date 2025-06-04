@@ -29,8 +29,20 @@ section {
   margin-bottom: 80px;
 }
 
+.space-header {
+  height: 150px;
+}
+
 @media (max-width: 768px) {
   main > * {
     padding: 60px 16px;
+  }
+
+  section {
+    margin-bottom: 0;
+  }
+
+  .space-header {
+    height: 0;
   }
 }
