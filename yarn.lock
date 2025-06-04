@@ -168,6 +168,11 @@
     "@babel/helper-string-parser" "^7.27.1"
     "@babel/helper-validator-identifier" "^7.27.1"
 
+"@emailjs/browser@^4.4.1":
+  "integrity" "sha512-DGSlP9sPvyFba3to2A50kDtZ+pXVp/0rhmqs2LmbMS3I5J8FSOgLwzY2Xb4qfKlOVHh29EAutLYwe5yuEZmEFg=="
+  "resolved" "https://registry.npmjs.org/@emailjs/browser/-/browser-4.4.1.tgz"
+  "version" "4.4.1"
+
 "@esbuild/linux-x64@0.25.4":
   "integrity" "sha512-6e0cvXwzOnVWJHq+mskP8DNSrKBr1bULBvnFLpc1KY+d+irZSgZ02TGse5FsafKS5jg2e4pbvK6TPXaF/A6+CA=="
   "resolved" "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.25.4.tgz"

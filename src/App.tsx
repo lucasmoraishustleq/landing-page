@@ -1,31 +1,34 @@
 import "./App.css";
 
-import Header from './components/Header';
-import Hero from "./components/Hero";
-import About from "./components/About";
-import Services from "./components/Services";
-import Contact from "./components/Contact";
-import WaitList from "./components/WaitList";
-import Culture from "./components/Culture";
-import KeyChallenge from "./components/KeyChallenge";
-import Founders from "./components/Founders";
-import Footer from "./components/Footer";
+import Header from './components/Header/Header';
+import Hero from "./components/Hero/Hero";
+import About from "./components/About/About";
+import Services from "./components/Services/Services";
+import Help from "./components/Help/Help";
+import WaitList from "./components/Waitlist/Waitlist";
+import Culture from "./components/Culture/Culture";
+import KeyChallenge from "./components/KeyChallenge/KeyChallenge";
+import Founders from "./components/Founders/Founders";
+import Footer from "./components/Footer/Footer";
+import Contact from "./components/Contact/Contact";
 
 function App() {
   return (
     <>
       <Header />
       <main>
+      <div style={{ height: "150px" }}></div>
         <Hero />
         <About />
         <Services />
-        <Contact />
+        <Help />
         <Culture />
         <KeyChallenge />
         <Founders />
         <WaitList />
-        <Footer />
+        <Contact />
       </main>
+      <Footer />
     </>
   );
 }

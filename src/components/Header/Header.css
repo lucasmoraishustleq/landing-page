@@ -1,9 +1,11 @@
 .header {
   position: fixed;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 70px;
   background-color: var(--color-white);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
   z-index: 1000;
 }
 
@@ -53,7 +55,7 @@
 }
 
 .waitlist-btn:hover {
-  background-color: #cf8c3f;
+  background-color: var(--color-orange-3);
 }
 
 .hamburger {

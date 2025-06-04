@@ -1,9 +1,10 @@
 .footer {
   background-color: var(--color-white);
-  color: #000;
+  color: black;
   padding: 2rem;
   text-align: center;
-  border-top: 1px solid #ddd;
+  border-top: 1px solid white;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
 .social-links {

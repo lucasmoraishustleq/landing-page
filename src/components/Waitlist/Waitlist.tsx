@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import './WaitList.css';
+import './Waitlist.css';
+import { waitlistContent } from './Waitlist';
 
 const Waitlist = () => {
   const [email, setEmail] = useState('');
@@ -12,7 +13,7 @@ const Waitlist = () => {
     setEmail('');
 
     try {
-      await fetch('https://script.google.com/a/macros/hustleqai.com/s/AKfycbwp3aIFOl4s3ktPe0qr8t1DZWS5HVZq9Rm5t1Bo2zlTdoYLddaVP5_i4OpgQnCoeHb1Bw/exec', {
+      await fetch(waitlistContent.apiUrl, {
         method: 'POST',
         mode: 'no-cors',
         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
@@ -22,30 +23,30 @@ const Waitlist = () => {
       setSubmitted(true);
       setEmail('');
     } catch (error) {
-      alert('Erro ao enviar e-mail. Tente novamente.\n');
+      alert(waitlistContent.errorMessage);
       console.error('Error submitting email:', error);
     }
   };
 
   return (
     <section id="waitlist" className="waitlist">
-      <h2>Join our Waitlist</h2>
-      <p>Be the first to know when we launch. Sign up below:</p>
+      <h2>{ waitlistContent.title }</h2>
+      <p>{ waitlistContent.description }</p>
 
       {!submitted ? (
         <form className="waitlist-form" onSubmit={handleSubmit}>
           <input
             type="email"
             name="email"
-            placeholder="Enter your email"
+            placeholder={ waitlistContent.form.emailPlaceholder }
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
-          <button type="submit">Notify Me</button>
+          <button type="submit">{ waitlistContent.form.submitButton }</button>
         </form>
       ) : (
-        <p className="waitlist-thankyou">Thank you! You'll hear from us soon. 🚀</p>
+        <p className="waitlist-thankyou">{ waitlistContent.form.thankYouMessage }</p>
       )}
     </section>
   );
