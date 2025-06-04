@@ -1,0 +1,54 @@
+.help {
+  padding: 100px 20px;
+  background-color: var(--color-purple);
+  color: #fffffe;
+  text-align: center;
+  box-shadow: 2px 2px 4px var(--color-purple);
+  border-radius: 10px;
+}
+
+.help h2 {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+}
+
+.help p {
+  font-size: 1.125rem;
+  margin-bottom: 30px;
+}
+
+.help-button {
+  background-color:var(--color-orange);
+  color: #fff;
+  padding: 12px 24px;
+  text-decoration: none;
+  font-weight: bold;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.help-button:hover {
+  background-color: var(--color-orange-2);
+}
+
+.help-title {
+  font-size: 2.5rem;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.inline-logo {
+  height: 35px;
+  margin-top: 6px;
+  vertical-align: middle;
+}
+
+@media (max-width: 768px) {
+  .help {
+    border-radius: 0;
+  }
+}

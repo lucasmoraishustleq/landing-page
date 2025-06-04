@@ -1,0 +1,36 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Manrope', sans-serif;
+  background-color: #f1f1f1;
+  color: #111;
+  line-height: 1.6;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+main > * {
+  padding: 80px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+main > *:first-child {
+  padding-top: 0;
+}
+
+
+section {
+  margin-bottom: 80px;
+}
+
+@media (max-width: 768px) {
+  main > * {
+    padding: 60px 16px;
+  }
+}
