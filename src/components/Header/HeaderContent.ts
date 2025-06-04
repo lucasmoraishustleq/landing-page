@@ -1,10 +1,10 @@
 export const headerContent = {
-  home: "Home",
   about: "About",
   services: "Services",
-  helpUs: "Help Us",
+  help: "Help Us",
   culture: "Culture",
   keyChallenge: "Our Challenge",
   founders: "Founders",
-  waitlist: "Waitlist"
+  waitlist: "Waitlist",
+  contact: "Contact Us"
 };
