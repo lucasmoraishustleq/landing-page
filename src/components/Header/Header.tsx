@@ -18,7 +18,7 @@ function Header() {
     <header className="header">
       <div className="header-container">
         <a href="#" className="logo">
-          <img src={ logo } alt="HustleQ Logo" className="logo-img" />
+          <img src={ logo } alt="HustleQ Logo" className="logo-img" loading="lazy"/>
         </a>
 
         <nav className={`nav ${isMobileMenuOpen ? 'open' : ''}`}>

@@ -7,7 +7,7 @@ function Help() {
     <section id="help" className="help">
       <h2 className="help-title">
         { helpContent.title }{" "}
-        <img src={ logoImage } alt="HustleQ Logo" className="inline-logo" />
+        <img src={ logoImage } alt="HustleQ Logo" className="inline-logo" loading="lazy"/>
       </h2>
       <p>{ helpContent.description }</p>
       <a href={ helpContent.buttonLink } className="help-button" target="_blank" rel="noopener noreferrer">
