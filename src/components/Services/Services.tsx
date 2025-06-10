@@ -7,19 +7,19 @@ function Services() {
       <h2>{ servicesContent.title }</h2>
       <div className="services-grid">
         <div className="service-card">
-        <img width="54" height="54" src={ servicesContent.services[0].icon } alt="brain"/>
+        <img width="54" height="54" src={ servicesContent.services[0].icon } alt="brain" loading="lazy"/>
           <h3>{ servicesContent.services[0].title }</h3>
           <p>{ servicesContent.services[0].description }</p>
         </div>
 
         <div className="service-card">
-        <img width="54" height="54" src={ servicesContent.services[1].icon } alt="clock--v1"/>
+        <img width="54" height="54" src={ servicesContent.services[1].icon } alt="clock--v1" loading="lazy"/>
           <h3>{ servicesContent.services[1].title }</h3>
           <p>{ servicesContent.services[1].description }</p>
         </div>
 
         <div className="service-card">
-        <img width="54" height="54" src={ servicesContent.services[2].icon } alt="maintenance"/>
+        <img width="54" height="54" src={ servicesContent.services[2].icon } alt="maintenance" loading="lazy"/>
           <h3>{ servicesContent.services[2].title }</h3>
           <p>{ servicesContent.services[2].description }</p>
         </div>

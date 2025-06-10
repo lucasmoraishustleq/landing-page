@@ -1,6 +1,6 @@
 import "./Culture.css";
 import { cultureContent } from "./CultureContent";
-import cultureImage from "../../assets/culture.png";
+import cultureImage from "../../assets/culture.webp";
 
 function Culture() {
   return (
@@ -16,7 +16,7 @@ function Culture() {
         <p>{ cultureContent.closing }</p>
       </div>
       <div className="culture-image-container">
-        <img src={cultureImage} alt="Team culture" />
+        <img src={cultureImage} alt="Team culture" loading="lazy"/>
       </div>
     </section>
   );

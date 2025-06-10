@@ -12,22 +12,22 @@ function Footer() {
     <footer className="footer">
       <div className="social-links">
         <a href={ linksContent.instagram.href } target="_blank" rel="noopener noreferrer">
-          <img src={ instagram } alt={ linksContent.instagram.alt } />
+          <img src={ instagram } alt={ linksContent.instagram.alt } loading="lazy"/>
         </a>
         <a href={ linksContent.linkedin.href } target="_blank" rel="noopener noreferrer">
-          <img src={ linkedin } alt={ linksContent.linkedin.alt } />
+          <img src={ linkedin } alt={ linksContent.linkedin.alt } loading="lazy"/>
         </a>
         <a href={ linksContent.twitter.href } target="_blank" rel="noopener noreferrer">
-          <img src={ twitter } alt={ linksContent.twitter.alt } />
+          <img src={ twitter } alt={ linksContent.twitter.alt } loading="lazy"/>
         </a>
         <a href={ linksContent.youtube.href } target="_blank" rel="noopener noreferrer">
-          <img src={ youtube } alt={ linksContent.youtube.alt } />
+          <img src={ youtube } alt={ linksContent.youtube.alt } loading="lazy"/>
         </a>
         <a href={ linksContent.tiktok.href } target="_blank" rel="noopener noreferrer">
-          <img src={ tiktok } alt={ linksContent.tiktok.alt } />
+          <img src={ tiktok } alt={ linksContent.tiktok.alt } loading="lazy"/>
         </a>
         <a href={ linksContent.facebook.href } target="_blank" rel="noopener noreferrer">
-          <img src={ facebook } alt={ linksContent.facebook.alt } />
+          <img src={ facebook } alt={ linksContent.facebook.alt } loading="lazy"/>
         </a>
       </div>
       <p className="copyright">{ footerContent.copyright }</p>
