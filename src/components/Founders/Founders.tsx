@@ -1,7 +1,7 @@
 import "./Founders.css";
 import { foundersContent } from "./FoundersContent";
 import izaImage from "../../assets/iza.webp";
-import lucasImage from "../../assets/lucas.webp";
+import lucasImage from '../../assets/lucas.webp'
 
 function Founders() {
   return (
@@ -16,7 +16,7 @@ function Founders() {
         </div>
 
         <div className="founder-card">
-          <img src={ lucasImage } alt={ foundersContent.founders[1].name } className="founder-image" loading="lazy"/>
+          <img src={ lucasImage } alt={ foundersContent.founders[1].name } className="founder-image" loading="lazy" style={{ objectPosition: "center" }}/>
           <h3>{ foundersContent.founders[1].name }</h3>
           <p>{ foundersContent.founders[1].description }</p>
         </div>
