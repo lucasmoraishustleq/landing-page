@@ -18,12 +18,13 @@ export const site = {
 
   brand: {
     name: 'HustleQ',
-    instagram: 'https://instagram.com/hustleq',
+    instagram: 'https://www.instagram.com/hustleq.tech',
     linkedin: 'https://www.linkedin.com/company/hustleq',
   },
 
   hero: {
     headline: 'Never wonder what to post again.',
+    accent: 'post', // palavra da headline que recebe o destaque animado
     subheadline:
       'HustleQ plans your week of content, tells you why it’ll work, and schedules it — so you can get back to running your business.',
     cta: 'Get early access',
@@ -66,8 +67,30 @@ export const site = {
   },
 
   proof: {
-    title: 'We already do this every week — for real businesses.',
+    title: 'What Duke actually produces.',
     body: 'Before Duke was an app, HustleQ’s method was a service. Every week we plan, produce, and schedule content for working small businesses — a restaurant, a construction company, a salon. Duke is that judgment, built into a product.',
+    items: [
+      {
+        image: 'strategy-list' as const,
+        title: 'Strategies that sound like you',
+        caption: 'Build a library of content strategies shaped around your business.',
+      },
+      {
+        image: 'strategy-details' as const,
+        title: 'Every detail, in the open',
+        caption: 'Open any strategy to see exactly what it’s built on.',
+      },
+      {
+        image: 'montly-strategy' as const,
+        title: 'A plan for the month',
+        caption: 'From your strategy, Duke maps out the month’s objective.',
+      },
+      {
+        image: 'week-preparation' as const,
+        title: 'Know what to capture',
+        caption: 'Before you film, Duke tells you the raw material each post needs.',
+      },
+    ],
   },
 
   faq: {
@@ -101,6 +124,8 @@ export const site = {
     subtitle: 'Be the first to know when we launch.',
     emailPlaceholder: 'Enter your email…',
     cta: 'Get early access',
+    // URL do Google Apps Script (colar quando publicar). Vazio = simula o envio.
+    endpoint: '',
     questions: [
       {
         id: 'business',
@@ -159,8 +184,45 @@ export const site = {
     formLink: '',
   },
 
+  founders: {
+    title: 'Meet the founders',
+    subtitle: 'A small team that has felt this problem firsthand.',
+    people: [
+      {
+        name: 'Izabelle',
+        role: 'Co-founder · Operations & Social',
+        photo: 'iza' as const,
+        bio: 'A Brazilian entrepreneur living in the U.S., with a background in digital operations and social media. She knows how hard it is to build a business with limited resources — and how painful content can be when you’re doing it all alone.',
+      },
+      {
+        name: 'Lucas',
+        role: 'Co-founder · Engineering',
+        photo: 'lucas' as const,
+        bio: 'A software developer based in Brazil, building digital products since 2018. He’s worked with major B2B companies and the Rio de Janeiro State Prosecutor’s Office, bringing deep technical expertise and an eye for scalable solutions.',
+      },
+    ],
+  },
+
   footer: {
     tagline: 'A weekly content plan for your business — with the why behind every post.',
-    copyright: `© ${'2026'} HustleQ. All rights reserved.`,
+    email: 'contact@hustleqai.com',
+    columns: [
+      {
+        title: 'Product',
+        links: [
+          { label: 'How it works', href: '#howItWorks' },
+          { label: 'Proof', href: '#proof' },
+          { label: 'FAQ', href: '#faq' },
+        ],
+      },
+      {
+        title: 'Get started',
+        links: [
+          { label: 'Get early access', href: '#waitlist' },
+          { label: 'Founding Partner Program', href: '#fpp' },
+        ],
+      },
+    ],
+    copyright: '© 2026 HustleQ. All rights reserved.',
   },
 } as const

@@ -1,31 +1,123 @@
+import { motion } from 'framer-motion'
+import { Check } from 'lucide-react'
 import { Section } from '@/components/layout/Section'
+import type { SectionProps } from '@/lib/tones'
 import { site } from '@/content/site'
 import printBeta from '@/assets/print-beta.png'
+import { Lightbox, useLightbox } from '@/components/ui/Lightbox'
+import { ScreenFrame } from '@/components/ui/ScreenFrame'
 
-export function Hero() {
-  const { hero } = site
+/** Renderiza a headline com uma palavra recebendo o destaque animado. */
+function Headline({ text, accent }: { text: string; accent: string }) {
+  const idx = text.toLowerCase().indexOf(accent.toLowerCase())
+  if (idx === -1) return <>{text}</>
   return (
-    <Section id="hero" className="pt-16 text-center md:pt-24">
-      <h1 className="text-5xl text-cream md:text-7xl">{hero.headline}</h1>
-      <p className="mx-auto mt-6 max-w-2xl text-lg text-cream/80">{hero.subheadline}</p>
+    <>
+      {text.slice(0, idx)}
+      <span className="text-shimmer">{text.slice(idx, idx + accent.length)}</span>
+      {text.slice(idx + accent.length)}
+    </>
+  )
+}
 
-      <a
-        href="#waitlist"
-        className="mt-8 inline-block rounded-full bg-violet px-8 py-4 font-semibold text-white transition-colors hover:bg-violet-dark"
+export function Hero({ tone, prevColor }: SectionProps) {
+  const { hero } = site
+  const lb = useLightbox()
+  return (
+    <Section
+      id="hero"
+      tone={tone}
+      prevColor={prevColor}
+      className="relative pt-14 text-center md:pt-20"
+    >
+      {/* brilho de fundo */}
+      <div
+        aria-hidden
+        className="pointer-events-none absolute left-1/2 top-0 -z-10 h-[420px] w-[90%] max-w-[720px] -translate-x-1/2 rounded-full bg-violet/25 blur-[120px]"
+      />
+
+      <motion.h1
+        initial={{ opacity: 0, y: 24 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: 'easeOut' }}
+        className="mx-auto max-w-4xl text-5xl text-cream md:text-7xl"
       >
-        {hero.cta}
-      </a>
+        <Headline text={hero.headline} accent={hero.accent} />
+      </motion.h1>
 
-      <ul className="mx-auto mt-8 flex max-w-3xl flex-col gap-2 text-sm text-cream/70 sm:flex-row sm:justify-center sm:gap-6">
+      <motion.p
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.1, ease: 'easeOut' }}
+        className="mx-auto mt-6 max-w-2xl text-lg text-cream/80 md:text-xl"
+      >
+        {hero.subheadline}
+      </motion.p>
+
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, delay: 0.2, ease: 'easeOut' }}
+        className="mt-8"
+      >
+        <a
+          href="#waitlist"
+          className="inline-block rounded-full bg-violet px-8 py-4 text-lg font-semibold text-white shadow-lg shadow-violet/30 transition-colors hover:bg-violet-dark"
+        >
+          {hero.cta}
+        </a>
+      </motion.div>
+
+      <motion.ul
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6, delay: 0.35, ease: 'easeOut' }}
+        className="mx-auto mt-10 flex max-w-3xl flex-col gap-3 text-left text-sm text-cream/75 sm:flex-row sm:justify-center sm:gap-6"
+      >
         {hero.bullets.map((b) => (
-          <li key={b}>• {b}</li>
+          <li key={b} className="flex items-start gap-2">
+            <Check className="mt-0.5 h-4 w-4 flex-none text-violet" />
+            <span>{b}</span>
+          </li>
         ))}
-      </ul>
+      </motion.ul>
 
-      <img
-        src={printBeta}
-        alt="A weekly content plan from HustleQ"
-        className="mx-auto mt-12 w-full max-w-3xl rounded-2xl border border-cream/10 shadow-2xl"
+      <motion.div
+        initial={{ opacity: 0, y: 40 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.8, delay: 0.45, ease: 'easeOut' }}
+        className="mx-auto mt-14 max-w-3xl"
+      >
+        <button
+          type="button"
+          onClick={() => lb.open(0)}
+          className="group block w-full cursor-zoom-in"
+          aria-label="Open the weekly plan preview"
+        >
+          <ScreenFrame
+            title="HustleQ · Weekly plan"
+            className="transition-transform group-hover:scale-[1.01]"
+          >
+            <img
+              src={printBeta}
+              alt="A weekly content plan from HustleQ"
+              className="w-full"
+            />
+          </ScreenFrame>
+        </button>
+      </motion.div>
+
+      <Lightbox
+        images={[
+          {
+            src: printBeta,
+            alt: 'A weekly content plan from HustleQ',
+            caption: 'A real weekly plan — the kind of output you get.',
+          },
+        ]}
+        index={lb.index}
+        onClose={lb.close}
+        onNavigate={lb.setIndex}
       />
     </Section>
   )
