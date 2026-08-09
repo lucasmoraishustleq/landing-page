@@ -10,7 +10,7 @@ const socialIcon =
   'h-10 w-10 opacity-70 transition-opacity hover:opacity-100 [filter:brightness(0)_invert(1)]'
 
 export function Footer({ lastTone = 'deep' }: { lastTone?: Tone }) {
-  // Transição de cor com a MESMA característica das seções (4rem), só mudando as cores.
+  // A cor da última seção escoa suavemente para o tom base do rodapé.
   const style: CSSProperties = {
     background: `linear-gradient(180deg, ${toneColor[lastTone]} 0, ${FOOTER_BASE} ${SECTION_TRANSITION}, ${FOOTER_BASE} 100%)`,
   }
@@ -50,7 +50,7 @@ export function Footer({ lastTone = 'deep' }: { lastTone?: Tone }) {
           </div>
 
           {/* Colunas de links, espaçadas para preencher a largura */}
-          <div className="flex gap-20 sm:gap-28 lg:gap-40">
+          <div className="flex gap-12 sm:gap-24 lg:gap-40">
             {site.footer.columns.map((column) => (
               <nav key={column.title} aria-label={column.title}>
                 <h3 className="font-display text-sm font-semibold uppercase tracking-wide text-cream/50">

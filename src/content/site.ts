@@ -19,7 +19,7 @@ export const site = {
   brand: {
     name: 'HustleQ',
     instagram: 'https://www.instagram.com/hustleq.tech',
-    linkedin: 'https://www.linkedin.com/company/hustleq',
+    linkedin: 'https://www.linkedin.com/company/hustleq/',
   },
 
   hero: {
@@ -125,7 +125,8 @@ export const site = {
     emailPlaceholder: 'Enter your email…',
     cta: 'Get early access',
     // URL do Google Apps Script (colar quando publicar). Vazio = simula o envio.
-    endpoint: '',
+    endpoint:
+      'https://script.google.com/macros/s/AKfycbylBUhaYEmXIy9sGUiTpcYLCirgZXzyxw-ozdmekynOzgv_8Q3RC74XcINlLfQMCim2Rw/exec',
     questions: [
       {
         id: 'business',
@@ -137,6 +138,7 @@ export const site = {
         id: 'marketing',
         type: 'choice' as const,
         label: 'How does marketing get done today?',
+        placeholder: 'Select an option…',
         options: [
           'I do it myself when I find time',
           'Someone on my team handles it',

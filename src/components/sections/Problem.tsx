@@ -18,12 +18,12 @@ export function Problem({ tone, prevColor }: SectionProps) {
         </FadeIn>
 
         <FadeIn delay={0.15}>
-          <blockquote className="relative rounded-2xl border border-cream/10 bg-cream/5 p-8">
+          <blockquote className="relative rounded-2xl bg-cream p-8 shadow-2xl">
             <span className="font-display text-6xl leading-none text-violet">“</span>
-            <p className="-mt-2 font-display text-2xl text-cream md:text-3xl">
+            <p className="-mt-2 font-display text-2xl text-ink md:text-3xl">
               It’s 11pm on Sunday, and you still don’t know what to post.
             </p>
-            <p className="mt-4 text-sm text-cream/60">
+            <p className="mt-4 text-sm text-ink/60">
               Being consistent was never the hard part. Knowing what to say was.
             </p>
           </blockquote>

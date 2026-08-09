@@ -72,11 +72,11 @@ export function Hero({ tone, prevColor }: SectionProps) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6, delay: 0.35, ease: 'easeOut' }}
-        className="mx-auto mt-10 flex max-w-3xl flex-col gap-3 text-left text-sm text-cream/75 sm:flex-row sm:justify-center sm:gap-6"
+        className="mx-auto mt-10 flex max-w-5xl flex-col gap-4 text-left text-base text-cream/85 sm:flex-row sm:justify-center sm:gap-8"
       >
         {hero.bullets.map((b) => (
-          <li key={b} className="flex items-start gap-2">
-            <Check className="mt-0.5 h-4 w-4 flex-none text-violet" />
+          <li key={b} className="flex items-start gap-2 text-balance sm:flex-1">
+            <Check className="mt-0.5 h-5 w-5 flex-none text-violet" />
             <span>{b}</span>
           </li>
         ))}

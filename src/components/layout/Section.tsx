@@ -1,11 +1,22 @@
 import type { CSSProperties, ReactNode } from 'react'
 import { cn } from '@/lib/utils'
-import { SECTION_TRANSITION, toneColor, toneText, type Tone } from '@/lib/tones'
+import {
+  SECTION_TRANSITION,
+  toneColor,
+  toneSheen,
+  toneText,
+  type Tone,
+} from '@/lib/tones'
+
+function hexToRgba(hex: string, alpha: number) {
+  const n = parseInt(hex.replace('#', ''), 16)
+  return `rgba(${(n >> 16) & 255}, ${(n >> 8) & 255}, ${n & 255}, ${alpha})`
+}
 
 /**
- * Wrapper padrão de seção — espaçamento, largura e TOM de fundo consistentes.
- * O topo faz um gradiente suave a partir da cor da seção anterior (prevColor),
- * eliminando cortes secos entre seções de cores diferentes.
+ * Wrapper padrão de seção. O fundo combina duas camadas:
+ *  1. uma transição suave a partir da cor da seção anterior (topo);
+ *  2. um "sheen" diagonal (estilo klque) no tom da seção.
  */
 export function Section({
   id,
@@ -22,11 +33,10 @@ export function Section({
   containerClassName?: string
   children: ReactNode
 }) {
-  const to = toneColor[tone]
-  const from = prevColor ?? to
-  // Transição curta e fixa (não proporcional à altura) para não virar um "borrão".
+  const from = prevColor ?? toneColor[tone]
   const style: CSSProperties = {
-    background: `linear-gradient(180deg, ${from} 0, ${to} ${SECTION_TRANSITION}, ${to} 100%)`,
+    background: `linear-gradient(180deg, ${from} 0, ${hexToRgba(from, 0)} ${SECTION_TRANSITION}), ${toneSheen[tone]}`,
+    backgroundRepeat: 'no-repeat',
   }
 
   return (

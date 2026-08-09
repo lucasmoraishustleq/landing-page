@@ -22,7 +22,7 @@ export function HowItWorks({ tone, prevColor }: SectionProps) {
       <div className="mt-12 grid gap-6 md:grid-cols-3">
         {howItWorks.steps.map((step, i) => (
           <FadeIn key={step.number} delay={i * 0.1}>
-            <div className="h-full rounded-2xl border border-ink/10 bg-white/60 p-6 shadow-sm">
+            <div className="h-full rounded-2xl border border-ink/10 bg-white/60 p-6 shadow-sm transition-transform duration-300 hover:-translate-y-1 hover:scale-[1.03] hover:shadow-lg">
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-violet text-sm font-bold text-white">
                 {step.number}
               </span>

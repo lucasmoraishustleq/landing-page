@@ -34,6 +34,7 @@ export function Waitlist({ tone, prevColor }: SectionProps) {
       if (waitlist.endpoint) {
         await fetch(waitlist.endpoint, {
           method: 'POST',
+          mode: 'no-cors', // Apps Script não envia headers CORS; grava mesmo assim
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
           body: JSON.stringify({ email, ...answers }),
         })
@@ -85,23 +86,20 @@ export function Waitlist({ tone, prevColor }: SectionProps) {
                 className={inputClass}
               />
             ) : (
-              <div className="flex flex-col gap-2">
+              <select
+                value={answers[q.id] ?? ''}
+                onChange={(e) => setAnswer(q.id, e.target.value)}
+                className={cn(inputClass, answers[q.id] ? 'text-ink' : 'text-ink/50')}
+              >
+                <option value="" disabled>
+                  {q.placeholder ?? 'Select an option…'}
+                </option>
                 {q.options.map((opt) => (
-                  <button
-                    type="button"
-                    key={opt}
-                    onClick={() => setAnswer(q.id, opt)}
-                    className={cn(
-                      'rounded-xl border px-4 py-3 text-left text-sm transition-colors',
-                      answers[q.id] === opt
-                        ? 'border-violet bg-violet/20 text-cream'
-                        : 'border-cream/15 bg-cream/5 text-cream/80 hover:border-cream/30',
-                    )}
-                  >
+                  <option key={opt} value={opt} className="text-ink">
                     {opt}
-                  </button>
+                  </option>
                 ))}
-              </div>
+              </select>
             )}
           </div>
         ))}

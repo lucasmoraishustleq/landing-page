@@ -35,5 +35,5 @@ export const sections: SectionConfig[] = [
   { id: 'faq', visible: true, tone: 'deep' },
   { id: 'founders', visible: true, tone: 'cream' },
   { id: 'waitlist', visible: true, tone: 'purple' },
-  { id: 'fpp', visible: true, tone: 'deep' },
+  { id: 'fpp', visible: true, tone: 'cream' },
 ]
