@@ -66,7 +66,29 @@ export const site = {
       'And every week, Duke knows your business a little better. What you tell him sticks. Next month’s plan remembers.',
   },
 
+  planMonth: {
+    eyebrow: 'A plan for the month',
+    title: 'A clear plan for your month.',
+    subtitle:
+      'From your strategy, Duke maps out the month’s objective and fills your calendar with ready-to-create content — so you always know what’s coming next.',
+    bullets: [
+      {
+        title: 'Monthly content calendar',
+        desc: 'See all your posts, formats and themes in one place.',
+      },
+      {
+        title: 'Aligned with your goals',
+        desc: 'Every post connects to your business objectives.',
+      },
+      {
+        title: 'Ready to create',
+        desc: 'Open a post to see the full brief, assets to capture and posting details.',
+      },
+    ],
+  },
+
   proof: {
+    eyebrow: 'From strategy to posts',
     title: 'What Duke actually produces.',
     body: 'Before Duke was an app, HustleQ’s method was a service. Every week we plan, produce, and schedule content for working small businesses — a restaurant, a construction company, a salon. Duke is that judgment, built into a product.',
     items: [
@@ -89,6 +111,37 @@ export const site = {
         image: 'week-preparation' as const,
         title: 'Know what to capture',
         caption: 'Before you film, Duke tells you the raw material each post needs.',
+      },
+    ],
+    features: [
+      {
+        title: 'Strategies that sound like you',
+        desc: 'Built around your business, your goals and your audience.',
+      },
+      {
+        title: 'Every detail, in the open',
+        desc: 'Open any post to see exactly what it’s built on.',
+      },
+    ],
+  },
+
+  analytics: {
+    eyebrow: 'Real results',
+    title: 'Know what’s working and keep growing.',
+    subtitle:
+      'Track performance, see what resonates with your audience, and get insights to make each week even better.',
+    bullets: [
+      {
+        title: 'Key metrics, at a glance',
+        desc: 'Followers, engagement, views and more — all in one place.',
+      },
+      {
+        title: 'Understand what works',
+        desc: 'See your top posts, top formats and top hashtags.',
+      },
+      {
+        title: 'Turn insights into action',
+        desc: 'Duke explains the results and suggests what to do next.',
       },
     ],
   },

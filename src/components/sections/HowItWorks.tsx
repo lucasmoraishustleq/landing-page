@@ -2,7 +2,7 @@ import { FadeIn } from '@/components/ui/FadeIn'
 import { Section } from '@/components/layout/Section'
 import type { SectionProps } from '@/lib/tones'
 import { site } from '@/content/site'
-import duke from '@/assets/duke.png'
+import duke from '@/assets/duke-2-cutout.webp'
 
 export function HowItWorks({ tone, prevColor }: SectionProps) {
   const { howItWorks } = site
@@ -13,7 +13,7 @@ export function HowItWorks({ tone, prevColor }: SectionProps) {
           <img
             src={duke}
             alt="Duke, the HustleQ mascot"
-            className="h-40 w-40 drop-shadow-xl"
+            className="h-[132px] w-auto drop-shadow-xl"
           />
           <h2 className="max-w-3xl text-3xl text-ink md:text-4xl">{howItWorks.title}</h2>
         </div>

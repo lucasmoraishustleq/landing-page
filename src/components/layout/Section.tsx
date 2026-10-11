@@ -22,6 +22,7 @@ export function Section({
   id,
   tone = 'purple',
   prevColor,
+  background,
   className,
   containerClassName,
   children,
@@ -29,21 +30,25 @@ export function Section({
   id?: string
   tone?: Tone
   prevColor?: string
+  /** Fundo chapado opcional — ignora o sheen (útil para blendar uma imagem). */
+  background?: string
   className?: string
   containerClassName?: string
   children: ReactNode
 }) {
   const from = prevColor ?? toneColor[tone]
-  const style: CSSProperties = {
-    background: `linear-gradient(180deg, ${from} 0, ${hexToRgba(from, 0)} ${SECTION_TRANSITION}), ${toneSheen[tone]}`,
-    backgroundRepeat: 'no-repeat',
-  }
+  const style: CSSProperties = background
+    ? { background }
+    : {
+        background: `linear-gradient(180deg, ${from} 0, ${hexToRgba(from, 0)} ${SECTION_TRANSITION}), ${toneSheen[tone]}`,
+        backgroundRepeat: 'no-repeat',
+      }
 
   return (
     <section
       id={id}
       style={style}
-      className={cn('w-full px-6 py-20 md:py-28', toneText[tone], className)}
+      className={cn('w-full px-6 py-16 md:py-24', toneText[tone], className)}
     >
       <div className={cn('mx-auto max-w-5xl', containerClassName)}>{children}</div>
     </section>

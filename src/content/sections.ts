@@ -15,7 +15,9 @@ export type SectionId =
   | 'hero'
   | 'problem'
   | 'howItWorks'
+  | 'planMonth'
   | 'proof'
+  | 'analytics'
   | 'faq'
   | 'founders'
   | 'waitlist'
@@ -28,10 +30,12 @@ export interface SectionConfig {
 }
 
 export const sections: SectionConfig[] = [
-  { id: 'hero', visible: true, tone: 'purple' },
+  { id: 'hero', visible: true, tone: 'cream' },
   { id: 'problem', visible: true, tone: 'deep' },
   { id: 'howItWorks', visible: true, tone: 'cream' },
-  { id: 'proof', visible: true, tone: 'purple' },
+  { id: 'planMonth', visible: true, tone: 'cream' },
+  { id: 'proof', visible: true, tone: 'cream' },
+  { id: 'analytics', visible: true, tone: 'cream' },
   { id: 'faq', visible: true, tone: 'deep' },
   { id: 'founders', visible: true, tone: 'cream' },
   { id: 'waitlist', visible: true, tone: 'purple' },

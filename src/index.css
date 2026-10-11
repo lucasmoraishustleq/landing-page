@@ -34,6 +34,7 @@
     margin: 0;
     min-height: 100vh;
     min-width: 320px;
+    overflow-x: clip;
     font-family: var(--font-sans);
     color: var(--color-cream);
     /* Fallback: cada seção pinta seu próprio tom (ver Section.tsx). */
@@ -70,11 +71,9 @@
 .text-shimmer {
   background: linear-gradient(
     90deg,
-    var(--color-violet) 0%,
-    #c4b5fd 25%,
-    var(--color-cream) 50%,
-    #c4b5fd 75%,
-    var(--color-violet) 100%
+    #6d28d9 0%,
+    #a78bfa 50%,
+    #6d28d9 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;
