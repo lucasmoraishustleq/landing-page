@@ -35,7 +35,7 @@
     switch (b.type) {
       case 'hero':
         html.push('<header class="cs-head wrap"><h1 class="case-title">' + esc(c.title) + '</h1><p class="cs-lede">' + esc(c.lede) + '</p></header>');
-        html.push('<div class="cs-hero">' + img(b, { eager: true }) + '</div>');
+        html.push('<div class="cs-hero' + (b.fit === 'contain' ? ' contain' : '') + '">' + img(b, { eager: true }) + '</div>');
         break;
       case 'meta':
         html.push('<dl class="cs-meta wrap">' + b.items.map(function (r) { return '<div><dt>' + esc(r[0]) + '</dt><dd>' + esc(r[1]) + '</dd></div>'; }).join('') + '</dl>');
@@ -57,8 +57,14 @@
         html.push('<section class="cs-text wrap"><span class="cs-label">' + esc(b.label) + '</span><div><span class="todo">' + esc(b.id) + ' · ' + esc(b.note) + '</span></div></section>');
         break;
       case 'posts':
-        if (!showPH) break;
-        html.push('<section class="cs-text wrap"><span class="cs-label">' + esc(b.label) + '</span><div class="cs-posts">' + b.ids.map(function (id) { return '<div class="ph" style="aspect-ratio:4/5">' + esc(id) + '</div>'; }).join('') + '</div></section>');
+        if (b.items) {
+          html.push('<section class="cs-text wrap"><span class="cs-label">' + esc(b.label) + '</span><div><div class="cs-posts">' + b.items.map(function (it) {
+            var cap = it.caption && (showPH || !/^\[.*\]$/.test(it.caption)) ? '<figcaption>' + esc(it.caption) + '</figcaption>' : '';
+            return '<figure class="cs-fig"><div class="cs-frame" style="aspect-ratio:4/5">' + img(it, { sizes: '(max-width:600px) 50vw, 25vw' }) + '</div>' + cap + '</figure>';
+          }).join('') + '</div>' + (showPH && b.note ? '<span class="todo" style="margin-top:16px">' + esc(b.note) + '</span>' : '') + '</div></section>');
+        } else if (showPH) {
+          html.push('<section class="cs-text wrap"><span class="cs-label">' + esc(b.label) + '</span><div class="cs-posts">' + b.ids.map(function (id) { return '<div class="ph" style="aspect-ratio:4/5">' + esc(id) + '</div>'; }).join('') + '</div></section>');
+        }
         break;
       case 'closing':
         html.push('<figure class="cs-full cs-closing"><div class="cs-frame" style="aspect-ratio:16/9">' + img(b) + '</div></figure>');
