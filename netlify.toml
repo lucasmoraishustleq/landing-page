@@ -1,4 +1,5 @@
-# Configuração de deploy da Netlify (site estático Vite)
+# Netlify: static multi-page site. Each route is a folder with its own index.html,
+# so /meet-duke/ and /work/bahia-taste/ open directly by URL. No SPA fallback.
 [build]
   command = "npm run build"
   publish = "dist"
@@ -6,8 +7,8 @@
 [build.environment]
   NODE_VERSION = "20"
 
-# SPA: qualquer rota cai no index.html
+# Old anchors from the previous site still land on the form.
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
+  from = "/waitlist"
+  to = "/#waitlist"
+  status = 301
