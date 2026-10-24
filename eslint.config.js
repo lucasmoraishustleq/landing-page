@@ -16,7 +16,7 @@ export default [
   {
     files: ['google-apps-script/**/*.gs'],
     ...js.configs.recommended,
-    languageOptions: { ecmaVersion: 2019, sourceType: 'script', globals: { SpreadsheetApp: 'readonly', ContentService: 'readonly', MailApp: 'readonly', Utilities: 'readonly', LockService: 'readonly' } },
-    rules: { 'no-unused-vars': ['error', { varsIgnorePattern: '^do(Post|Get)$' }] },
+    languageOptions: { ecmaVersion: 2019, sourceType: 'script', globals: { SpreadsheetApp: 'readonly', ContentService: 'readonly', MailApp: 'readonly', Utilities: 'readonly', LockService: 'readonly', PropertiesService: 'readonly', UrlFetchApp: 'readonly' } },
+    rules: { 'no-unused-vars': ['error', { varsIgnorePattern: '^(do(Post|Get)|buildLaunchQueue)$' }] },
   },
 ]
