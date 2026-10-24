@@ -67,9 +67,13 @@ async def nav(b):
             rec('section indicator marks The Work', act==['work'], act)
             rec('compact header after scroll', await p.evaluate('document.getElementById("top-header").classList.contains("compact")'))
         await p.goto(BASE); await p.wait_for_timeout(200)
-        await p.click('header .hcta a.primary'); await p.wait_for_timeout(900)
+        if w < 600:
+            await p.click('.menu-btn'); await p.click('#mmenu a[data-path="duke"]')
+        else:
+            await p.click('header .hcta a.primary')
+        await p.wait_for_timeout(900)
         st=await p.evaluate('[document.querySelector("#lead-form [name=path]").value,document.querySelector("#lead-form [name=source]").value]')
-        rec(f'header "Join the waitlist" -> form path=duke @{w}', st==['duke','header'], st)
+        rec(f'header/menu primary CTA -> form path=duke @{w}', st==['duke','header' if w>=600 else 'menu'], st)
         await p.goto(BASE); await p.wait_for_timeout(200)
         await p.click('.hero a.btn.primary'); await p.wait_for_timeout(900)
         st=await p.evaluate('[document.querySelector("#lead-form [name=path]").value,document.querySelector("#lead-form [name=source]").value, document.getElementById("form").getBoundingClientRect().top]')
@@ -144,7 +148,7 @@ async def forms(b):
         rec(f'{path}: payload has all fields, instagram and website separate', all(k in pl for k in keys) and pl['path']==path and pl['instagram']=='@testbiz' and pl['website']=='testbiz.com', pl)
         ok=await p.eval_on_selector('#st-ok',VIS); txt=await p.inner_text('#st-ok')
         rec(f'{path}: success after ok:true with email confirmation line', ok and 'confirmation' in txt, txt)
-        rec(f'{path}: no priority offer when priority endpoints not configured', not await p.eval_on_selector('#priority',VIS))
+        rec(f'{path}: no First Access modal while Stripe is pending', not await p.eval_on_selector('#fa-modal',VIS))
         await p.context.close()
     p,sent=await formp(b,J({'ok':True,'signup_id':'s_1','email_sent':False}))
     await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(500)
@@ -166,36 +170,51 @@ async def forms(b):
     rec('no Apps Script -> "not connected", no success', 'not connected' in await p.inner_text('#st-bad-msg') and not await p.eval_on_selector('#st-ok',VIS)); await p.context.close()
 
 async def priority(b):
-    PC={'PRIORITY_CHECKOUT_URL':MOCK+'/checkout','PRIORITY_STATUS_URL':MOCK+'/status'}
-    # offer only after confirmed signup with id
+    PC={'FIRST_ACCESS_CHECKOUT_URL':'https://buy.stripe.test/test_abc','FIRST_ACCESS_STATUS_URL':MOCK+'/status'}
+    OKID=J({'ok':True,'signup_id':'s_9','email_sent':True})
+    # no modal without a signup id, nor on the partner path
     p,sent=await formp(b,J({'ok':True,'email_sent':True}),PC)
     await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(500)
-    rec('no priority offer without signup_id', not await p.eval_on_selector('#priority',VIS)); await p.context.close()
-    p,sent=await formp(b,J({'ok':True,'signup_id':'s_9','email_sent':True}),PC,'partner')
+    rec('First Access: no modal without signup_id, inline confirmation instead', not await p.eval_on_selector('#fa-modal',VIS) and 'ready for you' in await p.inner_text('#st-ok')); await p.context.close()
+    p,sent=await formp(b,OKID,PC,'partner')
     await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(500)
-    rec('no priority offer on partner path', not await p.eval_on_selector('#priority',VIS)); await p.context.close()
-    # checkout fails
-    p,sent=await formp(b,J({'ok':True,'signup_id':'s_9','email_sent':True}),PC)
+    rec('First Access: no modal on the partner path', not await p.eval_on_selector('#fa-modal',VIS) and 'Application received' in await p.inner_text('#st-ok')); await p.context.close()
+    # modal after confirmed duke signup, three exits keep the registration
+    for exit_name in ['stay','close','escape','backdrop']:
+        p,sent=await formp(b,OKID,PC)
+        await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(600)
+        vis=await p.eval_on_selector('#fa-modal',VIS)
+        if exit_name=='stay':
+            txt=await p.inner_text('#fa-modal')
+            rec('First Access: modal shows after saved signup with required copy', vis and "You’re on the list!" in txt and 'Get First Access · $20' in txt and "I’ll stay on the free waitlist" in txt and 'refundable' in txt and 'does not guarantee' in txt, txt[:160])
+            rec('First Access: focus moves into the dialog', await p.evaluate('!!document.activeElement.closest(".fa-dialog")'))
+            await p.screenshot(path=SHOTS+'first_access_modal_390.png')
+            await p.click('#fa-stay')
+        elif exit_name=='close': await p.click('#fa-close')
+        elif exit_name=='escape': await p.keyboard.press('Escape')
+        else: await p.mouse.click(5,5)
+        await p.wait_for_timeout(300)
+        gone=not await p.eval_on_selector('#fa-modal',VIS); inline=await p.inner_text('#st-ok')
+        rec(f'First Access: "{exit_name}" closes modal, registration kept, confirmation shown', gone and 'We’ll email you when Duke is ready for you.' in inline and len(sent)==1, inline)
+        if exit_name=='stay':
+            await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(600)
+            rec('First Access: free-waitlist choice is not prompted again', not await p.eval_on_selector('#fa-modal',VIS) and len(sent)==2)
+        await p.context.close()
+    # pay -> Stripe Payment Link with client_reference_id
+    p,sent=await formp(b,OKID,PC)
+    await p.route('https://buy.stripe.test/**', lambda r: r.fulfill(status=200, content_type='text/html', body='<h1>mock checkout</h1>'))
+    await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(600); await p.click('#fa-pay'); await p.wait_for_timeout(800)
+    rec('First Access: checkout opens the payment link tied to the signup', p.url.startswith('https://buy.stripe.test/test_abc') and 'client_reference_id=s_9' in p.url and 'prefilled_email=iza%40example.com' in p.url, p.url)
+    await p.context.close()
+    # server-session variant failing -> error with retry, registration kept
+    p,sent=await formp(b,OKID,{'FIRST_ACCESS_SESSION_URL':MOCK+'/checkout','FIRST_ACCESS_STATUS_URL':MOCK+'/status'})
     await p.route(MOCK+'/checkout', J({},500))
-    await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(500)
-    shown=await p.eval_on_selector('#priority',VIS)
-    rec('priority offer appears after confirmed duke signup', shown)
-    await p.screenshot(path=SHOTS+'priority_offer_390.png')
-    await p.click('#pr-pay'); await p.wait_for_timeout(500)
-    t=await p.inner_text('#pr-state'); rec('checkout error keeps free signup message and retry', 'still saved' in t and await p.eval_on_selector('#pr-actions',VIS), t)
+    await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(600); await p.click('#fa-pay'); await p.wait_for_timeout(600)
+    t2=await p.inner_text('#fa-state')
+    rec('First Access: checkout error keeps the free registration and offers retry', 'Free Waitlist registration is saved' in t2 and await p.eval_on_selector('#fa-state-actions',VIS), t2)
     await p.context.close()
-    # checkout ok -> navigates to provider with signup_id
-    p,sent=await formp(b,J({'ok':True,'signup_id':'s_9','email_sent':True}),PC)
-    body={}
-    async def co(r):
-        body.update(json.loads(r.request.post_data)); await r.fulfill(status=200,content_type='application/json',body=json.dumps({'checkout_url':'https://checkout.mock.test/pay/abc'}))
-    await p.route(MOCK+'/checkout', co)
-    await p.route('https://checkout.mock.test/**', lambda r: r.fulfill(status=200, content_type='text/html', body='<h1>mock checkout</h1>'))
-    await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(500); await p.click('#pr-pay'); await p.wait_for_timeout(800)
-    rec('checkout sends signup_id and opens provider URL from server', body.get('signup_id')=='s_9' and p.url.startswith('https://checkout.mock.test/'), (body,p.url))
-    await p.context.close()
-    # return flows
-    for name, seq, expect in [('pending then confirmed',['pending','pending','confirmed'],'confirmed'),('failed',['failed'],'did not go through'),('abandoned',['abandoned'],'closed before'),('never confirmed',['none']*20,'still being confirmed')]:
+    # return from checkout: status only from the server
+    for name, seq, expect in [('pending then confirmed',['pending','pending','confirmed'],'First Access confirmed'),('failed',['failed'],'did not go through'),('abandoned',['abandoned'],'closed before paying'),('never confirmed',['none']*20,'still being confirmed')]:
         p=await newpage(b,390,844,{'APPS_SCRIPT_URL':MOCK+'/exec',**PC,'PRIORITY_POLL_MS':150,'PRIORITY_POLL_MAX':5})
         q=list(seq)
         def mk(q):
@@ -205,15 +224,77 @@ async def priority(b):
             return st
         await p.route(re.compile(re.escape(MOCK)+r'/status.*'), mk(q))
         await p.goto(BASE); await p.evaluate("sessionStorage.setItem('hq_signup', JSON.stringify({id:'s_9',path:'duke'}))")
-        await p.goto(BASE+'?priority=return#form'); await p.wait_for_timeout(200)
-        first=await p.inner_text('#pr-state')
+        await p.goto(BASE+'?first_access=return#form'); await p.wait_for_timeout(200)
+        first=await p.inner_text('#fa-state')
         await p.wait_for_timeout(1600)
-        t=await p.inner_text('#pr-state')
-        rec(f'return URL: {name}', expect in t and 'confirmed.' not in first, (first,t))
-        if name=='failed': rec('failed payment offers retry', await p.eval_on_selector('#pr-actions',VIS))
+        t3=await p.inner_text('#fa-state')
+        rec(f'First Access return: {name}', expect in t3 and 'confirmed.' not in first, (first,t3))
+        if name=='failed': rec('First Access: failed payment offers retry', await p.eval_on_selector('#fa-state-actions',VIS))
         await p.context.close()
-    p=await newpage(b,390,844,{'APPS_SCRIPT_URL':MOCK+'/exec',**PC}); await p.goto(BASE+'?priority=return#form'); await p.wait_for_timeout(300)
-    rec('return URL without saved signup does not claim payment', 'could not find' in await p.inner_text('#pr-state')); await p.context.close()
+    p=await newpage(b,390,844,{'APPS_SCRIPT_URL':MOCK+'/exec',**PC}); await p.goto(BASE+'?first_access=return#form'); await p.wait_for_timeout(300)
+    rec('First Access: return without a saved signup does not claim payment', 'could not find' in await p.inner_text('#fa-state')); await p.context.close()
+    # design preview while Stripe is pending: CTA disabled, never charges
+    p=await newpage(b,390,844); await p.goto(BASE+'?preview=first-access#form'); await p.wait_for_timeout(400)
+    rec('First Access preview: modal opens with checkout disabled while link is pending', await p.eval_on_selector('#fa-modal',VIS) and await p.evaluate('document.getElementById("fa-pay").disabled') and 'pending' in await p.inner_text('#fa-pay'))
+    await p.context.close()
+    # idempotent retry: same request_id after a failure, new one after success
+    calls=[]
+    async def flaky(r):
+        calls.append(json.loads(r.request.post_data))
+        if len(calls)==1: await r.fulfill(status=500, body='x')
+        else: await r.fulfill(status=200, content_type='application/json', body=json.dumps({'ok':True,'signup_id':'s_%d'%len(calls)}))
+    p,sent=await formp(b,flaky)
+    await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(500); await p.click('#submit-btn'); await p.wait_for_timeout(500)
+    await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(500)
+    rid=[c.get('request_id') for c in calls]
+    rec('form: retry reuses request_id, next signup gets a new one', len(rid)==3 and rid[0]==rid[1] and rid[2]!=rid[1] and all(rid), rid)
+    await p.context.close()
+
+async def ux(b):
+    # outlined star replaces the image next to "We did the work by hand."
+    p=await newpage(b); await p.goto(BASE)
+    st=await p.evaluate('(()=>{const l=[...document.querySelectorAll(".cline")].find(c=>c.textContent.includes("We did the work by hand"));const u=l&&l.querySelector("svg use");return [!!u, u&&u.getAttribute("fill"), !!l.querySelector("img")]})()')
+    rec('"We did the work by hand" uses an outlined star, no image', st==[True,'none',False], st)
+    # Section 8 colors
+    c=await p.evaluate('[getComputedStyle(document.getElementById("ways-in")).backgroundColor, getComputedStyle(document.getElementById("ways-h")).color, getComputedStyle(document.querySelector(".fpp-dark")).color]')
+    rec('Section 8 is deep purple with white title and FPP text', c==['rgb(42, 10, 61)','rgb(255, 255, 255)','rgb(255, 255, 255)'], c)
+    dk=await p.evaluate('[getComputedStyle(document.getElementById("way-duke")).color, getComputedStyle(document.querySelector(".way:not(.fpp-dark) li")).color, getComputedStyle(document.querySelector(".way:not(.fpp-dark) .textlink")).color]')
+    rec('Section 8: Duke card text stays dark on its white card', all(x=='rgb(42, 10, 61)' for x in dk), dk)
+    # serif accent font is declared for selected words only
+    n=await p.evaluate('document.querySelectorAll("em.ser").length'); fam=await p.evaluate('getComputedStyle(document.querySelector("em.ser")).fontFamily')
+    rec('expressive serif accent used selectively', 3<=n<=10 and 'Instrument Serif' in fam, (n,fam))
+    await p.context.close()
+    # carousel
+    for w in (1440,390):
+        p=await newpage(b,w,900 if w>600 else 844); await p.goto(BASE); await p.evaluate('document.getElementById("product").scrollIntoView()'); await p.wait_for_timeout(700)
+        pos0=await p.inner_text('#plan-pos'); prevd=await p.evaluate('document.querySelector(".car-btn[data-dir=\'-1\']").disabled')
+        await p.click('.car-btn[data-dir="1"]'); await p.wait_for_timeout(700)
+        pos1=await p.inner_text('#plan-pos')
+        await p.focus('#plan-track'); await p.keyboard.press('ArrowRight'); await p.wait_for_timeout(700)
+        pos2=await p.inner_text('#plan-pos')
+        hid=await p.evaluate('[...document.querySelectorAll(".slide")].filter(s=>s.closest("[aria-hidden=true]")||s.hidden).length')
+        sw=await p.evaluate('document.documentElement.scrollWidth')
+        rec(f'carousel @{w}: buttons and arrow keys move, slides stay accessible, no page overflow', pos0.startswith('1 /') and prevd and pos1.startswith('2 /') and pos2.startswith('3 /') and hid==0 and sw<=w, (pos0,pos1,pos2,hid,sw))
+        if w==390: await p.locator('.carousel').screenshot(path=SHOTS+'carousel_390.png')
+        await p.context.close()
+    # anatomy
+    p=await newpage(b,390,844); await p.goto(BASE); await p.evaluate('document.getElementById("anatomy").scrollIntoView()'); await p.wait_for_timeout(600)
+    await p.click('[data-an="hook"]'); h=await p.inner_text('#an-p')
+    await p.focus('[data-an="hook"]'); await p.keyboard.press('ArrowRight'); g=await p.inner_text('#an-p'); foc=await p.evaluate('document.activeElement.dataset.an')
+    rec('content item anatomy: tabs switch content, arrow keys move focus', 'Everything you see at an event starts here' in h and 'Awareness' in g and foc=='goal', (h[:40],g[:40],foc))
+    await p.locator('#anatomy').screenshot(path=SHOTS+'anatomy_390.png'); await p.context.close()
+    # motion: normal reveals, reduced-motion shows everything at once
+    p=await newpage(b,1440,900); await p.goto(BASE); await p.wait_for_timeout(60)
+    early=await p.evaluate('parseFloat(getComputedStyle(document.querySelector(".intro .s5")).opacity)')
+    await p.wait_for_timeout(1700)
+    late=await p.evaluate('[...document.querySelectorAll(".intro .seq")].every(e=>parseFloat(getComputedStyle(e).opacity)>0.99)')
+    below=await p.evaluate('document.querySelector("#faq") && document.querySelectorAll(".rv:not(.in)").length>0')
+    rec('hero enters progressively and finishes within 1.7 s; lower sections wait for scroll', early<0.5 and late and below, (early,late,below))
+    await p.context.close()
+    p=await newpage(b,1440,900,reduce=True); await p.goto(BASE); await p.wait_for_timeout(80)
+    allv=await p.evaluate('[...document.querySelectorAll(".intro .seq, .rv:not(.stagger), .rv.stagger > *")].every(e=>parseFloat(getComputedStyle(e).opacity)>0.99)')
+    rec('reduced motion: everything visible immediately, no entrance animation', allv)
+    await p.context.close()
 
 async def demo(b):
     async def run(p, handle='bahiataste', confirm=False, reject_first=False):
@@ -304,7 +385,7 @@ async def main():
     try:
         async with async_playwright() as pw:
             b=await pw.chromium.launch()
-            await layout(b); await links(b); await nav(b); await forms(b); await priority(b); await demo(b); await case(b)
+            await layout(b); await links(b); await nav(b); await forms(b); await priority(b); await ux(b); await demo(b); await case(b)
             await b.close()
     finally: srv.terminate()
     real=[e for e in ERRS]

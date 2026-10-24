@@ -11,7 +11,7 @@ Static multi-page site. No framework. Every route is a folder with its own `inde
 | `/work/bahia-taste/` | `work/bahia-taste/index.html` | Editorial case study, `noindex` until approved |
 | 404 | `404.html` | Not-found page |
 
-All paths below are inside `site/`. Shared files: `assets/css/site.css`, `assets/js/config.js` (all integration settings), `assets/js/leads.js` (form + priority access), `assets/js/landing.js`, `assets/js/work-data.js` (portfolio and case data), `assets/js/case.js` (case renderer).
+All paths below are inside `site/`. Typography: Instrument Sans and IBM Plex Mono, plus Instrument Serif italic on a few accent words in headings (`em.ser`). Motion: `.rv` scroll reveals, `.wipe` color-section entrances and the hero sequence, all gated behind a `js` class and switched off for `prefers-reduced-motion`. Shared files: `assets/css/site.css`, `assets/js/config.js` (all integration settings), `assets/js/leads.js` (form + priority access), `assets/js/landing.js`, `assets/js/work-data.js` (portfolio and case data), `assets/js/case.js` (case renderer).
 
 ## Commands
 
@@ -64,6 +64,7 @@ Payload v3:
 | `website` | **new**, optional, separate from Instagram |
 | `source` | which CTA: `hero`, `header`, `ways-in`, `faq`, `footer`, `menu`, `link-waitlist`, `link-fpp`, `meet-duke` |
 | `page_version` | `landing-v3` |
+| `request_id` | one id per submit attempt, reused on retry so the script does not save the same registration twice |
 | `segment`, `demo` | only from `/meet-duke/`: `tech founder` or `small business`, and `{offer, customer, month}` |
 
 Required response (JSON):
@@ -80,16 +81,24 @@ Required response (JSON):
 
 `google-apps-script/waitlist.gs` contains the v3 script (not deployed yet): writes by column name into a new `leads` tab (the old `Waitlist` tab is never touched), generates `signup_id`, optionally sends the confirmation email with MailApp (`SEND_CONFIRMATION`), reports `email_sent`, and escapes values that would run as sheet formulas. Redeploy it as a new version of the same deployment so the URL does not change.
 
-### 2. Priority access ($20, one-time, refundable) · `PRIORITY_CHECKOUT_URL`, `PRIORITY_STATUS_URL`, `REFUND_POLICY_URL`
+### 2. Duke First Access ($20, one-time, refundable) · `FIRST_ACCESS_CHECKOUT_URL`, `FIRST_ACCESS_STATUS_URL`, `REFUND_POLICY_URL`
 
-Offered only after a confirmed Duke signup that returned a `signup_id`. Two server endpoints, owned by HustleQ:
+Free Waitlist: free registration; we email people when Duke is ready for them.
+Duke First Access: optional one-time refundable $20 payment that puts the person ahead of Free Waitlist members in the launch queue, even those who joined earlier. No access date is promised.
 
-- `POST PRIORITY_CHECKOUT_URL` body `{ signup_id, return_url }` → `{ checkout_url }`. The server creates a Stripe Checkout Session with `client_reference_id = signup_id` and `success_url = return_url`. The Stripe secret key stays on the server.
-- `GET PRIORITY_STATUS_URL?signup_id=...` → `{ status }`, one of `none`, `pending`, `confirmed`, `failed`, `abandoned`.
+Flow on the landing page:
+1. The Free Waitlist form is saved first (Apps Script returns `signup_id`). Nothing about payment is needed to join.
+2. Only then a modal offers First Access. "Get First Access · $20", "I'll stay on the free waitlist", the close button, Escape and a backdrop click are all safe exits: the registration is already saved. Choosing the free option is remembered in the browser and not asked again.
+3. Checkout: the Stripe Payment Link from `FIRST_ACCESS_CHECKOUT_URL`, with `client_reference_id=<signup_id>` and `prefilled_email` added by the page. (Alternative: `FIRST_ACCESS_SESSION_URL`, a server endpoint that creates a Checkout Session.)
+4. Back on `/?first_access=return#form` the page polls `FIRST_ACCESS_STATUS_URL` and shows confirmed, failed, abandoned or still pending. The redirect itself is never treated as proof of payment.
 
-The status must come from a verified Stripe webhook (signature checked): `checkout.session.completed` with `payment_status=paid` or `checkout.session.async_payment_succeeded` → `confirmed`; `checkout.session.async_payment_failed` → `failed`; `checkout.session.expired` → `abandoned`. The return URL is never treated as proof: the page polls the status endpoint and shows "confirmed" only when the server says so.
+While the Stripe link is missing the modal is not shown to visitors. For design review: `/?preview=first-access#form` (only while `SHOW_DEV_BAR` is true; the checkout button is disabled).
 
-Note: an Apps Script web app cannot read request headers, so it cannot verify Stripe webhook signatures. Use a small server function (for example a Netlify Function, since the site is on Netlify) for the checkout and webhook endpoints, and have it update `priority_status` in the sheet.
+Server side (in `google-apps-script/waitlist.gs`, not deployed yet):
+- `GET ?action=first_access_status&signup_id=...` is the status endpoint. Set `FIRST_ACCESS_STATUS_URL` to `APPS_SCRIPT_URL + '?action=first_access_status'` after deploying.
+- `POST ?action=stripe&token=...` is the Stripe webhook. Apps Script cannot read the Stripe-Signature header, so it requires a secret token in the URL and re-fetches every event from the Stripe API with the secret key (Script Properties) before changing `priority_status`. A confirmed payment is never downgraded.
+- `buildLaunchQueue()` writes the `launch_queue` tab: confirmed First Access by payment time, then the Free Waitlist by signup time. Priority comes only from these server-written fields.
+- Stripe Payment Link settings: after payment, redirect to `https://hustleq.tech/?first_access=return#form`.
 
 `REFUND_POLICY_URL`: the offer says "refundable". Add the policy page and its URL before launch.
 
