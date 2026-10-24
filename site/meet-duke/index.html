@@ -4,45 +4,90 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Meet Duke · HustleQ</title>
-<meta name="description" content="Answer five quick questions and Duke turns them into one post idea for your business.">
+<meta name="description" content="Share your business's Instagram and a few answers, and Duke turns that context into one content idea for you.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="canonical" href="https://hustleq.tech/meet-duke/">
 <link rel="icon" href="../favicon.png">
 <meta property="og:type" content="website">
 <meta property="og:title" content="Meet Duke · HustleQ">
-<meta property="og:description" content="Answer five quick questions and Duke turns them into one post idea for your business.">
+<meta property="og:description" content="Share your business's Instagram and a few answers, and Duke turns that context into one content idea for you.">
 <meta property="og:url" content="https://hustleq.tech/meet-duke/">
 <meta property="og:image" content="https://hustleq.tech/og-image.png">
 <link rel="stylesheet" href="../assets/css/site.css">
 <script src="../assets/js/config.js"></script>
 <style>
 body{min-height:100vh;display:flex;flex-direction:column}
-.demo-wrap{flex:1;display:grid;grid-template-columns:4fr 6fr;gap:64px;padding-top:48px;padding-bottom:64px;align-items:start}
+.demo-wrap{flex:1;display:grid;grid-template-columns:4fr 8fr;gap:56px;padding-top:40px;padding-bottom:56px;align-items:start}
 .demo-wrap > *{min-width:0}
-.intro h1{margin:16px 0;font-size:clamp(40px,4.6vw,68px);line-height:.95;letter-spacing:-.045em;font-weight:500}
+.intro h1{margin:16px 0;font-size:clamp(38px,4.2vw,62px);line-height:.95;letter-spacing:-.045em;font-weight:500}
 .intro p{font-size:17px;line-height:1.5;color:var(--body);margin:0 0 20px}
 .intro ol{list-style:none;margin:0;padding:0;border-top:1px solid var(--ink)}
-.intro li{display:grid;grid-template-columns:32px 1fr;padding:12px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+.intro li{display:grid;grid-template-columns:32px 1fr;padding:11px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
 .intro li span:first-child{font-family:var(--mono);font-size:12px;color:var(--muted);padding-top:2px}
 .preview-note{margin-top:20px;border:1px dashed var(--ink);padding:12px 14px;font-family:var(--mono);font-size:12px;line-height:1.5}
-.preview-note[hidden]{display:none}
 
-.chat{border:1px solid var(--ink);background:var(--surface);display:flex;flex-direction:column;height:min(760px,calc(100vh - 140px));min-height:560px;position:relative}
-.chat .head{display:flex;align-items:center;gap:10px;padding:14px 16px;border-bottom:1px solid var(--line)}
-.av{width:34px;height:34px;background:var(--ink);display:flex;align-items:center;justify-content:center;flex:none}
-.head .who{flex:1}.head .who b{display:block;font-size:15px}.head .who small{font-size:12px;color:var(--muted)}
-.step{font-family:var(--mono);font-size:11px;border:1px solid var(--line);padding:5px 8px}
-.log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--cream)}
-.msg{max-width:86%;padding:11px 14px;font-size:15px;line-height:1.45;animation:pop .25s ease}
-.msg.duke{background:var(--surface);border:1px solid var(--line);align-self:flex-start}
-.msg.me{background:var(--ink);color:var(--cream);align-self:flex-end}
+/* ---- device frame: desktop app window by default ---- */
+.device{display:flex;justify-content:center}
+.frame{width:100%;background:var(--surface);border:1px solid var(--ink);border-radius:10px;overflow:hidden;display:flex;flex-direction:column;height:min(780px,calc(100vh - 130px));min-height:600px}
+.winbar{display:flex;align-items:center;gap:8px;padding:0 14px;height:40px;border-bottom:1px solid var(--line);background:var(--cream);flex:none}
+.winbar .dots{display:flex;gap:7px}
+.winbar .dots i{width:11px;height:11px;border-radius:50%;border:1px solid var(--muted);display:block}
+.winbar .title{flex:1;text-align:center;font-family:var(--mono);font-size:12px;color:var(--body)}
+.winbar .tag{font-family:var(--mono);font-size:11px;color:var(--muted)}
+.statusbar{display:none}
+.app{flex:1;display:grid;grid-template-columns:220px 1fr;min-height:0}
+.side{border-right:1px solid var(--line);background:var(--cream);padding:18px 16px;display:flex;flex-direction:column;gap:20px;overflow:auto}
+.side h2{margin:0;font-family:var(--mono);font-size:11px;font-weight:500;color:var(--muted)}
+.steps{list-style:none;margin:8px 0 0;padding:0}
+.steps li{display:flex;gap:10px;align-items:center;padding:7px 0;font-size:14px;color:var(--muted)}
+.steps li i{width:8px;height:8px;border-radius:50%;border:1px solid currentColor;flex:none}
+.steps li.done{color:var(--ink)}
+.steps li.done i{background:var(--ink);border-color:var(--ink)}
+.steps li.now{color:var(--ink);font-weight:600}
+.steps li.now i{background:var(--signal);border-color:var(--signal)}
+.ctx{margin:8px 0 0;font-size:13px}
+.ctx div{padding:6px 0;border-top:1px solid var(--line)}
+.ctx dt{font-family:var(--mono);font-size:10.5px;color:var(--muted)}
+.ctx dd{margin:2px 0 0;word-break:break-word}
+.chat{display:flex;flex-direction:column;min-height:0;min-width:0}
+.chat .head{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--line);flex:none}
+.av{width:36px;height:36px;border-radius:50%;background:var(--cream);border:1px solid var(--line);flex:none;overflow:hidden;display:flex;align-items:center;justify-content:center}
+.av img{width:100%;height:100%;object-fit:cover}
+.av.sm{width:26px;height:26px}
+.head .who{flex:1;min-width:0}.head .who b{display:block;font-size:15px}.head .who small{font-size:12px;color:var(--muted)}
+.step{font-family:var(--mono);font-size:11px;border:1px solid var(--line);padding:5px 8px;white-space:nowrap}
+.log{flex:1;overflow-y:auto;padding:16px;display:flex;flex-direction:column;gap:8px;background:var(--cream);scroll-behavior:smooth}
+.row{display:flex;gap:8px;align-items:flex-end;max-width:92%}
+.row.duke{align-self:flex-start}
+.row .av.sm{visibility:hidden}
+.row.first .av.sm{visibility:visible}
+.msg{padding:11px 14px;font-size:15px;line-height:1.45;animation:pop .25s ease;border-radius:2px}
+.duke .msg{background:var(--surface);border:1px solid var(--line)}
+.msg.me{background:var(--ink);color:var(--cream);align-self:flex-end;max-width:86%}
+.msg small{display:block;color:var(--muted);font-size:13px;margin-top:4px}
 .typing{display:inline-flex;gap:4px;padding:14px 16px}
-.typing i{width:6px;height:6px;background:var(--muted);opacity:.4;animation:blink 1s infinite}
+.typing i{width:6px;height:6px;border-radius:50%;background:var(--muted);opacity:.4;animation:blink 1s infinite}
 .typing i:nth-child(2){animation-delay:.15s}.typing i:nth-child(3){animation-delay:.3s}
 @keyframes blink{50%{opacity:1}}
 @keyframes pop{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
-@media (prefers-reduced-motion:reduce){.msg,.checks,.result section{animation:none !important}.typing i{animation:none}}
+@media (prefers-reduced-motion:reduce){.msg,.checks,.result section,.ig{animation:none !important}.typing i{animation:none}.log{scroll-behavior:auto}}
+
+/* Instagram-style profile header */
+.ig{background:var(--surface);border:1px solid var(--line);border-radius:2px;padding:14px 16px;width:min(340px,100%);animation:pop .3s ease}
+.ig-user{font-weight:600;font-size:15px;margin-bottom:10px;display:flex;gap:6px;align-items:center}
+.ig-mid{display:flex;align-items:center;gap:18px}
+.ig-pic{width:72px;height:72px;border-radius:50%;border:1px solid var(--ink);padding:3px;flex:none}
+.ig-pic > *{width:100%;height:100%;border-radius:50%;object-fit:cover;display:flex;align-items:center;justify-content:center;background:var(--cream);font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:28px;color:var(--ink)}
+.ig-stats{display:flex;gap:18px}
+.ig-stats div{display:flex;flex-direction:column;align-items:center}
+.ig-stats b{font-size:17px}
+.ig-stats span{font-size:12.5px;color:var(--body)}
+.ig-name{margin-top:10px;font-size:14px;font-weight:600}
+.ig-name.sim{font-weight:400;font-style:italic;color:var(--muted)}
+.ig-flag{display:inline-block;margin-top:10px;font-family:var(--mono);font-size:11px;border:1px dashed var(--ink);padding:3px 7px}
+.ig-flag.live{border-style:solid}
+
 .checks{list-style:none;margin:0;background:var(--surface);border:1px solid var(--line);padding:4px 14px;align-self:flex-start;width:90%}
 .checks li{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px;opacity:.35;transition:opacity .3s}
 .checks li:last-child{border-bottom:0}.checks li.on{opacity:1}
@@ -58,9 +103,10 @@ body{min-height:100vh;display:flex;flex-direction:column}
 .result ol{list-style:none;margin:0;padding:0;counter-reset:r}
 .result ol li{counter-increment:r;position:relative;padding-left:26px;margin-bottom:10px}
 .result ol li::before{content:counter(r);position:absolute;left:0;top:2px;width:18px;height:18px;background:var(--ink);color:var(--cream);font:500 11px var(--mono);display:flex;align-items:center;justify-content:center}
-.composer{padding:10px 12px 14px;border-top:1px solid var(--line);background:var(--surface);min-height:72px}
-.row{display:flex;gap:8px}
-.row input{flex:1;border:1px solid var(--ink);background:var(--surface);border-radius:var(--r);padding:13px 14px;font:16px var(--sans);color:var(--ink);min-width:0}
+.sample{font-family:var(--mono);font-size:11px;border:1px dashed var(--ink);padding:3px 7px;display:inline-block;margin-bottom:8px}
+.composer{padding:10px 12px 14px;border-top:1px solid var(--line);background:var(--surface);min-height:72px;flex:none}
+.inrow{display:flex;gap:8px}
+.inrow input{flex:1;border:1px solid var(--ink);background:var(--surface);border-radius:var(--r);padding:13px 14px;font:16px var(--sans);color:var(--ink);min-width:0}
 .send{border:1px solid var(--ink);border-radius:var(--r);padding:0 16px;background:var(--ink);color:var(--cream);font:600 15px var(--sans);cursor:pointer;white-space:nowrap;min-height:48px}
 .send:disabled{opacity:.35;cursor:default}
 .send.ghost{background:transparent;color:var(--ink)}
@@ -70,18 +116,24 @@ body{min-height:100vh;display:flex;flex-direction:column}
 .final{display:flex;flex-direction:column;gap:8px}
 .final a,.final button{text-decoration:none;display:flex;align-items:center;justify-content:center;padding:14px}
 .derr{font-size:13px;color:var(--signal-ink);margin-top:6px;min-height:1em}
-.cover{position:absolute;inset:0;background:var(--ink);color:var(--cream);display:flex;flex-direction:column;padding:28px 24px;z-index:5;transition:opacity .35s}
-.cover.hide{opacity:0;pointer-events:none;visibility:hidden}
-.cover h2{font-size:clamp(36px,4vw,48px);line-height:1;letter-spacing:-.04em;font-weight:500;margin:auto 0 16px}
-.cover p{font-size:16px;line-height:1.5;color:var(--on-dark);margin:0 0 24px}
-.cover .time{align-self:flex-start;font-family:var(--mono);font-size:12px;border:1px solid var(--dark-line);padding:6px 10px}
-.cover button{border:0;border-radius:var(--r);padding:16px;background:var(--signal);color:var(--ink);font:600 16px var(--sans);cursor:pointer}
-.sample{font-family:var(--mono);font-size:11px;border:1px dashed var(--ink);padding:3px 7px;display:inline-block;margin-bottom:8px}
+
+/* ---- mobile: smartphone frame ---- */
 @media (max-width:900px){
-  .demo-wrap{grid-template-columns:1fr;gap:24px;padding-top:24px;padding-bottom:24px}
-  .intro ol,.intro .preview-note{display:none}
-  .chat{height:calc(100vh - 120px);min-height:520px}
+  .demo-wrap{grid-template-columns:1fr;gap:14px;padding-top:14px;padding-bottom:24px}
+  .intro ol,.intro .preview-note,.intro p,.intro .sn{display:none}
+  .intro h1{font-size:28px;margin:0}
+  .frame{width:min(100%,410px);border:9px solid var(--ink);border-radius:42px;background:var(--cream);height:calc(100svh - 150px);min-height:540px;max-height:860px}
+  .winbar,.side{display:none}
+  .app{grid-template-columns:1fr}
+  .statusbar{display:flex;align-items:center;justify-content:space-between;height:32px;padding:0 22px;background:var(--surface);font:600 13px var(--sans);flex:none;position:relative}
+  .statusbar .island{position:absolute;left:50%;top:6px;transform:translateX(-50%);width:92px;height:22px;border-radius:12px;background:var(--ink)}
+  .statusbar .icons{display:flex;gap:4px;align-items:flex-end}
+  .statusbar .icons i{display:block;width:3px;background:var(--ink);border-radius:1px}
+  .chat .head{padding:10px 14px}
+  .log{padding:12px}
+  .composer{padding:10px 10px 16px}
 }
+@media (max-width:360px){.frame{border-width:7px;border-radius:36px}.ig-mid{gap:12px}.ig-stats{gap:12px}}
 </style>
 </head>
 <body>
@@ -94,37 +146,53 @@ body{min-height:100vh;display:flex;flex-direction:column}
 
 <main class="demo-wrap wrap">
   <section class="intro" aria-labelledby="md-h">
-    <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Meet Duke · demo</span>
-    <h1 id="md-h">One post idea, in about a minute.</h1>
-    <p>Answer five quick questions and share your Instagram handle. Duke turns it into one post idea for your business, with the reasons it should work.</p>
+    <span class="sn sn-serif"><span class="n" aria-hidden="true">Duke</span><span class="l">Demo</span></span>
+    <h1 id="md-h">Meet Duke, your content <em class="ser">planner.</em></h1>
+    <p>A short conversation: share your business's Instagram, answer three questions, and Duke turns that context into one content idea.</p>
     <ol>
-      <li><span>01</span><span>Five questions about your business and your month</span></li>
-      <li><span>02</span><span>Your Instagram handle</span></li>
-      <li><span>03</span><span>One post idea: the trend, your version, three reasons</span></li>
-      <li><span>04</span><span>Optional: join the Free Waitlist</span></li>
+      <li><span>01</span><span>Your business's Instagram handle</span></li>
+      <li><span>02</span><span>Confirm the profile is yours</span></li>
+      <li><span>03</span><span>Your niche, current focus and plans for next month</span></li>
+      <li><span>04</span><span>One content idea, with the reasons behind it</span></li>
+      <li><span>05</span><span>Optional: join the Free Waitlist</span></li>
     </ol>
-    <div class="preview-note" id="preview-note" hidden>Preview mode: the profile check and live trend data are not connected yet. Ideas are written from sample templates and your handle is not looked up.</div>
+    <div class="preview-note" id="preview-note" hidden>Preview mode: the Instagram lookup is not connected yet. Profiles show sample numbers, and ideas are written from sample templates.</div>
   </section>
 
-  <section class="chat" id="chat" aria-label="Duke demo chat">
-    <div class="cover" id="cover">
-      <span class="mono" style="font-size:14px">HustleQ · Duke</span>
-      <span class="time" style="margin-top:16px">About 60 seconds</span>
-      <h2>Never wonder what to post again.</h2>
-      <p>Answer five quick questions. Duke turns them into a post for your business, with the reasons it should work.</p>
-      <button id="start" type="button">Get my post idea</button>
+  <section class="device" aria-label="Duke demo">
+    <div class="frame" id="chat">
+      <div class="winbar" aria-hidden="true"><span class="dots"><i></i><i></i><i></i></span><span class="title">Duke · HustleQ</span><span class="tag">Demo</span></div>
+      <div class="statusbar" aria-hidden="true"><span>9:41</span><span class="island"></span><span class="icons"><i style="height:5px"></i><i style="height:7px"></i><i style="height:9px"></i><i style="height:11px"></i></span></div>
+      <div class="app">
+        <aside class="side" aria-label="Demo progress">
+          <div><h2>Progress</h2>
+            <ol class="steps" id="steps">
+              <li data-k="ig" class="now"><i></i>Instagram</li>
+              <li data-k="confirm"><i></i>Confirm profile</li>
+              <li data-k="niche"><i></i>Niche</li>
+              <li data-k="focus"><i></i>Current focus</li>
+              <li data-k="month"><i></i>Upcoming month</li>
+              <li data-k="idea"><i></i>Your idea</li>
+              <li data-k="list"><i></i>Free Waitlist</li>
+            </ol></div>
+          <div><h2>What Duke knows</h2><dl class="ctx" id="ctx"><div><dt>Instagram</dt><dd>Not shared yet</dd></div></dl></div>
+        </aside>
+        <div class="chat">
+          <div class="head">
+            <div class="av"><img src="../assets/img/duke/duke-avatar.png" alt="" width="36" height="36"></div>
+            <div class="who"><b>Duke</b><small>Content planning by HustleQ</small></div>
+            <div class="step" id="step" aria-live="polite">Step 1 of 5</div>
+          </div>
+          <div class="log" id="log" aria-live="polite"></div>
+          <div class="composer" id="composer"></div>
+        </div>
+      </div>
     </div>
-    <div class="head">
-      <div class="av"><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="var(--signal)"/></svg></div>
-      <div class="who"><b>Duke</b><small>Content planning by HustleQ</small></div>
-      <div class="step" id="step" aria-live="polite">1 of 5</div>
-    </div>
-    <div class="log" id="log" aria-live="polite"></div>
-    <div class="composer" id="composer"></div>
   </section>
 </main>
 
 <script src="../assets/js/leads.js"></script>
+<script src="../assets/js/first-access.js"></script>
 <script>
 (function(){
 const C = window.HQ_CONFIG;
@@ -133,39 +201,39 @@ if (!LIVE) document.getElementById('preview-note').hidden = false;
 
 /* ---------- sample content (from the agreed demo). Used only when the Duke API is not connected, and labeled as sample. ---------- */
 const NICHES={
-  startup:{label:'Startup or tech product',short:'tech startups',offerPh:'e.g. demo calls for our app',custPh:'e.g. freelance designers',
+  startup:{label:'Startup or tech product',short:'tech startups',offerPh:'e.g. demo calls for our app',
     trend:{name:'Founder face to camera',what:'Founders talking straight to the camera about the problem they are solving. Filmed on a phone, no polish.',
       signal:'founder-led videos are pulling more comments and follows than polished brand content for early stage startups right now. People follow the person before they trust the product.'},
     format:'30 to 45 second Reel, talking to camera',
-    hook:d=>`I built ${d.name} because ${d.customer} kept running into the same problem.`,
+    hook:d=>`I built ${d.name} because people kept running into the same problem.`,
     film:()=>`You, phone at eye level, explaining that one problem in plain words. Cut to 5 seconds of the product working. End on your face, not your logo.`,
-    cap:(d,m)=>`We didn't build ${d.name} to be another tool. We built it to fix one problem for ${d.customer}. ${m}Want to see it? Link in bio.`,
+    cap:(d,m)=>`We didn't build ${d.name} to be another tool. We built it to fix one problem. ${m}Want to see it? Link in bio.`,
     time:'Tuesday, 12:00 PM'},
-  beauty:{label:'Beauty and hair',short:'beauty',offerPh:'e.g. silk press appointments',custPh:'e.g. busy moms in Brooklyn',
+  beauty:{label:'Beauty and hair',short:'beauty',offerPh:'e.g. silk press appointments',
     trend:{name:'Story while I work',what:'The client talks about their week while you work, then the reveal at the end. Part conversation, part transformation.',
       signal:'beauty pros are getting more saves and shares from these than from plain before and after photos right now. People stay for the story, not just the result.'},
     format:'30 second Reel',
     hook:d=>`She came in stressed about her week. Here's how she left ${d.name}.`,
     film:d=>`Your client chatting while you work on her ${d.offer}. Keep her voice in, add captions, then cut to the final reveal in good light.`,
-    cap:(d,m)=>`Everyone deserves a reset before the holidays. ${m}Spots for the next two weeks are open now. Link in bio to book.`,
+    cap:(d,m)=>`Everyone deserves a reset. ${m}Spots for the next two weeks are open now. Link in bio to book.`,
     time:'Tuesday, 7:30 PM'},
-  food:{label:'Food and drinks',short:'food',offerPh:'e.g. holiday catering trays',custPh:'e.g. families hosting for the holidays',
+  food:{label:'Food and drinks',short:'food',offerPh:'e.g. catering trays for events',
     trend:{name:'Real kitchen sound',what:'Close-up videos of food being made with the real kitchen sounds instead of music. Sizzle, chop, pour, first bite.',
       signal:'food accounts are seeing these rewatched and shared more than music-backed clips right now. The sound is what makes people hungry.'},
     format:'20 second Reel, no music',
     hook:d=>`This is why people keep coming back to ${d.name}.`,
     film:d=>`Your ${d.offer} being made start to finish, close up, with the real sound turned up. End on someone taking the first bite.`,
-    cap:(d,m)=>`Made from scratch, every time. ${m}Planning something for the holidays? Order now so you're not scrambling later.`,
+    cap:(d,m)=>`Made from scratch, every time. ${m}Planning something? Order now so you're not scrambling later.`,
     time:'Thursday, 11:00 AM'},
-  fashion:{label:'Fashion and retail',short:'fashion and retail',offerPh:'e.g. our new knit sets',custPh:'e.g. women in their 30s who work in offices',
+  fashion:{label:'Fashion and retail',short:'fashion and retail',offerPh:'e.g. our new knit sets',
     trend:{name:'One piece, three ways',what:'One item styled three different ways in quick cuts. Work, weekend, night out.',
-      signal:'styling videos are driving more saves than flat product photos right now, and saves push posts to new people. Holiday shoppers want pieces that work everywhere.'},
+      signal:'styling videos are driving more saves than flat product photos right now, and saves push posts to new people.'},
     format:'15 second Reel, three quick cuts',
     hook:()=>`One piece. Three looks. Zero excuses.`,
     film:d=>`Take your best seller from your ${d.offer} and style it three ways. Same mirror, same light, quick cuts on the beat.`,
-    cap:(d,m)=>`The piece that does it all, just in time for holiday plans. ${m}Shop the look through the link in bio.`,
+    cap:(d,m)=>`The piece that does it all. ${m}Shop the look through the link in bio.`,
     time:'Saturday, 10:00 AM'},
-  services:{label:'Services and coaching',short:'service businesses',offerPh:'e.g. brand photoshoots',custPh:'e.g. new founders launching their brand',
+  services:{label:'Services and coaching',short:'service businesses',offerPh:'e.g. brand photoshoots',
     trend:{name:'Answer the question everyone DMs you',what:'A quick talking video answering the one question clients always ask before they hire you.',
       signal:'service businesses are turning DMs into content, and these get shared because they answer what people already wonder. It builds trust before the first call.'},
     format:'30 second Reel, talking to camera with text on screen',
@@ -173,7 +241,7 @@ const NICHES={
     film:()=>`You, talking straight to the camera. Put the question on screen in the first second, then answer it in plain words, like you would on a call.`,
     cap:(d,m)=>`If you've been wondering this too, you're not alone. ${m}Still have questions? DM me or book a call through the link in bio.`,
     time:'Wednesday, 12:30 PM'},
-  other:{label:'Other',short:'businesses like yours',offerPh:'What you want to sell more of',custPh:'Who buys from you',
+  other:{label:'Other',short:'businesses like yours',offerPh:'What you want to sell more of',
     trend:{name:'Behind the scenes',what:'A quick look at the work most customers never see. The prep, the process, the details.',
       signal:'this format is working across almost every industry right now. People trust a business more when they can see the work behind it.'},
     format:'20 second Reel',
@@ -187,30 +255,55 @@ const MONTH={
   launch:{label:'Launching something',line:'Something new is dropping soon, so stay close. ',why:'Since you\'re launching something, this warms people up so the launch doesn\'t start from zero.'},
   event:{label:'Hosting an event',line:'We also have something special happening this month. Details soon. ',why:'Since you have an event coming, this builds the attention you\'ll cash in when you invite people.'},
   slow:{label:'Slow month',line:'',why:'Slow months are when showing up pays off most. This gives people a reason to act now instead of someday.'},
-  none:{label:'Nothing special',line:'',why:'No big moment this month is fine. A timely trend gives you a reason to show up without inventing one.'}
+  none:{label:'Nothing planned yet',line:'',why:'No big moment next month is fine. A timely trend gives you a reason to show up without inventing one.'}
 };
 
 /* ---------- state ---------- */
-const D={name:'',niche:'',offer:'',customer:'',month:'',handle:'',email:''};
+const D={handle:'',profile:null,confirmed:false,niche:'',nicheCustom:'',offer:'',month:'',email:''};
 const log=document.getElementById('log'), comp=document.getElementById('composer'), stepEl=document.getElementById('step');
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
 const wait=ms=>new Promise(r=>setTimeout(r,reduce?Math.min(ms,120):ms));
 const down=()=>{log.scrollTop=log.scrollHeight};
-const E=()=>({name:esc(D.name),offer:esc(D.offer),customer:esc(D.customer)});
 const star=fill=>`<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="${fill}"/></svg>`;
+const AV='<div class="av sm"><img src="../assets/img/duke/duke-avatar.png" alt="" width="26" height="26"></div>';
+let lastSpeaker='';
+const nicheLabel=()=>D.niche==='other'?D.nicheCustom:NICHES[D.niche].label;
+const bizName=()=>(D.profile&&!D.profile.simulated&&D.profile.name)?D.profile.name:'@'+D.handle;
+const E=()=>({name:esc(bizName()),offer:esc(D.offer)});
 
-function add(html,cls){const el=document.createElement('div');el.className=cls;el.innerHTML=html;log.appendChild(el);down();return el;}
-async function duke(text,delay=650){const t=add('<span class="typing" aria-hidden="true"><i></i><i></i><i></i></span>','msg duke');t.style.padding='0';await wait(delay);t.style.padding='';t.innerHTML=text;down();}
-const me=t=>add(esc(t),'msg me');
+function addRaw(html,cls){const el=document.createElement('div');el.className=cls;el.innerHTML=html;log.appendChild(el);down();return el;}
+function dukeRow(inner){const r=addRaw(AV+inner,'row duke'+(lastSpeaker!=='duke'?' first':''));lastSpeaker='duke';return r;}
+async function duke(text,delay=550,instant=false){
+  if(instant){dukeRow(`<div class="msg">${text}</div>`);return;}
+  const r=dukeRow('<div class="msg"><span class="typing" aria-hidden="true"><i></i><i></i><i></i></span></div>');
+  const m=r.querySelector('.msg'); m.style.padding='0';
+  await wait(delay); m.style.padding=''; m.innerHTML=text; down();
+}
+const me=t=>{lastSpeaker='me';return addRaw(esc(t),'msg me');};
 
-function askText(ph,{validate,clean,type='text',label}={}){
+/* progress + context panel (desktop) */
+const ORDER=['ig','confirm','niche','focus','month','idea','list'];
+function setStep(k,label){
+  const i=ORDER.indexOf(k);
+  document.querySelectorAll('#steps li').forEach(li=>{const j=ORDER.indexOf(li.dataset.k);li.className=j<i?'done':j===i?'now':'';});
+  stepEl.textContent=label;
+}
+function setCtx(){
+  const rows=[['Instagram',D.handle?'@'+D.handle+(D.confirmed?' · confirmed':''):'Not shared yet']];
+  if(D.niche) rows.push(['Niche',nicheLabel()]);
+  if(D.offer) rows.push(['Current focus',D.offer]);
+  if(D.month) rows.push(['Next month',MONTH[D.month].label]);
+  document.getElementById('ctx').innerHTML=rows.map(r=>`<div><dt>${esc(r[0])}</dt><dd>${esc(r[1])}</dd></div>`).join('');
+}
+
+function askText(ph,{validate,clean,type='text',label,value='',autofocus=true}={}){
   return new Promise(res=>{
-    comp.innerHTML=`<div class="row"><label class="sr" for="in">${esc(label||ph)}</label><input id="in" type="${type}" placeholder="${esc(ph)}" autocomplete="off"><button class="send" id="go" type="button" disabled>Send</button></div><div class="derr" id="err" role="alert"></div>`;
+    comp.innerHTML=`<div class="inrow"><label class="sr" for="in">${esc(label||ph)}</label><input id="in" type="${type}" placeholder="${esc(ph)}" autocomplete="off" value="${esc(value)}"><button class="send" id="go" type="button" ${value?'':'disabled'}>Send</button></div><div class="derr" id="err" role="alert"></div>`;
     const i=document.getElementById('in'),b=document.getElementById('go'),er=document.getElementById('err');
-    i.focus();
+    if(autofocus) i.focus({preventScroll:true});
     i.oninput=()=>{b.disabled=!i.value.trim();er.textContent=''};
-    const submit=()=>{let v=i.value.trim();if(!v)return;if(clean)v=clean(v);
+    const submit=()=>{let v=i.value.trim();if(!v){er.textContent='Please type an answer to continue.';return;}if(clean)v=clean(v);
       if(validate){const msg=validate(v);if(msg){er.textContent=msg;return;}}
       comp.innerHTML='';res(v);};
     b.onclick=submit;i.onkeydown=e=>{if(e.key==='Enter')submit()};
@@ -218,8 +311,8 @@ function askText(ph,{validate,clean,type='text',label}={}){
 }
 function askChips(obj){
   return new Promise(res=>{
-    comp.innerHTML=`<div class="chips" role="group">${Object.entries(obj).map(([k,v])=>`<button type="button" data-v="${k}">${v.label}</button>`).join('')}</div>`;
-    const first=comp.querySelector('button'); if(first) first.focus();
+    comp.innerHTML=`<div class="chips" role="group">${Object.entries(obj).map(([k,v])=>`<button type="button" data-v="${k}">${esc(v.label)}</button>`).join('')}</div>`;
+    const first=comp.querySelector('button'); if(first) first.focus({preventScroll:true});
     comp.querySelectorAll('button').forEach(c=>c.onclick=()=>{comp.innerHTML='';res(c.dataset.v)});
   });
 }
@@ -234,100 +327,120 @@ async function api(path, body){
   } finally { clearTimeout(t); }
 }
 
+/* ---------- Instagram profile: real API data when connected, clearly simulated otherwise ---------- */
+function num(v){return typeof v==='number'&&isFinite(v)&&v>=0?v:null;}
+async function lookupProfile(handle){
+  if(LIVE){
+    try{
+      const d=await api('/demo/profile',{handle});
+      const p=d.profile;
+      if(!p||!p.username) return null;
+      return {username:String(p.username),name:p.name?String(p.name):null,
+        image_url:(typeof p.image_url==='string'&&/^https:\/\//.test(p.image_url))?p.image_url:null,
+        followers:num(p.followers),following:num(p.following),insight:d.insight||null,simulated:false};
+    }catch(e){ return null; }
+  }
+  // Simulated: numbers seeded from the handle so they stay stable; no name or photo is invented for the account.
+  let x=7; for(const c of handle) x=(x*31+c.charCodeAt(0))>>>0;
+  return {username:handle,name:null,image_url:null,followers:200+(x%9800),following:50+((x>>5)%950),insight:null,simulated:true};
+}
+const fmt=n=>n===null?'·':n>=10000?(n/1000).toFixed(n>=100000?0:1).replace(/\.0$/,'')+'K':n.toLocaleString('en-US');
+function profileCard(p){
+  const pic=p.image_url?`<img src="${esc(p.image_url)}" alt="">`:`<span aria-hidden="true">${esc(p.username.charAt(0).toUpperCase())}</span>`;
+  const name=p.simulated?'<div class="ig-name sim">Sample profile</div>':(p.name?`<div class="ig-name">${esc(p.name)}</div>`:'');
+  const flag=p.simulated?'<span class="ig-flag">Demo preview · sample numbers, not your real account</span>'
+    :(p.followers===null||p.following===null?'<span class="ig-flag live">From Instagram · some stats unavailable</span>':'<span class="ig-flag live">From Instagram</span>');
+  return `<div class="ig" role="group" aria-label="Instagram profile preview for @${esc(p.username)}${p.simulated?', sample data':''}">
+    <div class="ig-user">@${esc(p.username)}</div>
+    <div class="ig-mid"><div class="ig-pic">${pic}</div>
+      <div class="ig-stats"><div><b>${fmt(p.followers)}</b><span>followers</span></div><div><b>${fmt(p.following)}</b><span>following</span></div></div></div>
+    ${name}${flag}</div>`;
+}
+
 /* ---------- flow ---------- */
 async function run(){
-  stepEl.textContent='1 of 5';
-  await duke("Hey, I'm Duke. I'll give you one post idea for your business, built on what's working right now.",500);
-  await duke("First, what's your business called?");
-  D.name=await askText('Business name');me(D.name);
-
-  stepEl.textContent='2 of 5';
-  await duke(`Nice to meet you, ${esc(D.name)}. What do you do?`);
-  D.niche=await askChips(NICHES);me(NICHES[D.niche].label);
-  const N=NICHES[D.niche];
-
-  stepEl.textContent='3 of 5';
-  await duke("What do you want more people to buy or book right now?");
-  D.offer=await askText(N.offerPh,{label:'What you want to sell more of'});me(D.offer);
-
-  stepEl.textContent='4 of 5';
-  await duke("Who's your ideal customer?");
-  D.customer=await askText(N.custPh,{label:'Your ideal customer'});me(D.customer);
-
-  stepEl.textContent='5 of 5';
-  await duke("What's going on for you this month?");
-  D.month=await askChips(MONTH);me(MONTH[D.month].label);
-
-  stepEl.textContent='Almost there';
-  await duke(LIVE?"Last thing. What's your Instagram handle? I'll take a quick look so this actually fits you."
-                 :"Last thing. What's your Instagram handle? In this preview I won't look it up yet, but it's saved if you join the Free Waitlist.");
-  let lookup=null;
+  // 1-3: Instagram handle, profile preview, explicit ownership confirmation
+  let firstAsk=true;
   while(true){
-    D.handle=await askText('@yourbusiness',{label:'Instagram handle',
-      clean:v=>v.replace(/^@+/,'').replace(/\s+/g,''),
-      validate:v=>/^[A-Za-z0-9._]{1,30}$/.test(v)?'':'That doesn\'t look like an Instagram handle. Try again?'});
-    me('@'+D.handle);
-    if(!LIVE) break;
-    lookup=await confirmProfile();
-    if(lookup!=='retry') break;
-    await duke("No problem. What's the right handle?");
+    setStep('ig','Step 1 of 5');
+    D.handle=await askText('@yourbusiness',{label:'Your business’s Instagram handle',autofocus:!firstAsk,
+      clean:v=>v.replace(/^https?:\/\/(www\.)?instagram\.com\//i,'').replace(/[/?].*$/,'').replace(/^@+/,'').replace(/\s+/g,''),
+      validate:v=>/^[A-Za-z0-9._]{1,30}$/.test(v)?'':'That doesn\'t look like an Instagram handle. Use letters, numbers, dots or underscores.'});
+    firstAsk=false; D.confirmed=false; D.profile=null;
+    me('@'+D.handle); setCtx();
+    await duke(LIVE?`Looking up @${esc(D.handle)}…`:`Here is a preview for @${esc(D.handle)}.`,400);
+    const p=await lookupProfile(D.handle);
+    if(!p){ await duke("I couldn't verify that profile. It may be private, misspelled or unavailable right now. Check the handle and try again."); continue; }
+    D.profile=p;
+    dukeRow(profileCard(p));
+    setStep('confirm','Step 2 of 5');
+    await duke("Is this your business's Instagram profile?",300);
+    const ans=await askChips({yes:{label:"Yes, that's my business"},no:{label:"No, that's not my profile"}});
+    me(ans==='yes'?"Yes, that's my business":"No, that's not my profile");
+    if(ans==='yes'){ D.confirmed=true; setCtx(); break; }
+    await duke("No problem. Let's correct the handle and try again.");
   }
 
-  stepEl.textContent='Working';
-  const out=await checking(N, lookup&&lookup!=='retry'?lookup:null);
+  // 4: niche (Other opens a required follow-up)
+  setStep('niche','Step 3 of 5');
+  await duke("Great. What kind of business do you run?");
+  D.niche=await askChips(NICHES); me(NICHES[D.niche].label);
+  if(D.niche==='other'){
+    await duke("Got it. What niche or industry would you describe your business as?");
+    D.nicheCustom=await askText('e.g. pet grooming, interior design',{label:'Your niche or industry',validate:v=>v.length<2?'Please describe your niche in a few words.':''});
+    me(D.nicheCustom);
+  }
+  setCtx();
+  const N=Object.assign({},NICHES[D.niche]); if(D.niche==='other') N.short=D.nicheCustom;
+
+  // 5: current focus (existing question)
+  setStep('focus','Step 4 of 5');
+  await duke("What is your business focusing on right now? What do you want more people to buy or book?");
+  D.offer=await askText(N.offerPh,{label:'What you want to sell more of right now'}); me(D.offer); setCtx();
+
+  // 6: upcoming month (existing question)
+  setStep('month','Step 5 of 5');
+  await duke("Do you have anything in mind for the upcoming month?");
+  D.month=await askChips(MONTH); me(MONTH[D.month].label); setCtx();
+
+  // 7: existing demo outcome
+  setStep('idea','Working');
+  const out=await checking(N);
   await result(N,out);
+  // 8: Free Waitlist + optional Duke First Access
   await waitlist();
 }
 
-/* Profile confirmation: only with a real response from HustleQ's API. Nothing is shown that the API did not return. */
-async function confirmProfile(){
-  stepEl.textContent='Checking profile';
-  await duke(`Looking up @${esc(D.handle)}…`,400);
-  let d=null;
-  try{ d=await api('/demo/profile',{handle:D.handle}); }catch(e){ d=null; }
-  const p=d&&d.profile;
-  if(!p||!p.username){
-    await duke("I couldn't look up that profile right now, so I'll write your idea from what you told me.");
-    return null;
-  }
-  const pic=(typeof p.image_url==='string'&&/^https:\/\//.test(p.image_url))?`<img src="${esc(p.image_url)}" alt="" width="48" height="48" style="width:48px;height:48px;object-fit:cover;flex:none">`:'';
-  add(`<div style="display:flex;gap:12px;align-items:center">${pic}<div><b>${esc(p.name||p.username)}</b><br><span class="mono" style="font-size:12px">@${esc(p.username)}</span>${p.bio?`<p style="margin:6px 0 0;font-size:13px;color:var(--body)">${esc(String(p.bio).slice(0,140))}</p>`:''}</div></div>`,'msg duke');
-  await duke('Is this your business?',300);
-  const ans=await askChips({yes:{label:"Yes, that's me"},no:{label:'No, change the handle'}});
-  me(ans==='yes'?"Yes, that's me":'No, change the handle');
-  return ans==='yes'?{insight:d.insight||null}:'retry';
-}
-
-async function checking(N, looked){
+async function checking(N){
   await duke("Give me a few seconds. Here's what I'm checking.",500);
+  const real=D.profile&&!D.profile.simulated;
   const items=[
-    looked?[`Reading @${esc(D.handle)}`,'Recent posts, formats, how often you post']:[`Profile check`,LIVE?'Skipped for this idea':'Not connected in this preview'],
-    [`Checking what's working in ${N.short}`,LIVE?'Trends from the last few weeks':'Sample trend in this preview'],
-    [`Matching it to ${esc(D.name)}`,'Your offer, your customer, your month'],
+    real?[`Reading @${esc(D.handle)}`,'Recent posts, formats, how often you post']:[`Profile check`,LIVE?'Skipped for this idea':'Sample profile in this preview'],
+    [`Checking what's working in ${esc(N.short)}`,LIVE?'Trends from the last few weeks':'Sample trend in this preview'],
+    [`Matching it to ${esc(bizName())}`,'Your focus and your month'],
     ['Writing your post','The hook, what to film, the caption']
   ];
-  const ul=add(items.map((i,x)=>`<li id="k${x}"><span class="dot">${star('var(--ink)')}</span><div>${i[0]}<small>${i[1]}</small></div></li>`).join(''),'checks');
-  let profile=null, idea=null;
+  addRaw(items.map((i,x)=>`<li id="k${x}"><span class="dot">${star('var(--ink)')}</span><div>${i[0]}<small>${i[1]}</small></div></li>`).join(''),'checks');
+  let idea=null;
   const live = LIVE ? (async()=>{
-    profile=looked&&looked.insight||null;
-    try{ idea=(await api('/demo/idea',{answers:{name:D.name,niche:D.niche,offer:D.offer,customer:D.customer,month:D.month,handle:D.handle},profile})).idea||null; }catch(e){ idea=null; }
+    try{ idea=(await api('/demo/idea',{answers:{handle:D.handle,profile_confirmed:D.confirmed,niche:D.niche,niche_custom:D.nicheCustom,offer:D.offer,month:D.month},profile:real?D.profile.insight:null})).idea||null; }catch(e){ idea=null; }
   })() : Promise.resolve();
-  for(let x=0;x<items.length;x++){ document.getElementById('k'+x).classList.add('on'); await wait(650); }
-  await live; await wait(300);
-  return {profile, idea};
+  for(let x=0;x<items.length;x++){ document.getElementById('k'+x).classList.add('on'); await wait(600); }
+  await live; await wait(250);
+  return {profile:real?D.profile.insight:null, idea};
 }
 
 async function result(N,out){
-  stepEl.textContent='Your post';
+  setStep('idea','Your idea');
   const d=E(), m=MONTH[D.month];
   const live=out.idea; // server-written idea, rendered as text only
-  const box=add(`${live?'':'<span class="sample">Sample idea · written from a template</span>'}<div class="rh">Here's your post for this week, ${d.name}.</div>`,'result');
+  const box=dukeRow(`<div class="result">${live?'':'<span class="sample">Sample idea · written from a template</span>'}<div class="rh">Here's your post for this week, ${d.name}.</div></div>`).querySelector('.result');
   const t=live?{name:esc(live.trend&&live.trend.name||''),what:esc(live.trend&&live.trend.what||''),signal:esc(live.trend&&live.trend.signal||'')}:N.trend;
   const v=live?{format:esc(live.format||''),hook:esc(live.hook||''),film:esc(live.film||''),cap:esc(live.caption||''),time:esc(live.time||'')}
              :{format:N.format,hook:N.hook(d),film:N.film(d),cap:N.cap(d,m.line),time:N.time};
   const reasons=[`<li><b>The trend:</b> ${t.signal.charAt(0).toUpperCase()+t.signal.slice(1)}</li>`];
   if(out.profile) reasons.push(`<li><b>Your profile:</b> ${esc(out.profile)}</li>`);
-  reasons.push(`<li><b>What you told me:</b> you want more people going for "${d.offer}" and your customer is ${d.customer}. The hook talks straight to them, and the post ends with one clear next step. ${m.why}</li>`);
+  reasons.push(`<li><b>What you told me:</b> you run a ${esc(nicheLabel().toLowerCase())} business and want more people going for "${d.offer}". The post ends with one clear next step. ${m.why}</li>`);
   const sections=[
     `<h5>${star('var(--ink)')} The trend</h5><div class="tname">${t.name}</div><p style="margin:0">${t.what}</p>`,
     `<h5>${star('var(--signal)')} Your version</h5><dl>
@@ -338,13 +451,13 @@ async function result(N,out){
       ${v.time?`<div><dt>Suggested time to post</dt><dd>${v.time}</dd></div>`:''}</dl>`,
     `<h5>Why this should work for you</h5><ol>${reasons.join('')}</ol>`
   ];
-  for(const s of sections){await wait(700);const sec=document.createElement('section');sec.innerHTML=s;box.appendChild(sec);down();}
-  await wait(500);
+  for(const s of sections){await wait(650);const sec=document.createElement('section');sec.innerHTML=s;box.appendChild(sec);down();}
+  await wait(400);
 }
 
 async function waitlist(){
-  await duke("Want more ideas like this? Join the Free Waitlist. Access opens in groups, and I'll email you when Duke is ready for you.",900);
-  stepEl.textContent='Waitlist';
+  setStep('list','Free Waitlist');
+  await duke("Want more ideas like this? Join the Free Waitlist. Access opens in groups, and I'll email you when Duke is ready for you.",800);
   let saved=false;
   while(true){
     D.email=await askText('you@yourbusiness.com',{type:'email',label:'Email',validate:v=>/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)?'':'Check that email for me?'});
@@ -352,16 +465,18 @@ async function waitlist(){
     comp.innerHTML='<p class="mono" style="font-size:12px;margin:12px 0;color:var(--muted)">Saving…</p>';
     try{
       const res=await window.HQLeads.submit({
-        path:'duke', name:'', email:D.email, business_name:D.name, business:NICHES[D.niche].label,
+        path:'duke', name:'', email:D.email,
+        business_name:(D.profile&&!D.profile.simulated&&D.profile.name)||'', business:nicheLabel(),
         marketing:'', hardest:'', instagram:'@'+D.handle, website:'',
-        source:'meet-duke', page_version:C.PAGE_VERSION,
+        source:'meet-duke', page_version:C.PAGE_VERSION, request_id:window.HQLeads.uuid(),
         segment:D.niche==='startup'?'tech founder':'small business',
-        demo:{offer:D.offer, customer:D.customer, month:D.month}
+        demo:{offer:D.offer, month:D.month, niche_custom:D.nicheCustom||'', instagram_confirmed:D.confirmed, profile_simulated:!!(D.profile&&D.profile.simulated)}
       });
-      stepEl.textContent='Done';
-      let tail = res.email_sent===true ? ` I sent a confirmation to ${esc(D.email)}.` : res.email_sent===false ? ' Your spot is saved, but the confirmation email did not go out. No need to sign up again.' : '';
       saved=true;
-      await duke(`You're on the list, and I saved what you told me about ${esc(D.name)}.${tail}`);
+      const tail = res.email_sent===true ? ` I sent a confirmation to ${esc(D.email)}.` : res.email_sent===false ? ' Your spot is saved, but the confirmation email did not go out. No need to sign up again.' : '';
+      const done=()=>duke(`You're on the list! I'll email you when Duke is ready for you.${tail}`,300);
+      if(window.HQFirstAccess.canOffer(res.signup_id)) window.HQFirstAccess.offer({signupId:res.signup_id,email:D.email,onFree:done});
+      else await done();
       break;
     }catch(e){
       comp.innerHTML='';
@@ -375,10 +490,16 @@ async function waitlist(){
 }
 
 function reset(){
-  Object.keys(D).forEach(k=>D[k]='');log.innerHTML='';comp.innerHTML='';
-  const cv=document.getElementById('cover'); cv.classList.remove('hide'); document.getElementById('start').focus();
+  Object.assign(D,{handle:'',profile:null,confirmed:false,niche:'',nicheCustom:'',offer:'',month:'',email:''});
+  log.innerHTML='';comp.innerHTML='';lastSpeaker='';setCtx();start();
 }
-document.getElementById('start').onclick=()=>{document.getElementById('cover').classList.add('hide');run();};
+function start(){
+  // First frame: the interface explains itself, no splash screen.
+  duke("Hi, I'm Duke, HustleQ's content planner. Answer a few questions about your business and I'll use that context to suggest one content idea.",0,true);
+  duke("First, what's your business's Instagram handle?<small>Let's start with your Instagram presence.</small>",0,true);
+  run();
+}
+setCtx(); start();
 })();
 </script>
 </body>
