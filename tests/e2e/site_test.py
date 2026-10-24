@@ -286,73 +286,160 @@ async def ux(b):
     # motion: normal reveals, reduced-motion shows everything at once
     p=await newpage(b,1440,900); await p.goto(BASE); await p.wait_for_timeout(60)
     early=await p.evaluate('parseFloat(getComputedStyle(document.querySelector(".intro .s5")).opacity)')
-    await p.wait_for_timeout(1700)
+    await p.wait_for_timeout(1000)
+    mid=await p.evaluate('parseFloat(getComputedStyle(document.querySelector(".intro .s5")).opacity)')
+    await p.wait_for_timeout(900)
+    cta=await p.evaluate('parseFloat(getComputedStyle(document.querySelector(".intro .s4")).opacity)')
+    await p.wait_for_timeout(450)
     late=await p.evaluate('[...document.querySelectorAll(".intro .seq")].every(e=>parseFloat(getComputedStyle(e).opacity)>0.99)')
     below=await p.evaluate('document.querySelector("#faq") && document.querySelectorAll(".rv:not(.in)").length>0')
-    rec('hero enters progressively and finishes within 1.7 s; lower sections wait for scroll', early<0.5 and late and below, (early,late,below))
+    rec('hero sequence lasts about 2.2 s: last line still hidden at 1 s, CTAs visible by 2 s, all done by 2.4 s', early<0.5 and mid<0.5 and cta>0.99 and late and below, (early,mid,cta,late,below))
     await p.context.close()
+    # section numbers: each section has its own treatment
+    p=await newpage(b,1440,900); await p.goto(BASE)
+    kinds=await p.evaluate('[...document.querySelectorAll(".sn")].map(e=>[...e.classList].find(c=>c.startsWith("sn-")))')
+    rec('section numbers use varied treatments, no two alike', len(kinds)>=8 and len(set(kinds))==len(kinds), kinds)
+    await p.context.close()
+    for w in (390,1440):
+        p=await newpage(b,w,900); await p.goto(BASE); await p.wait_for_timeout(300)
+        await p.evaluate('document.querySelectorAll(".rv,.wipe").forEach(e=>e.classList.add("in"))')
+        if w==390: await p.locator('#product').screenshot(path=SHOTS+'section_number_390.png')
+        else: await p.locator('#ways-in').screenshot(path=SHOTS+'section_number_1440.png')
+        await p.context.close()
     p=await newpage(b,1440,900,reduce=True); await p.goto(BASE); await p.wait_for_timeout(80)
     allv=await p.evaluate('[...document.querySelectorAll(".intro .seq, .rv:not(.stagger), .rv.stagger > *")].every(e=>parseFloat(getComputedStyle(e).opacity)>0.99)')
     rec('reduced motion: everything visible immediately, no entrance animation', allv)
     await p.context.close()
 
 async def demo(b):
-    async def run(p, handle='bahiataste', confirm=False, reject_first=False):
-        await p.click('#start')
-        async def text(v):
-            await p.wait_for_selector('#in', timeout=8000); await p.fill('#in', v); await p.click('#go')
-        async def chip(t):
-            await p.wait_for_selector(f'.chips button:has-text("{t}")', timeout=8000); await p.click(f'.chips button:has-text("{t}")')
-        await text('Bahia Taste'); await chip('Food and drinks'); await text('catering trays'); await text('families'); await chip('Hosting an event'); await text('@'+handle)
+    async def text(p,v,timeout=8000):
+        await p.wait_for_selector('#in', timeout=timeout); await p.fill('#in', v); await p.click('#go')
+    async def chip(p,t):
+        sel=f'.chips button:text-is("{t}")'
+        await p.wait_for_selector(sel, timeout=8000); await p.click(sel)
+    async def run(p, handle='bahiataste', reject_first=False, niche='Food and drinks', custom=None):
+        await text(p,'@'+handle)
         if reject_first:
-            await chip('No, change the handle'); await text('@'+handle)
-        if confirm: await chip("Yes, that's me")
+            await chip(p,"No, that's not my profile")
+            await text(p,'@'+handle+'2')
+        await chip(p,"Yes, that's my business")
+        await chip(p,niche)
+        if custom: await text(p,custom)
+        await text(p,'catering trays'); await chip(p,'Hosting an event')
         await p.wait_for_selector('.result section:nth-of-type(3)', timeout=15000)
-    # preview mode
-    p=await newpage(b,390,844,{'APPS_SCRIPT_URL':''}); await p.goto(BASE+'meet-duke/'); await run(p)
-    res=await p.inner_text('.result')
-    rec('demo preview: result labeled as sample', 'Sample idea' in res, res[:80])
-    rec('demo preview: no fabricated profile insight', 'Your profile' not in res and 'Reading @' not in await p.inner_text('.checks'))
-    await p.wait_for_selector('#in', timeout=8000); await p.fill('#in','a@b.co'); await p.click('#go'); await p.wait_for_timeout(1500)
-    log=await p.inner_text('#log'); rec('demo preview: waitlist not connected is said plainly', "can't save signups from this preview" in log, log[-200:])
-    await p.screenshot(path=SHOTS+'demo_preview_390.png', full_page=False)
+    # first frame: device, avatar, explanation, first question, no splash
+    for w,h,kind in [(390,844,'phone'),(1440,900,'window')]:
+        p=await newpage(b,w,h,{'APPS_SCRIPT_URL':''}); await p.goto(BASE+'meet-duke/'); await p.wait_for_timeout(150)
+        info=await p.evaluate("""(()=>{const f=document.querySelector('.frame');const cs=getComputedStyle(f);
+          return {radius:parseFloat(cs.borderTopLeftRadius),win:getComputedStyle(document.querySelector('.winbar')).display!=='none',
+          status:getComputedStyle(document.querySelector('.statusbar')).display!=='none',side:getComputedStyle(document.querySelector('.side')).display!=='none',
+          fw:f.getBoundingClientRect().width,cover:!!document.querySelector('.cover,#start'),
+          headAv:!!document.querySelector('.chat .head .av img[src*="duke-avatar"]'),rowAv:document.querySelectorAll('.row.duke .av img[src*="duke-avatar"]').length,
+          star:!!document.querySelector('.chat .head .av svg'),log:document.getElementById('log').innerText,input:!!document.getElementById('in'),
+          focus:document.activeElement===document.getElementById('in'),sw:document.documentElement.scrollWidth}})()""")
+        if kind=='phone': shape=info['radius']>=30 and info['status'] and not info['win'] and not info['side'] and info['fw']<=410
+        else: shape=info['win'] and info['side'] and not info['status'] and info['fw']>600
+        rec(f'demo @{w}: {kind} frame from the first frame, no splash', shape and not info['cover'], info)
+        rec(f'demo @{w}: Duke avatar image in header and beside messages, no star avatar', info['headAv'] and info['rowAv']>=1 and not info['star'], info)
+        lg=info['log']
+        rec(f'demo @{w}: first frame explains the demo and asks for the Instagram handle first', "I'm Duke" in lg and 'few questions' in lg and 'content idea' in lg and "First, what's your business's Instagram handle?" in lg and info['input'] and not info['focus'], lg[:200])
+        rec(f'demo @{w}: no horizontal overflow', info['sw']<=w, info['sw'])
+        await p.screenshot(path=SHOTS+f'demo_first_frame_{w}.png', full_page=False)
+        await p.context.close()
+    for w in (360,375,1024):
+        p=await newpage(b,w,800 if w<900 else 768,{'APPS_SCRIPT_URL':''}); await p.goto(BASE+'meet-duke/'); await p.wait_for_timeout(150)
+        sw=await p.evaluate('document.documentElement.scrollWidth'); fw=await p.evaluate('document.querySelector(".frame").getBoundingClientRect().right')
+        rec(f'demo @{w}: frame fits, no overflow', sw<=w and fw<=w, (sw,fw))
+        await p.context.close()
+    # handle validation and normalization
+    p=await newpage(b,390,844,{'APPS_SCRIPT_URL':''}); await p.goto(BASE+'meet-duke/')
+    await text(p,'not a handle!'); await p.wait_for_timeout(100)
+    err=await p.inner_text('#err'); rec('demo: invalid handle is rejected with a message', 'Instagram handle' in err, err)
+    await p.fill('#in','https://www.instagram.com/Bahia.Taste/?hl=en'); await p.click('#go'); await p.wait_for_timeout(900)
+    lg=await p.inner_text('#log')
+    rec('demo: instagram URL is normalized to the handle', '@Bahia.Taste' in lg, lg[-160:])
+    card=await p.inner_text('.ig')
+    rec('demo preview: profile card shows handle, followers, following and a sample label', '@Bahia.Taste' in card and 'followers' in card and 'following' in card and 'Sample profile' in card and 'Demo preview' in card, card)
+    rec('demo preview: no photo invented for the account', not await p.evaluate('!!document.querySelector(".ig img")'))
+    await p.locator('.ig').screenshot(path=SHOTS+'demo_profile_preview.png')
+    rec('demo: confirmation is asked explicitly', "Is this your business's Instagram profile?" in await p.inner_text('#log') and await p.is_visible('''.chips button:text-is("Yes, that's my business")'''))
+    await chip(p,"No, that's not my profile"); await p.wait_for_selector('#in', timeout=5000)
+    rec('demo: rejecting the profile returns to the handle input', await p.is_visible('#in') and not await p.query_selector('.chips'))
+    await text(p,'@anotherbiz'); await p.wait_for_timeout(900)
+    cards=await p.evaluate('[...document.querySelectorAll(".ig .ig-user")].map(e=>e.textContent)')
+    rec('demo: preview refreshes for the corrected handle', cards==['@Bahia.Taste','@anotherbiz'], cards)
+    await chip(p,"Yes, that's my business"); await chip(p,'Other'); await p.wait_for_timeout(700)
+    lg=await p.inner_text('#log')
+    rec('demo: "Other" opens the required niche question', 'What niche or industry would you describe your business as?' in lg and await p.is_visible('#in'))
+    await p.click('#go', force=True); await p.wait_for_timeout(100)
+    rec('demo: niche free text is required', await p.is_visible('#in'))
+    await text(p,'Pet grooming'); await p.wait_for_timeout(700)
+    lg=await p.inner_text('#log')
+    i_focus=lg.find('What is your business focusing on right now?')
+    rec('demo: current focus comes after niche', i_focus>lg.find('Pet grooming')>0, lg[-200:])
+    await text(p,'grooming packages'); await p.wait_for_timeout(700)
+    lg=await p.inner_text('#log')
+    rec('demo: upcoming month comes after current focus', lg.find('anything in mind for the upcoming month')>i_focus)
+    await chip(p,'Nothing planned yet'); await p.wait_for_selector('.result section:nth-of-type(3)', timeout=15000)
+    res=await p.inner_text('.result'); chk=await p.inner_text('.checks')
+    rec('demo: custom niche is used downstream', 'pet grooming business' in res and 'Pet grooming' in chk, (res[-200:],chk[:120]))
+    rec('demo preview: result labeled as sample, no profile insight invented', 'Sample idea' in res and 'Your profile' not in res and 'Reading @' not in chk)
+    side=await p.inner_text('#ctx'); rec('demo @390: sidebar hidden on phone, context still tracked', 'Pet grooming' in side)
+    await text(p,'a@b.co'); await p.wait_for_timeout(1500)
+    lg=await p.inner_text('#log'); rec('demo preview: waitlist not connected is said plainly', "can't save signups from this preview" in lg, lg[-200:])
+    await p.screenshot(path=SHOTS+'demo_result_390.png', full_page=False)
     await p.context.close()
-    # live mode with mocked HustleQ API + Apps Script
-    cfg={'DUKE_API_BASE':MOCK+'/duke','APPS_SCRIPT_URL':MOCK+'/exec'}
-    p=await newpage(b,1440,900,cfg); sent=[]
-    await p.route(MOCK+'/duke/demo/profile', J({'ok':True,'profile':{'username':'bahiataste','name':'Bahia <i>Taste</i>','bio':'Test bio','image_url':'javascript:alert(1)'},'insight':'Your last Reel was <b>3</b> weeks ago.'}))
+    # live mode with mocked HustleQ API + Apps Script + First Access
+    cfg={'DUKE_API_BASE':MOCK+'/duke','APPS_SCRIPT_URL':MOCK+'/exec','FIRST_ACCESS_CHECKOUT_URL':'https://buy.stripe.test/test_abc','FIRST_ACCESS_STATUS_URL':MOCK+'/status'}
+    p=await newpage(b,1440,900,cfg); sent=[]; prof=[]
+    async def pr(r):
+        prof.append(json.loads(r.request.post_data))
+        await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'profile':{'username':'bahiataste','name':'Bahia <i>Taste</i>','followers':1520,'following':310,'image_url':'javascript:alert(1)'},'insight':'Your last Reel was <b>3</b> weeks ago.'}))
+    await p.route(MOCK+'/duke/demo/profile', pr)
     await p.route(MOCK+'/duke/demo/idea', J({'ok':True,'idea':{'trend':{'name':'Real kitchen sound','what':'Close-ups.','signal':'shared more'},'format':'Reel','hook':'Hook <img src=x onerror=alert(1)>','film':'Film it','caption':'Cap','time':''}}))
     async def ex(r): sent.append(json.loads(r.request.post_data)); await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'signup_id':'s_d','email_sent':True}))
     await p.route(MOCK+'/exec', ex)
-    await p.goto(BASE+'meet-duke/'); await run(p, confirm=True)
-    log=await p.inner_html('#log')
-    rec('demo live: profile confirmation shows API data escaped, no unsafe image', 'Bahia &lt;i&gt;Taste&lt;/i&gt;' in log and 'javascript:' not in log)
+    await p.goto(BASE+'meet-duke/'); await text(p,'@bahiataste'); await p.wait_for_selector('.ig', timeout=6000)
+    card=await p.inner_html('.ig'); ctext=await p.inner_text('.ig')
+    rec('demo live: profile lookup goes to the HustleQ API, not Apify', prof==[{'handle':'bahiataste'}], prof)
+    rec('demo live: profile card uses API data, escaped, no unsafe image', 'Bahia &lt;i&gt;Taste&lt;/i&gt;' in card and 'javascript:' not in card and '1,520' in ctext and '310' in ctext and 'From Instagram' in ctext and 'Sample' not in ctext, ctext)
+    rec('demo live: ownership still has to be confirmed with real data', await p.is_visible('''.chips button:text-is("Yes, that's my business")'''))
+    await chip(p,"Yes, that's my business"); await chip(p,'Food and drinks'); await text(p,'catering trays'); await chip(p,'Hosting an event')
+    await p.wait_for_selector('.result section:nth-of-type(3)', timeout=15000)
     res=await p.inner_text('.result'); html=await p.inner_html('.result')
     rec('demo live: no sample label, profile reason from API', 'Sample idea' not in res and 'Your profile' in res and 'Reading @' in await p.inner_text('.checks'))
     rec('demo live: API text is escaped', '<img' not in html and '&lt;img' in html)
-    await p.wait_for_selector('#in', timeout=8000); await p.fill('#in','a@b.co'); await p.click('#go'); await p.wait_for_timeout(1800)
-    pl=sent[0] if sent else {}
-    rec('demo live: waitlist payload source=meet-duke with handle and answers', pl.get('source')=='meet-duke' and pl.get('instagram')=='@bahiataste' and pl.get('business_name')=='Bahia Taste' and pl.get('demo',{}).get('month')=='event', pl)
-    rec('demo live: "on the list" only after ok', "You're on the list" in await p.inner_text('#log'))
+    side=await p.inner_text('#ctx'); steps=await p.evaluate('[...document.querySelectorAll("#steps li.done")].length')
+    rec('demo @1440: sidebar shows progress and what Duke knows', '@bahiataste · confirmed' in side and 'catering trays' in side and steps>=5, (side,steps))
     await p.screenshot(path=SHOTS+'demo_live_1440.png', full_page=False)
+    await text(p,'a@b.co'); await p.wait_for_timeout(1800)
+    pl=sent[0] if sent else {}
+    rec('demo live: waitlist payload has source, handle, confirmation and answers', pl.get('source')=='meet-duke' and pl.get('instagram')=='@bahiataste' and pl.get('business_name')=='Bahia <i>Taste</i>' and pl.get('demo',{}).get('month')=='event' and pl.get('demo',{}).get('instagram_confirmed') is True and pl.get('demo',{}).get('profile_simulated') is False, pl)
+    vis=await p.eval_on_selector('#fa-modal',VIS); txt=await p.inner_text('#fa-modal') if vis else ''
+    rec('demo: Duke First Access offered after a saved demo signup', vis and 'Get First Access · $20' in txt and "You’re on the list!" in txt, txt[:120])
+    await p.click('#fa-stay'); await p.wait_for_timeout(700)
+    rec('demo: staying free closes the offer and confirms in the chat', not await p.eval_on_selector('#fa-modal',VIS) and "You're on the list! I'll email you when Duke is ready for you." in await p.inner_text('#log'))
     await p.context.close()
+    # save failure
     p=await newpage(b,390,844,{'APPS_SCRIPT_URL':MOCK+'/exec'})
     await p.route(MOCK+'/exec', J({},500)); await p.goto(BASE+'meet-duke/'); await run(p)
-    await p.wait_for_selector('#in', timeout=8000); await p.fill('#in','a@b.co'); await p.click('#go'); await p.wait_for_timeout(1500)
-    log=await p.inner_text('#log'); rec('demo: save failure says not on the list and allows retry', "not on the list yet" in log and await p.is_visible('#in'), log[-160:])
+    await text(p,'a@b.co'); await p.wait_for_timeout(1500)
+    lg=await p.inner_text('#log'); rec('demo: save failure says not on the list and allows retry', "not on the list yet" in lg and await p.is_visible('#in'), lg[-160:])
     await p.context.close()
-
-    p=await newpage(b,390,844,{'DUKE_API_BASE':MOCK+'/duke','APPS_SCRIPT_URL':''})
-    await p.route(MOCK+'/duke/demo/profile', J({},500)); await p.route(MOCK+'/duke/demo/idea', J({},500))
-    await p.goto(BASE+'meet-duke/'); await run(p)
-    log=await p.inner_text('#log'); res=await p.inner_text('.result')
-    rec('demo: profile lookup failure continues without profile data', "couldn't look up that profile" in log and 'Your profile' not in res and 'Sample idea' in res)
-    await p.context.close()
-    p=await newpage(b,390,844,{'DUKE_API_BASE':MOCK+'/duke'})
-    await p.route(MOCK+'/duke/demo/profile', J({'ok':True,'profile':{'username':'other'}}))
-    await p.route(MOCK+'/duke/demo/idea', J({},500))
-    await p.goto(BASE+'meet-duke/'); await run(p, reject_first=True, confirm=True)
-    rec('demo: rejecting the profile asks for the handle again', (await p.inner_text('#log')).count('Is this your business?')==2)
+    # lookup failures: private, unavailable, timeout -> could not verify, ask again, never continue
+    for name,h in [('HTTP 500',J({},500)),('ok:false (private)',J({'ok':False,'error':'private'})),('no profile',J({'ok':True})),('timeout','hang')]:
+        async def hang(r): await asyncio.sleep(4)
+        p=await newpage(b,390,844,{'DUKE_API_BASE':MOCK+'/duke','TIMEOUT_MS':1500})
+        await p.route(MOCK+'/duke/demo/profile', hang if h=='hang' else h)
+        await p.goto(BASE+'meet-duke/'); await text(p,'@privatebiz')
+        try: await p.wait_for_function('document.getElementById("log").innerText.includes("couldn\'t verify")', timeout=5000); await p.wait_for_timeout(200)
+        except Exception: pass
+        lg=await p.inner_text('#log')
+        rec(f'demo: lookup {name} says it could not verify and asks for the handle again', "couldn't verify that profile" in lg and await p.is_visible('#in') and not await p.query_selector('.ig') and 'What kind of business' not in lg, lg[-160:])
+        await p.context.close()
+    # reduced motion: the flow still works with no animation
+    p=await newpage(b,390,844,{'APPS_SCRIPT_URL':''},reduce=True); await p.goto(BASE+'meet-duke/'); await run(p, niche='Beauty and hair')
+    rec('demo reduced motion: full flow completes', 'Sample idea' in await p.inner_text('.result'))
     await p.context.close()
 
 async def case(b):

@@ -11,7 +11,7 @@ Static multi-page site. No framework. Every route is a folder with its own `inde
 | `/work/bahia-taste/` | `work/bahia-taste/index.html` | Editorial case study, `noindex` until approved |
 | 404 | `404.html` | Not-found page |
 
-All paths below are inside `site/`. Typography: Instrument Sans and IBM Plex Mono, plus Instrument Serif italic on a few accent words in headings (`em.ser`). Motion: `.rv` scroll reveals, `.wipe` color-section entrances and the hero sequence, all gated behind a `js` class and switched off for `prefers-reduced-motion`. Shared files: `assets/css/site.css`, `assets/js/config.js` (all integration settings), `assets/js/leads.js` (form + priority access), `assets/js/landing.js`, `assets/js/work-data.js` (portfolio and case data), `assets/js/case.js` (case renderer).
+All paths below are inside `site/`. Typography: Instrument Sans and IBM Plex Mono, plus Instrument Serif italic on a few accent words in headings (`em.ser`). Motion: `.rv` scroll reveals, `.wipe` color-section entrances and the hero sequence (2.2 s, CTAs visible by 1.9 s), all gated behind a `js` class and switched off for `prefers-reduced-motion`. Shared files: `assets/css/site.css`, `assets/js/config.js` (all integration settings), `assets/js/leads.js` (form + priority access), `assets/js/landing.js`, `assets/js/work-data.js` (portfolio and case data), `assets/js/case.js` (case renderer).
 
 ## Commands
 
@@ -65,7 +65,7 @@ Payload v3:
 | `source` | which CTA: `hero`, `header`, `ways-in`, `faq`, `footer`, `menu`, `link-waitlist`, `link-fpp`, `meet-duke` |
 | `page_version` | `landing-v3` |
 | `request_id` | one id per submit attempt, reused on retry so the script does not save the same registration twice |
-| `segment`, `demo` | only from `/meet-duke/`: `tech founder` or `small business`, and `{offer, customer, month}` |
+| `segment`, `demo` | only from `/meet-duke/`: `tech founder` or `small business`, and `{offer, month, niche_custom, instagram_confirmed, profile_simulated}` |
 
 Required response (JSON):
 
@@ -104,14 +104,20 @@ Server side (in `google-apps-script/waitlist.gs`, not deployed yet):
 
 ### 3. Duke demo API · `DUKE_API_BASE`
 
-The browser calls HustleQ's API, never Apify directly.
+The browser calls HustleQ's API, never Apify directly. Apify (or any scraper) runs behind that API with its token kept on the server.
 
-- `POST {base}/demo/profile` `{ handle }` → `{ ok: true, insight: "one sentence" }`
-- `POST {base}/demo/idea` `{ answers, profile }` → `{ ok: true, idea: { trend: { name, what, signal }, format, hook, film, caption, time } }`
+Demo order: Instagram handle → profile preview → ownership confirmation ("Yes, that's my business" / "No, that's not my profile") → niche ("Other" asks a required free-text niche) → current focus → upcoming month → idea → Free Waitlist → Duke First Access offer (same `first-access.js` module as the landing form).
 
-All returned text is escaped before display. Without the API, the demo runs in preview mode: the handle is not looked up, no profile insight is shown, and the idea is labeled "Sample idea · written from a template".
+- `POST {base}/demo/profile` `{ handle }` → `{ ok: true, profile: { username, name?, image_url?, followers?, following? }, insight?: "one sentence" }`
+  - Private, missing, unavailable or failed lookups: return `ok: false` (any `error` string) or a non-2xx status. The demo then says it could not verify the profile and asks for the handle again. It never continues with a profile it could not load. Requests time out after `TIMEOUT_MS`.
+  - `image_url` is shown only when it is `https`. Missing counts show as "·" with "some stats unavailable".
+- `POST {base}/demo/idea` `{ answers: { handle, profile_confirmed, niche, niche_custom, offer, month }, profile }` → `{ ok: true, idea: { trend: { name, what, signal }, format, hook, film, caption, time } }`
 
-Profile confirmation: when `DUKE_API_BASE` is set, the demo looks up the handle and, only if the API returns `profile: { username, name?, bio?, image_url? }`, shows it with "Yes, that's me" / "No, change the handle". If the lookup fails, the demo says so and continues without profile data. Profile images are shown only for `https` URLs.
+All returned text is escaped before display. Ownership confirmation is required with real data too, and a rejected profile is never used.
+
+Preview mode (no `DUKE_API_BASE`): the profile card shows numbers seeded from the handle, the initial instead of a photo, "Sample profile" instead of a name, and the label "Demo preview · sample numbers, not your real account". The idea is labeled "Sample idea · written from a template".
+
+Device framing: smartphone frame up to 900px, desktop app window (title bar, progress and context sidebar, chat pane) above. Duke's avatar is `assets/img/duke/duke-avatar.png`, cropped from the existing `src/assets/duke.png`.
 
 ### 4. Legacy
 
