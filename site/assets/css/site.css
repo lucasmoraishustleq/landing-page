@@ -378,9 +378,11 @@ figcaption{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--mu
 /* Hero entrance: headline first, then copy, then actions, then the concept panel. JS-only, so content shows without JS. */
 @keyframes seqIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
 @keyframes hIn{from{clip-path:inset(0 0 100% 0);transform:translateY(28px)}to{clip-path:inset(-10% -5% -20% -5%);transform:none}}
-.js .intro .seq{opacity:0;animation:seqIn .7s cubic-bezier(.2,.7,.2,1) forwards}
-.js .intro .seq-h{animation:hIn .9s cubic-bezier(.2,.7,.2,1) .12s both}
-.js .intro .s1{animation-delay:.02s}.js .intro .s2{animation-delay:.5s}.js .intro .s3{animation-delay:.62s}.js .intro .s4{animation-delay:.74s}.js .intro .s5{animation-delay:.9s}
+/* Whole sequence lasts 2.2 s (was 1.6 s): the last element (s5) starts at 1.4 s and runs 0.8 s.
+   The CTAs (s4) are fully visible by 1.9 s. */
+.js .intro .seq{opacity:0;animation:seqIn .8s cubic-bezier(.2,.7,.2,1) forwards}
+.js .intro .seq-h{animation:hIn 1s cubic-bezier(.2,.7,.2,1) .15s both}
+.js .intro .s1{animation-delay:.02s}.js .intro .s2{animation-delay:.7s}.js .intro .s3{animation-delay:.9s}.js .intro .s4{animation-delay:1.1s}.js .intro .s5{animation-delay:1.4s}
 
 /* Scroll reveals */
 .js .rv:not(.stagger){opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
@@ -473,3 +475,42 @@ body.modal-open{overflow:hidden}
 .ways-dark .way:not(.fpp-dark){color:var(--ink)}
 .ways-dark .way:not(.fpp-dark) .textlink{color:var(--ink)}
 @media (max-width:600px){.eyebrow::after{display:none}}
+
+/* ===== section numbers: one system, a different composition per section ===== */
+.sn{display:inline-flex;align-items:baseline;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:.02em}
+.sn .star{width:10px;height:10px;align-self:center}
+/* 02 outlined serif numeral */
+.sn-outline{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:clamp(64px,7vw,120px);line-height:.8;color:transparent;-webkit-text-stroke:1px var(--muted);letter-spacing:-.04em}
+/* 03 big serif numeral + mono label */
+.sn-serif .n{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:clamp(48px,5vw,72px);line-height:.8;color:var(--signal);letter-spacing:-.03em}
+.sn-serif .l{padding-bottom:6px;border-bottom:1px solid currentColor}
+/* 04 "No. 4" */
+.sn-no{font-family:'Instrument Serif',Georgia,serif;font-size:28px;letter-spacing:0}
+.sn-no i{font-size:18px;color:var(--muted)}
+/* 05 label, long rule, number at the far end */
+.sn-rule{display:flex;width:100%;gap:12px;align-items:center}
+.sn-rule .l{display:inline-flex;gap:8px;align-items:center}
+.sn-rule .rule{flex:1;height:1px;background:currentColor;opacity:.35}
+.sn-rule .n{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:26px}
+/* 06 vertical label */
+.sn-vert{flex-direction:column;align-items:flex-start;gap:16px}
+.sn-vert .n{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:44px;line-height:.8;color:var(--signal)}
+.sn-vert .l{writing-mode:vertical-rl;transform:rotate(180deg);color:#D8CCE2;letter-spacing:.06em}
+/* 07 small tag + superscript number on the heading */
+.sn-tag{border:1px solid currentColor;padding:4px 8px;border-radius:var(--r);align-self:flex-start}
+.sn-sup{font-family:var(--mono);font-size:13px;font-weight:500;letter-spacing:.02em;color:var(--signal-ink);vertical-align:top;position:relative;top:.6em;margin-right:.6em}
+/* 08 number above a serif label */
+.sn-stack{flex-direction:column;gap:4px;align-items:flex-start}
+.sn-stack .l{font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:30px;line-height:1;letter-spacing:-.01em;color:#fff}
+.sn-stack .n{color:var(--signal)}
+/* 09 fraction */
+.sn-frac .n{font-family:'Instrument Serif',Georgia,serif;font-size:34px;line-height:.8}
+.sn-frac .slash{font-size:28px;color:var(--muted);transform:skewX(-12deg)}
+/* 10 star, label, number */
+.sn-end .n{color:var(--muted)}
+.sn-end .l{font-weight:500}
+@media (max-width:900px){
+  .sn-vert{flex-direction:row;align-items:baseline}
+  .sn-vert .l{writing-mode:horizontal-tb;transform:none}
+  .sn-outline{font-size:64px}
+}

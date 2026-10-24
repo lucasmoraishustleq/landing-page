@@ -2,14 +2,8 @@
   var C = window.HQ_CONFIG;
   var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   var $ = function (id) { return document.getElementById(id); };
-  var params = new URLSearchParams(location.search);
-  var store = {
-    get: function (k) { try { return localStorage.getItem(k); } catch { return null; } },
-    set: function (k, v) { try { localStorage.setItem(k, v); } catch { /* storage unavailable */ } }
-  };
 
   // ---- dev bar: tells reviewers which integrations are not live ----
-  var FA_PREVIEW = !!C.SHOW_DEV_BAR && params.get('preview') === 'first-access';
   if (C.SHOW_DEV_BAR) {
     $('devbar').hidden = false;
     $('dev-script').innerHTML = 'Lead form: <b>' + (C.APPS_SCRIPT_URL ? 'set, not verified' : 'not connected') + '</b>';
@@ -170,7 +164,6 @@
     return valid;
   }
 
-  var lastEmail = '';
   form.addEventListener('submit', function (e) {
     e.preventDefault(); clearStatus();
     if (btn.disabled || !validate()) return;
@@ -192,14 +185,14 @@
     };
     btn.disabled = true; $('submit-label').textContent = 'Sending…';
     window.HQLeads.submit(payload).then(function (res) {
-      requestId = null; lastEmail = payload.email;
+      requestId = null;
       form.reset(); setPath(path, payload.source);
       var emailLine = res.email_sent === true ? 'We sent a confirmation to ' + payload.email + '.'
         : res.email_sent === false ? 'Your registration is saved, but we could not send the confirmation email. No need to sign up again.' : '';
       if (path === 'partner') return confirmInline('Application received.', emailLine, res.email_sent === false);
-      var canOffer = res.signup_id && (window.HQLeads.firstAccessEnabled() || FA_PREVIEW) && store.get('hq_fa_declined') !== '1';
-      if (canOffer) openOffer(res.signup_id, emailLine, res.email_sent === false);
-      else confirmInline('You’re on the list!', ('We’ll email you when Duke is ready for you. ' + emailLine).trim(), res.email_sent === false);
+      var done = function () { confirmInline('You’re on the list!', ('We’ll email you when Duke is ready for you. ' + emailLine).trim(), res.email_sent === false); };
+      if (window.HQFirstAccess.canOffer(res.signup_id)) window.HQFirstAccess.offer({ signupId: res.signup_id, email: payload.email, onFree: done });
+      else done();
     }).catch(function (err) {
       if (err.code === 'not_configured') fail('The form is not connected yet. Please write to contact@hustleqai.com.');
       else fail('Something went wrong and your registration was not saved. Your answers are still here. Try again, or write to contact@hustleqai.com.');
@@ -208,90 +201,8 @@
     });
   });
 
-  // ---- Duke First Access modal. The registration is already saved; every exit keeps it. ----
-  var modal = $('fa-modal'), dialog = modal.querySelector('.fa-dialog');
-  var offer = $('fa-offer'), faState = $('fa-state'), faStateActions = $('fa-state-actions'), payBtn = $('fa-pay');
-  var signupId = null, pendingLine = '', pendingWarn = false, polling = null, lastFocus = null, paid = false;
-  if (C.REFUND_POLICY_URL) $('fa-refund').innerHTML = ' (<a href="' + encodeURI(C.REFUND_POLICY_URL) + '">refund policy</a>)';
-
-  function openModal() {
-    lastFocus = document.activeElement;
-    modal.hidden = false; document.body.classList.add('modal-open');
-    var first = modal.querySelector('button:not([disabled]):not([hidden])#fa-pay') || modal.querySelector('#fa-stay') || $('fa-close');
-    setTimeout(function () { (offer.hidden ? $('fa-close') : first).focus(); }, 30);
-  }
-  function closeModal() {
-    modal.hidden = true; document.body.classList.remove('modal-open'); clearTimeout(polling);
-    if (lastFocus && lastFocus.focus) lastFocus.focus();
-  }
-  function openOffer(id, emailLine, warn) {
-    signupId = id; pendingLine = emailLine; pendingWarn = warn;
-    offer.hidden = false; faState.hidden = true; faStateActions.hidden = true;
-    var live = window.HQLeads.firstAccessEnabled();
-    payBtn.disabled = !live;
-    $('fa-pay-label').textContent = live ? 'Get First Access · $20' : 'Get First Access · $20 (checkout link pending)';
-    openModal();
-  }
-  function stayFree() {
-    if (!paid && !offer.hidden) store.set('hq_fa_declined', '1'); // do not prompt again
-    var wasOffer = !offer.hidden;
-    closeModal();
-    if (wasOffer || !paid) confirmInline('You’re on the list!', ('We’ll email you when Duke is ready for you. ' + pendingLine).trim(), pendingWarn);
-  }
-  function showState(msg, bad, actions) {
-    offer.hidden = true; faState.hidden = false; faState.textContent = msg; faState.classList.toggle('bad', !!bad);
-    faStateActions.hidden = !actions;
-  }
-  $('fa-stay').addEventListener('click', stayFree);
-  $('fa-close').addEventListener('click', stayFree);
-  $('fa-done').addEventListener('click', stayFree);
-  modal.addEventListener('click', function (e) { if (e.target === modal) stayFree(); });
-  document.addEventListener('keydown', function (e) {
-    if (modal.hidden) return;
-    if (e.key === 'Escape') { e.preventDefault(); stayFree(); return; }
-    if (e.key === 'Tab') { // keep focus inside the dialog
-      var f = Array.prototype.filter.call(dialog.querySelectorAll('button,a[href]'), function (el) { return !el.disabled && el.offsetParent !== null; });
-      if (!f.length) return;
-      if (e.shiftKey && document.activeElement === f[0]) { e.preventDefault(); f[f.length - 1].focus(); }
-      else if (!e.shiftKey && document.activeElement === f[f.length - 1]) { e.preventDefault(); f[0].focus(); }
-    }
-  });
-  function checkout() {
-    if (!signupId) return;
-    payBtn.disabled = true; $('fa-pay-label').textContent = 'Opening secure checkout…';
-    window.HQLeads.startCheckout(signupId, lastEmail).then(function (url) {
-      location.assign(url);
-    }).catch(function () {
-      payBtn.disabled = false; $('fa-pay-label').textContent = 'Get First Access · $20';
-      showState('We could not open checkout. Your Free Waitlist registration is saved. You can try again.', true, true);
-    });
-  }
-  payBtn.addEventListener('click', checkout);
-  $('fa-retry').addEventListener('click', function () { offer.hidden = false; faState.hidden = true; faStateActions.hidden = true; checkout(); });
-
-  function poll(n) {
-    window.HQLeads.getStatus(signupId).then(function (s) {
-      if (s === 'confirmed') { paid = true; return showState('Duke First Access confirmed. You have priority in the launch queue. We’ll email you when Duke is ready for you.'); }
-      if (s === 'failed') return showState('The payment did not go through. You are still on the Free Waitlist.', true, true);
-      if (s === 'abandoned') return showState('Checkout was closed before paying. You are still on the Free Waitlist.', true, true);
-      if (n >= C.PRIORITY_POLL_MAX) return showState('Your payment is still being confirmed. You stay on the Free Waitlist in the meantime. If anything looks wrong, write to contact@hustleqai.com.');
-      showState('Checking your payment with our payment provider…');
-      polling = setTimeout(function () { poll(n + 1); }, C.PRIORITY_POLL_MS);
-    }).catch(function () {
-      if (n >= 3) return showState('We could not check your payment right now. Your Free Waitlist registration is saved. Write to contact@hustleqai.com if you need help.', true);
-      polling = setTimeout(function () { poll(n + 1); }, C.PRIORITY_POLL_MS);
-    });
-  }
-  // Back from checkout: the URL is never proof of payment, so ask the server.
-  var returned = params.get('first_access') === 'return' || params.get('priority') === 'return';
-  if (returned && window.HQLeads.firstAccessEnabled()) {
-    var saved = window.HQLeads.recall();
-    openModal();
-    if (saved && saved.id) { signupId = saved.id; $('fa-retry').hidden = false; showState('Checking your payment with our payment provider…'); poll(0); }
-    else { $('fa-retry').hidden = true; showState('We could not find your registration in this browser. If you paid, write to contact@hustleqai.com and we will check it.', true, true); }
-  }
-  // Design review only: open the modal without a real signup
-  if (FA_PREVIEW && !returned) openOffer('preview', '', false);
+  // ---- Duke First Access (shared module): design preview without a real signup ----
+  if (window.HQFirstAccess.preview) window.HQFirstAccess.offer({ signupId: 'preview', onFree: function () { confirmInline('You’re on the list!', 'We’ll email you when Duke is ready for you.'); } });
 
   // ---- header: compact on scroll + section indicator ----
   var header = $('top-header');
