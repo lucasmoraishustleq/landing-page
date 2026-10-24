@@ -6,7 +6,7 @@
 <title>HustleQ · Never wonder what to post again</title>
 <meta name="description" content="Duke turns what you know about your business into a clear weekly content plan: what to create, why it matters, and how to make it.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="canonical" href="https://hustleq.tech/">
 <link rel="icon" href="favicon.png">
 <meta property="og:type" content="website">
@@ -17,6 +17,7 @@
 <meta property="og:image" content="https://hustleq.tech/og-image.png">
 <meta name="twitter:card" content="summary_large_image">
 <link rel="stylesheet" href="assets/css/site.css">
+<script>document.documentElement.classList.add("js")</script>
 <script src="assets/js/config.js"></script>
 </head>
 <body>
@@ -25,7 +26,7 @@
 
 <div class="devbar" id="devbar" role="note" hidden>
   <span>Preview · integrations below are not live</span>
-  <span id="dev-script"></span><span id="dev-priority"></span><span id="dev-api"></span>
+  <span id="dev-script"></span><span id="dev-priority"></span><span id="dev-fa-preview"></span><span id="dev-api"></span>
 </div>
 
 <header class="site" id="top-header">
@@ -38,35 +39,36 @@
       <a href="meet-duke/" class="demo">Meet Duke</a>
     </nav>
     <div class="hcta">
-      <a class="primary" href="#form" data-path="duke" data-source="header">Join the waitlist</a>
+      <a class="primary" href="#form" data-path="duke" data-source="header">Be among the first to try Duke</a>
       <button class="menu-btn" type="button" aria-expanded="false" aria-controls="mmenu" aria-label="Menu"><span></span><span></span></button>
     </div>
   </div>
   <nav class="mobile-menu" id="mmenu" aria-label="Mobile">
     <a href="#product">Product</a><a href="#work">The Work</a><a href="#ways-in">Ways In</a>
     <a href="meet-duke/">Meet Duke</a>
+    <a href="#form" data-path="duke" data-source="menu">Be among the first to try Duke</a>
     <a href="#form" data-path="partner" data-source="menu">Founding Partner Program</a>
   </nav>
 </header>
 
 <main id="main">
 <!-- 01 HERO -->
-<section id="hero" class="hero wrap">
+<section id="hero" class="hero wrap intro">
   <div>
-    <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Duke, by HustleQ · content planning for small businesses</span>
-    <h1>Never wonder what to post again.</h1>
-    <p class="sub">Duke turns what you know about your business into a clear weekly content plan: what to create, why it matters, and how to make it.</p>
-    <p class="rot-line"><span>A plan that fits</span>
+    <span class="eyebrow seq s1"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Duke, by HustleQ · content planning for small businesses</span>
+    <h1 class="seq-h">Never wonder what to <em class="ser">post</em> again.</h1>
+    <p class="sub seq s2">Duke turns what you know about your business into a clear weekly content plan: what to create, why it matters, and how to make it.</p>
+    <p class="rot-line seq s3"><span>A plan that fits</span>
       <span class="rotator" id="rotator" aria-hidden="true"><span class="on">this week’s promo.</span><span>a new launch.</span><span>your next event.</span><span>a slow month.</span></span>
       <span class="sr">A plan that fits this week’s promo, a new launch, your next event or a slow month.</span>
     </p>
-    <div class="btn-pair">
-      <a class="btn primary" href="#form" data-path="duke" data-source="hero"><span>Join the waitlist</span><span aria-hidden="true">→</span></a>
+    <div class="btn-pair seq s4">
+      <a class="btn primary" href="#form" data-path="duke" data-source="hero"><span>Be among the first to try Duke</span><span class="arr" aria-hidden="true">→</span></a>
       <a class="btn" href="meet-duke/"><span>Meet Duke</span><span class="price">60-second demo</span></a>
     </div>
-    <div class="btn-notes"><span>Free to join.</span><span>Answer five questions, get one post idea.</span></div>
+    <div class="btn-notes seq s4"><span>Free Waitlist. No payment needed.</span><span>Answer five questions, get one post idea.</span></div>
   </div>
-  <div>
+  <div class="seq s5">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:8px;flex-wrap:wrap">
       <span class="chip dashed">Concept preview · Duke Stream is in development</span>
       <span class="mono" style="font-size:11px;color:var(--muted)">Example business</span>
@@ -90,39 +92,76 @@
 <!-- 02 RHYTHM -->
 <section class="rhythm wrap" aria-label="Why Duke">
   <span class="mono" style="font-size:13px">02</span>
-  <div><span class="big">Being consistent was never the hard part.</span><span class="big" style="color:var(--muted)">Knowing what to say was.</span></div>
+  <div class="rv"><span class="big">Being consistent was never the <em class="ser">hard</em> part.</span><span class="big" style="color:var(--muted)">Knowing what to say was.</span></div>
 </section>
 
 <!-- 03 PRODUCT -->
-<section id="product" class="dark" aria-labelledby="product-h"><div class="product wrap">
+<section id="product" class="dark wipe" aria-labelledby="product-h"><div class="product wrap">
   <div class="split">
     <div><span class="eyebrow"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="currentColor"/></svg>03 · Product</span>
-      <h2 class="h2" id="product-h" style="margin-top:20px">From your business to this week’s content.</h2></div>
-    <p class="lead">Duke starts with what you tell it about your business, builds a content strategy, and plans each week as content you can make: format, objective, hook, creative direction and caption.</p>
+      <h2 class="h2" id="product-h" style="margin-top:20px">From your business to <em class="ser">this week’s</em> content.</h2></div>
+    <p class="lead">Duke starts with what you tell it about your business, builds a content strategy, and plans each week as content items you can actually make.</p>
   </div>
-  <div class="pipeline">
+  <div class="pipeline rv stagger">
     <div><span class="n">01</span><span class="t">Business Profile</span><span class="d">What you sell, who it is for, your goals and voice.</span></div>
     <div><span class="n">02</span><span class="t">Content Strategy</span><span class="d">Built from your goal and business context.</span></div>
     <div><span class="n">03</span><span class="t">Weekly Plan</span><span class="d">Pick a strategy, add this week’s context, choose 1–5 content items per week.</span></div>
-    <div><span class="n">04</span><span class="t">Content items</span><span class="d">Idea, hook, goal, funnel stage, creative direction, caption and production guidance.</span></div>
+    <div><span class="n">04</span><span class="t">Content items</span><span class="d">A ready-to-make brief for every post. <a href="#anatomy">See one below ↓</a></span></div>
   </div>
   <div class="plan-grid">
-    <div class="card-cream">
-      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-size:22px;font-weight:600">Weekly Plan · Week 1</span><span class="mono" style="font-size:11px;color:var(--muted)">1–5 content items per week</span></div>
-      <div class="week">
-        <div class="item"><div class="ph" style="aspect-ratio:4/5">CLIENT_PHOTO_02</div><span class="fmt">Static image · Mon</span><span class="ttl">A table set for 80, one hour early</span><span class="meta">Awareness · top of funnel</span></div>
-        <div class="item video"><div class="frames"><div class="ph">1</div><div class="ph alt">2</div><div class="ph alt2">3</div></div><span class="mono" style="font-size:11px;color:var(--muted)">CLIENT_VIDEO_01 · 3 frames</span><span class="fmt" style="display:flex;gap:6px;align-items:center"><svg class="star" style="width:9px;height:9px" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="var(--signal)"/></svg>Video · Wed · opened</span><span class="ttl" style="font-size:18px">The hour before the doors open</span><span class="meta">Awareness · top of funnel</span></div>
-        <div class="item"><div class="ph" style="aspect-ratio:9/16;width:70%">CLIENT_PHOTO_03</div><span class="fmt">Story · Fri</span><span class="ttl" style="font-size:14px">This week’s delivery menu</span><span class="meta">Conversion · bottom</span></div>
+    <div class="card-cream rv">
+      <div style="display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:baseline"><span style="font-size:22px;font-weight:600">Weekly Plan · Week 1</span><span class="mono" style="font-size:11px;color:var(--muted)">Illustrative · 1–5 content items per week</span></div>
+      <div class="carousel" role="region" aria-roledescription="carousel" aria-label="Example weekly plan">
+        <ul class="track" id="plan-track" tabindex="0" aria-label="Content items, scroll sideways">
+          <li class="slide" role="group" aria-roledescription="slide" aria-label="1 of 5: A table set for 80, one hour early">
+            <div class="ph" style="aspect-ratio:4/5">CLIENT_PHOTO_02</div>
+            <span class="fmt">Static image · Mon</span><span class="ttl">A table set for 80, one hour early</span><span class="meta">Awareness · top of funnel</span>
+          </li>
+          <li class="slide" role="group" aria-roledescription="slide" aria-label="2 of 5: Three dishes for your next event">
+            <div class="ph alt" style="aspect-ratio:4/5">CLIENT_PHOTO_04</div>
+            <span class="fmt">Static image · Tue</span><span class="ttl">Three dishes for your next event</span><span class="meta">Consideration · middle of funnel</span>
+          </li>
+          <li class="slide" role="group" aria-roledescription="slide" aria-label="3 of 5: The hour before the doors open">
+            <div class="frames"><div class="ph">1</div><div class="ph alt">2</div><div class="ph alt2">3</div></div>
+            <span class="fmt">Video · Wed</span><span class="ttl">The hour before the doors open</span><span class="meta">Awareness · top of funnel</span>
+          </li>
+          <li class="slide" role="group" aria-roledescription="slide" aria-label="4 of 5: Packing a delivery order">
+            <div class="frames"><div class="ph alt">1</div><div class="ph alt2">2</div><div class="ph">3</div></div>
+            <span class="fmt">Video · Thu</span><span class="ttl">Packing a delivery order</span><span class="meta">Consideration · middle of funnel</span>
+          </li>
+          <li class="slide" role="group" aria-roledescription="slide" aria-label="5 of 5: This week’s delivery menu">
+            <div class="ph alt2" style="aspect-ratio:4/5">CLIENT_PHOTO_03</div>
+            <span class="fmt">Story · Fri</span><span class="ttl">This week’s delivery menu</span><span class="meta">Conversion · bottom of funnel</span>
+          </li>
+        </ul>
+        <div class="car-ctrl">
+          <button type="button" class="car-btn" data-dir="-1" aria-controls="plan-track" aria-label="Previous item">←</button>
+          <span class="car-pos mono" id="plan-pos" aria-live="polite">1 / 5</span>
+          <button type="button" class="car-btn" data-dir="1" aria-controls="plan-track" aria-label="Next item">→</button>
+        </div>
       </div>
-      <div class="mono" style="border-top:1px solid var(--line);padding-top:12px;margin-top:18px;font-size:11px;color:var(--body)">Approve the week. The next week is planned when your plan has more than one. · DUKE_WEEKLY_PLAN</div>
+      <div class="mono" style="border-top:1px solid var(--line);padding-top:12px;margin-top:14px;font-size:11px;color:var(--body)">Approve the week. The next week is planned when your plan has more than one. · DUKE_WEEKLY_PLAN</div>
     </div>
-    <figure class="shot">
+    <figure class="shot rv">
       <div class="shot-bar"><span class="chip" style="border-color:var(--cream);color:var(--cream)">From the Duke beta</span><span class="mono" style="font-size:11px;color:#A496AE">Test business data</span></div>
       <img src="assets/img/duke/beta-content-item.jpg" width="987" height="705" loading="lazy" alt="Duke beta screen: a weekly plan with one feed post, one reel and one story. The open post shows its funnel stage, title, description and hook, with sections for caption, production guidance and creative direction.">
       <figcaption>An open content item in the Duke beta. Captions, production guidance and creative direction expand inside each item.</figcaption>
     </figure>
   </div>
-  <div class="notes3">
+  <section class="anatomy rv" id="anatomy" aria-labelledby="an-h">
+    <div class="an-head">
+      <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Inside a content item</span>
+      <h3 id="an-h">One post, <em class="ser">ready to make.</em></h3>
+      <p>Every item in a weekly plan arrives as a short brief. Tap through one example.</p>
+      <span class="mono" style="font-size:11px;color:#A496AE">Illustrative example · not live data</span>
+    </div>
+    <div class="an-card">
+      <div class="an-tabs" role="tablist" aria-label="Parts of a content item"><button type="button" role="tab" id="an-t-idea" aria-controls="an-p" aria-selected="true" tabindex="0" data-an="idea"><span class="mono">01</span>Idea</button><button type="button" role="tab" id="an-t-hook" aria-controls="an-p" aria-selected="false" tabindex="-1" data-an="hook"><span class="mono">02</span>Hook</button><button type="button" role="tab" id="an-t-goal" aria-controls="an-p" aria-selected="false" tabindex="-1" data-an="goal"><span class="mono">03</span>Goal</button><button type="button" role="tab" id="an-t-funnel" aria-controls="an-p" aria-selected="false" tabindex="-1" data-an="funnel"><span class="mono">04</span>Funnel stage</button><button type="button" role="tab" id="an-t-direction" aria-controls="an-p" aria-selected="false" tabindex="-1" data-an="direction"><span class="mono">05</span>Creative direction</button><button type="button" role="tab" id="an-t-caption" aria-controls="an-p" aria-selected="false" tabindex="-1" data-an="caption"><span class="mono">06</span>Caption</button><button type="button" role="tab" id="an-t-production" aria-controls="an-p" aria-selected="false" tabindex="-1" data-an="production"><span class="mono">07</span>Production guidance</button></div>
+      <div class="an-panel" id="an-p" role="tabpanel" aria-labelledby="an-t-idea" aria-live="polite"><span class="an-what">What the post is about.</span><p class="an-val">The hour before the doors open. Show the setup before an event, so people see the care before they see the party.</p></div>
+      <template data-an-tpl="idea"><span class="an-what">What the post is about.</span><p class="an-val">The hour before the doors open. Show the setup before an event, so people see the care before they see the party.</p></template><template data-an-tpl="hook"><span class="an-what">The first line or shot that stops the scroll.</span><p class="an-val">“Everything you see at an event starts here.”</p></template><template data-an-tpl="goal"><span class="an-what">What the post should achieve.</span><p class="an-val">Awareness. Reach people who do not know the business yet.</p></template><template data-an-tpl="funnel"><span class="an-what">Where it sits in the audience’s journey.</span><p class="an-val">Top of funnel: a first contact, not a sales pitch.</p></template><template data-an-tpl="direction"><span class="an-what">How it should look and feel.</span><p class="an-val">Close-ups of hands finishing a dish, natural light. A wide shot of the room being set. Cut on the doors opening.</p></template><template data-an-tpl="caption"><span class="an-what">The text that goes with the post.</span><p class="an-val">Before the first guest arrives, there are hours of work you never see. This is that hour. Planning an event? Send us a message.</p></template><template data-an-tpl="production"><span class="an-what">Practical notes to make it.</span><p class="an-val">Shoot on a phone, vertical. Three clips of 3 to 5 seconds. Film before guests arrive. Keep the real sound.</p></template>
+    </div>
+  </section>
+  <div class="notes3 rv stagger">
     <div><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><p style="margin:0"><b>The strategy comes from your profile</b><span>You pick a strategy when you create the plan, then add this week’s context. No blank page.</span></p></div>
     <div><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><p style="margin:0"><b>Each item has a job</b><span>Format, objective and funnel stage are decided before the idea.</span></p></div>
     <div><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="none" stroke="currentColor" stroke-width="1.8"/></svg><p style="margin:0"><b>Ready to make, not just ideas</b><span>Creative direction tells you what to shoot. You make it and post it.</span></p></div>
@@ -131,9 +170,9 @@
 
 <!-- 04 BRIDGE -->
 <section class="bridge" aria-label="Before Duke">
-  <div class="txt">
+  <div class="txt rv">
     <div style="display:flex;flex-direction:column;gap:24px"><span class="mono" style="font-size:13px">04</span>
-      <p class="big">Before Duke was an app, we did this by hand, every week, for real businesses.</p>
+      <p class="big">Before Duke was an app, we did this <em class="ser">by hand,</em> every week, for real businesses.</p>
       <p style="margin:0;font-size:20px;line-height:1.45;color:var(--body)">Here is some of that work.</p></div>
     <a class="mono" href="#work" style="font-size:13px;text-decoration:none">The Work ↓</a>
   </div>
@@ -144,11 +183,11 @@
 <section id="work" class="work2 wrap" aria-labelledby="work-h">
   <div style="display:flex;flex-direction:column;gap:20px">
     <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="currentColor"/></svg>05 · The Work</span>
-    <h2 class="h2" id="work-h" style="font-size:clamp(40px,4.4vw,64px)">Work we made by hand.</h2>
+    <h2 class="h2" id="work-h" style="font-size:clamp(40px,4.4vw,64px)">Work we made <em class="ser">by hand.</em></h2>
     <p class="lead" style="color:var(--body)">Content our team planned and made for real businesses, before Duke. Each project opens into its own case.</p>
     <a class="mono" href="work/" style="font-size:13px">All work →</a>
   </div>
-  <div class="work-grid" id="work-grid">
+  <div class="work-grid rv" id="work-grid">
     <noscript><a class="tile" href="work/bahia-taste/"><div class="img"><img src="assets/img/work/bahia-taste/plated-series-800.jpg" alt="Bowls of shrimp, rice and farofa with fried plantain, lined up on a steel counter"></div><div class="row1"><span class="name">Bahia Taste</span><span class="go">View case →</span></div></a></noscript>
   </div>
 </section>
@@ -157,8 +196,8 @@
 <section class="connection wrap" aria-label="From service to product">
   <span class="mono" style="font-size:13px">06</span>
   <div><p style="margin:0 0 32px;font-size:20px;line-height:1.4;color:#D8CCE2;max-width:640px">The service came first. Duke is how we package what it taught us.</p>
-    <div style="border-top:1px solid #7A4A93">
-      <div class="cline"><img src="assets/img/work/bahia-taste/plate-800.jpg" alt="" style="width:40px;height:50px;object-fit:cover"><span>We did the work by hand.</span></div>
+    <div class="rv stagger" style="border-top:1px solid #7A4A93">
+      <div class="cline"><svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true" class="star-outline"><use href="#sp" fill="none" stroke="var(--cream)" stroke-width="1.2"/></svg><span>We did the work by hand.</span></div>
       <div class="cline"><svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="var(--cream)"/></svg><span>We saw what worked.</span></div>
       <div class="cline"><svg width="36" height="36" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="var(--signal)"/></svg><span>We built Duke to plan that way.</span></div>
     </div></div>
@@ -168,11 +207,11 @@
 <section class="strategy wrap" id="content-strategy" aria-labelledby="cs-h">
   <div style="display:flex;flex-direction:column;gap:22px">
     <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>07 · Content Strategy</span>
-    <h2 class="h2" id="cs-h" style="font-size:clamp(42px,5vw,72px)">Start every plan from a strategy.</h2>
+    <h2 class="h2" id="cs-h" style="font-size:clamp(42px,5vw,72px)">Start every plan from a <em class="ser">strategy.</em></h2>
     <p class="lead" style="color:var(--body)">Give Duke a business objective and some context in your own words. It builds a Content Strategy with content pillars, objectives, audience behavior goals and content ideas. When you create a plan, you pick the strategy and add what is happening that week.</p>
-    <div class="steps"><div><span class="mono" style="font-size:12px;color:var(--muted)">01</span>You set a business objective and add free-form context.</div><div><span class="mono" style="font-size:12px;color:var(--muted)">02</span>Duke builds pillars, objectives, audience goals and content ideas.</div><div><span class="mono" style="font-size:12px;color:var(--muted)">03</span>You pick that strategy when you create a plan, and add this week’s context.</div></div>
+    <div class="steps rv stagger"><div><span class="mono" style="font-size:12px;color:var(--muted)">01</span>You set a business objective and add free-form context.</div><div><span class="mono" style="font-size:12px;color:var(--muted)">02</span>Duke builds pillars, objectives, audience goals and content ideas.</div><div><span class="mono" style="font-size:12px;color:var(--muted)">03</span>You pick that strategy when you create a plan, and add this week’s context.</div></div>
   </div>
-  <figure class="shot">
+  <figure class="shot rv">
     <div class="shot-bar"><span class="chip" style="border-color:var(--cream);color:var(--cream)">From the Duke beta</span><span class="mono" style="font-size:11px;color:#A496AE">Test business data</span></div>
     <img src="assets/img/duke/beta-content-strategy.jpg" width="665" height="600" loading="lazy" alt="Duke beta screen: a content strategy split into three pillars by funnel stage, each with a short objective and three content ideas.">
     <figcaption>A Content Strategy in the Duke beta, organized by funnel stage. The strategy shapes the plan; it is not listed inside the calendar.</figcaption>
@@ -180,38 +219,38 @@
 </section>
 
 <!-- 09 WAYS IN -->
-<section id="ways-in" class="ways wrap" aria-labelledby="ways-h">
-  <div class="split ways-head"><span class="mono" style="font-size:13px">08 · Ways In</span><h2 class="h2" id="ways-h" style="font-size:clamp(40px,5vw,72px)">Two ways to work with us.</h2></div>
-  <div class="ways-grid v3">
+<section id="ways-in" class="ways ways-dark wipe" aria-labelledby="ways-h"><div class="wrap ways-in">
+  <div class="split ways-head rv"><span class="mono" style="font-size:13px">08 · Ways In</span><h2 class="h2" id="ways-h" style="font-size:clamp(40px,5vw,72px)">Two ways to <em class="ser">work with us.</em></h2></div>
+  <div class="ways-grid v3 rv stagger">
     <article class="way" style="background:var(--surface)" aria-labelledby="way-duke">
       <span class="mono" style="font-size:12px;color:var(--body)">Duke · the app</span>
-      <span class="t" id="way-duke">Join the Duke waitlist.</span>
-      <span class="free">Free to join · access opens in groups</span>
-      <ul><li>Business Profile and Content Strategy</li><li>A weekly plan with 1–5 content items per week: static, video or stories</li><li>Hook, goal, funnel stage, creative direction, full caption and production guidance for each item</li><li>Revision suggestions in chat, which you copy into your plan</li></ul>
-      <span style="font-size:15px;color:var(--body)">You make the content and post it yourself. After you join, you can choose optional priority access.</span>
-      <a class="btn primary" href="#form" data-path="duke" data-source="ways-in"><span>Join the waitlist</span><span aria-hidden="true">→</span></a>
+      <span class="t" id="way-duke">Join the Free Waitlist.</span>
+      <span class="free">Free · access opens in groups</span>
+      <ul><li>Business Profile and Content Strategy</li><li>A weekly plan with 1–5 content items per week: static, video or stories</li><li>A ready-to-make brief for every item: hook, goal, funnel stage, creative direction, caption and production guidance</li><li>Revision suggestions in chat, which you copy into your plan</li></ul>
+      <span style="font-size:15px;line-height:1.5;color:var(--body)">You make the content and post it yourself. After you join, you can choose <b>Duke First Access</b>: a one-time, refundable $20 payment for priority in the launch queue.</span>
+      <a class="btn primary" href="#form" data-path="duke" data-source="ways-in"><span>Be among the first to try Duke</span><span class="arr" aria-hidden="true">→</span></a>
       <a class="textlink" href="meet-duke/">Not sure yet? Try the 60-second demo.</a>
     </article>
-    <article class="way secondary" style="background:var(--cream)" aria-labelledby="way-fpp">
-      <span class="mono" style="font-size:12px;color:var(--body)">Founding Partner Program · selective</span>
+    <article class="way secondary fpp-dark" aria-labelledby="way-fpp">
+      <span class="mono" style="font-size:12px">Founding Partner Program · selective</span>
       <span class="t" id="way-fpp" style="font-size:clamp(24px,2.2vw,32px)">Work closely with the HustleQ team.</span>
       <div class="p"><span style="font-size:15px">Starting at</span> <b style="font-size:clamp(36px,3.4vw,48px)">$750</b><span>/month</span></div>
-      <span style="font-size:15px;line-height:1.5;color:var(--body)">A higher-touch collaboration for a small number of businesses. Selected partners work with our team on their content and help shape how Duke develops.</span>
+      <span style="font-size:15px;line-height:1.5">A higher-touch collaboration for a small number of businesses. Selected partners work with our team on their content and help shape how Duke develops.</span>
       <ul><li>A monthly meeting to set direction</li><li>Daily communication with our team</li><li>HustleQ creates the content, you approve it, HustleQ publishes</li></ul>
-      <span style="font-size:14px;color:var(--body)">Applications are reviewed one by one. Not every business is a fit.</span>
-      <a class="btn" href="#form" data-path="partner" data-source="ways-in"><span>Apply to the Founding Partner Program</span><span aria-hidden="true">→</span></a>
+      <span style="font-size:14px">Applications are reviewed one by one. Not every business is a fit.</span>
+      <a class="btn on-dark" href="#form" data-path="partner" data-source="ways-in"><span>Apply to the Founding Partner Program</span><span class="arr" aria-hidden="true">→</span></a>
     </article>
   </div>
-</section>
+</div></section>
 
 <!-- 10 FAQ -->
 <section id="faq" class="faq wrap" aria-labelledby="faq-h">
   <div><span class="mono" style="font-size:13px">09 · FAQ</span><h2 class="h2" id="faq-h" style="font-size:clamp(36px,4vw,56px);margin-top:16px">Questions, answered.</h2></div>
   <div style="border-top:1px solid var(--ink)">
     <details open><summary>Is this another AI tool?</summary><p>Duke runs on AI. That is the engine, not the point. What you get is a plan: what to make, in what format, with what goal.</p></details>
-    <details><summary>When can I use Duke?</summary><p>Access opens in groups as Duke becomes available. Join the waitlist and we will email you when your group gets access. We are not promising a date.</p></details>
-    <details><summary>What does it cost?</summary><p>Joining the waitlist is free. Optional priority access is a one-time, refundable $20 payment. The Founding Partner Program starts at $750/month.</p></details>
-    <details><summary>What is priority access?</summary><p>After you join the free waitlist, you can choose to pay $20 once to move ahead of the free waitlist. It is refundable, and it does not guarantee a specific access date.</p></details>
+    <details><summary>When can I use Duke?</summary><p>Access opens in groups as Duke becomes available. Join the Free Waitlist and we will email you when Duke is ready for you. We are not promising a date.</p></details>
+    <details><summary>What does it cost?</summary><p>The Free Waitlist is free. Duke First Access is an optional, one-time, refundable $20 payment. The Founding Partner Program starts at $750/month.</p></details>
+    <details><summary>What is Duke First Access?</summary><p>An optional, one-time, refundable $20 payment, offered after you join the Free Waitlist. It puts you ahead of Free Waitlist members in the launch queue, even those who joined before you. It does not guarantee immediate access or an access date.</p></details>
     <details><summary>Does Duke post for me?</summary><p>No. Duke plans and writes. You make the content and post it. If you want it done with you, that is the Founding Partner Program.</p></details>
     <details><summary>How much content per week?</summary><p>You choose 1–5 content items per week.</p></details>
     <details><summary>Can I change something Duke wrote?</summary><p>Yes. Ask Duke for a revision in the chat, then copy it into your plan.</p></details>
@@ -225,12 +264,12 @@
   <div style="display:flex;flex-direction:column;gap:18px">
     <span class="mono" style="font-size:13px">10 · Join</span>
     <h2 class="h2" id="form-h" style="font-size:clamp(36px,4vw,56px)">Tell us about your business.</h2>
-    <p class="lead" style="color:var(--body)" id="form-lead">Join the Duke waitlist for free, or apply to the Founding Partner Program.</p>
+    <p class="lead" style="color:var(--body)" id="form-lead">Join the Free Waitlist, or apply to the Founding Partner Program.</p>
   </div>
   <div>
     <div class="tabs" role="tablist" aria-label="Choose a path">
-      <button type="button" role="tab" id="tab-duke" aria-controls="lead-form" aria-selected="true" data-tab="duke">Join the Duke waitlist</button>
-      <button type="button" role="tab" id="tab-partner" aria-controls="lead-form" aria-selected="false" data-tab="partner">Apply to the Founding Partner Program</button>
+      <button type="button" role="tab" id="tab-duke" aria-controls="lead-form" aria-selected="true" data-tab="duke">Free Waitlist</button>
+      <button type="button" role="tab" id="tab-partner" aria-controls="lead-form" aria-selected="false" data-tab="partner">Founding Partner Program</button>
     </div>
     <form id="lead-form" novalidate>
       <input type="hidden" name="path" value="duke">
@@ -245,30 +284,43 @@
         <div class="f" data-field="instagram"><label for="f-instagram">Instagram <small>optional</small></label><input id="f-instagram" name="instagram" placeholder="@yourbusiness or profile link" autocapitalize="off" spellcheck="false" aria-describedby="e-instagram"><span class="err" id="e-instagram">Use a handle like @yourbusiness or an instagram.com link.</span></div>
         <div class="f" data-field="website"><label for="f-website">Website <small>optional</small></label><input id="f-website" name="website" type="url" inputmode="url" placeholder="yourbusiness.com" autocapitalize="off" spellcheck="false" aria-describedby="e-website"><span class="err" id="e-website">That doesn't look like a web address.</span></div>
       </div>
-      <button class="btn" type="submit" id="submit-btn"><span id="submit-label">Join the waitlist</span><span aria-hidden="true">→</span></button>
+      <button class="btn" type="submit" id="submit-btn"><span id="submit-label">Join the Free Waitlist</span><span aria-hidden="true">→</span></button>
       <div class="status ok" id="st-ok" role="status" tabindex="-1"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="var(--signal)"/></svg><span><b id="st-ok-title">You’re on the list.</b><span class="sub" id="st-ok-sub"></span></span></div>
       <div class="status bad" id="st-bad" role="alert"><span id="st-bad-msg"></span></div>
     </form>
 
-    <div class="priority" id="priority" hidden aria-labelledby="pr-h">
-      <h3 id="pr-h">Want priority access?</h3>
-      <p>Optional. A one-time, refundable $20 payment moves you ahead of the free waitlist. It does not guarantee a specific access date.</p>
-      <ul><li>Your free spot is already saved</li><li>One-time payment, no subscription</li><li id="pr-refund">Refundable</li></ul>
-      <div id="pr-actions" style="display:flex;flex-direction:column;gap:8px">
-        <button class="btn" type="button" id="pr-pay"><span>Get priority access</span><span class="price">$20 once</span></button>
-        <button class="textlink" type="button" id="pr-skip">No thanks, keep my free spot</button>
-      </div>
-      <div class="pstate" id="pr-state" role="status" hidden></div>
-    </div>
   </div>
 </section>
 </main>
+
+<div class="fa-backdrop" id="fa-modal" hidden>
+  <div class="fa-dialog" role="dialog" aria-modal="true" aria-labelledby="fa-title" aria-describedby="fa-desc">
+    <button type="button" class="fa-close" id="fa-close" aria-label="Close and stay on the Free Waitlist">×</button>
+    <div id="fa-offer">
+      <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="var(--signal)"/></svg>Registration saved</span>
+      <h2 id="fa-title">You’re on the list!</h2>
+      <p id="fa-desc">Your Duke waitlist registration is confirmed.</p>
+      <div class="fa-box">
+        <h3>Want to get ahead of the line?</h3>
+        <p>Get <b>Duke First Access</b> for a one-time, refundable $20 payment and receive priority in the launch queue.</p>
+        <button class="btn primary" type="button" id="fa-pay"><span id="fa-pay-label">Get First Access · $20</span><span class="arr" aria-hidden="true">→</span></button>
+        <button class="btn" type="button" id="fa-stay"><span>I’ll stay on the free waitlist</span></button>
+        <p class="fa-note" id="fa-note">One-time payment, refundable<span id="fa-refund"></span>. First Access gives you a place ahead of Free Waitlist members in the launch queue. It does not guarantee immediate access or an access date.</p>
+      </div>
+    </div>
+    <div class="fa-state" id="fa-state" role="status" hidden></div>
+    <div id="fa-state-actions" class="fa-state-actions" hidden>
+      <button class="btn primary" type="button" id="fa-retry"><span>Try again</span></button>
+      <button class="btn" type="button" id="fa-done"><span>Close</span></button>
+    </div>
+  </div>
+</div>
 
 <footer class="site"><div class="wrap">
   <div class="cols">
     <div><img src="assets/img/brand/hustleq-wordmark-cream.png" alt="HustleQ" width="128" height="26"><p style="font-size:19px;line-height:1.4;color:#D8CCE2;max-width:420px">A weekly content plan for your business, with the reasoning behind every item.</p></div>
     <div><span class="mono" style="font-size:11px;color:#A496AE">Site</span><a href="#product">Product</a><a href="work/">The Work</a><a href="meet-duke/">Meet Duke</a><a href="#ways-in">Ways In</a><a href="#faq">FAQ</a></div>
-    <div><span class="mono" style="font-size:11px;color:#A496AE">Contact</span><a href="mailto:contact@hustleqai.com">contact@hustleqai.com</a><a href="https://www.instagram.com/hustleq.tech" rel="noopener">Instagram · @hustleq.tech</a><a href="#form" data-path="duke" data-source="footer" style="text-decoration:underline">Join the waitlist</a><a href="#form" data-path="partner" data-source="footer">Apply to the Founding Partner Program</a></div>
+    <div><span class="mono" style="font-size:11px;color:#A496AE">Contact</span><a href="mailto:contact@hustleqai.com">contact@hustleqai.com</a><a href="https://www.instagram.com/hustleq.tech" rel="noopener">Instagram · @hustleq.tech</a><a href="#form" data-path="duke" data-source="footer" style="text-decoration:underline">Be among the first to try Duke</a><a href="#form" data-path="partner" data-source="footer">Apply to the Founding Partner Program</a></div>
   </div>
   <div class="bot"><span>© 2026 HustleQ</span><svg width="14" height="14" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="var(--signal)"/></svg></div>
 </div></footer>

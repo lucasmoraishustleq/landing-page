@@ -73,7 +73,7 @@
           '<a class="btn" href="' + root + 'work/">All work</a>' +
           (next ? '<a class="btn" href="' + root + 'work/' + next.slug + '/">Next: ' + esc(next.name) + ' <span aria-hidden="true">→</span></a>' : '') +
           '<a class="btn" href="' + root + '">Back to HustleQ</a>' +
-          '<a class="btn primary" href="' + root + '#form">Join the waitlist <span aria-hidden="true">→</span></a></nav></section>');
+          '<a class="btn primary" href="' + root + '#form">Be among the first to try Duke <span aria-hidden="true">→</span></a></nav></section>');
         break;
     }
   });

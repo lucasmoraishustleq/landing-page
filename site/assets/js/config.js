@@ -9,12 +9,16 @@ window.HQ_CONFIG = Object.assign({
   // Live endpoint carried over from v3 (google-apps-script/waitlist.gs). Redeploy the updated script to store the new fields.
   APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbylBUhaYEmXIy9sGUiTpcYLCirgZXzyxw-ozdmekynOzgv_8Q3RC74XcINlLfQMCim2Rw/exec',
 
-  // Optional priority access ($20, one-time, refundable). Two HustleQ server endpoints.
-  // CHECKOUT: POST { signup_id } -> { checkout_url }   (server creates the Stripe Checkout Session)
-  // STATUS:   GET  ?signup_id=... -> { status: "none"|"pending"|"confirmed"|"failed"|"abandoned" }
-  //           status must come from a verified Stripe webhook, never from the browser redirect.
-  PRIORITY_CHECKOUT_URL: '',
-  PRIORITY_STATUS_URL: '',
+  // Duke First Access: optional, one-time, refundable $20 payment offered after a saved Free Waitlist signup.
+  // CHECKOUT_URL: the Stripe Payment Link (pending). The page appends client_reference_id=<signup_id>
+  //   so the verified Stripe webhook can tie the payment to the saved registration.
+  // SESSION_URL: optional alternative, a HustleQ server endpoint: POST { signup_id, return_url } -> { checkout_url }.
+  // STATUS_URL:  GET ?signup_id=... -> { status: "none"|"pending"|"confirmed"|"failed"|"abandoned" }.
+  //   Status comes only from the server (verified Stripe event), never from the browser redirect.
+  //   With the v3 Apps Script deployed this is: APPS_SCRIPT_URL + '?action=first_access_status'
+  FIRST_ACCESS_CHECKOUT_URL: '',
+  FIRST_ACCESS_SESSION_URL: '',
+  FIRST_ACCESS_STATUS_URL: '',
   REFUND_POLICY_URL: '',
 
   // Meet Duke demo. HustleQ's own API (the browser never calls Apify directly).

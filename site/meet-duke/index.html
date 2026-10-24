@@ -89,7 +89,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
 <a class="skip" href="#chat">Skip to the demo</a>
 <header class="site"><div class="in wrap">
   <a class="logo" href="../"><img src="../assets/img/brand/hustleq-wordmark-ink.png" alt="HustleQ" width="108" height="22"></a>
-  <div class="hcta"><a href="../" style="border-color:transparent">← Back</a><a class="primary" href="../#form" data-source="meet-duke-header">Join the waitlist</a></div>
+  <div class="hcta"><a href="../" style="border-color:transparent">← Back</a><a class="primary" href="../#form" data-source="meet-duke-header">Be among the first to try Duke</a></div>
 </div></header>
 
 <main class="demo-wrap wrap">
@@ -101,7 +101,7 @@ body{min-height:100vh;display:flex;flex-direction:column}
       <li><span>01</span><span>Five questions about your business and your month</span></li>
       <li><span>02</span><span>Your Instagram handle</span></li>
       <li><span>03</span><span>One post idea: the trend, your version, three reasons</span></li>
-      <li><span>04</span><span>Optional: join the waitlist</span></li>
+      <li><span>04</span><span>Optional: join the Free Waitlist</span></li>
     </ol>
     <div class="preview-note" id="preview-note" hidden>Preview mode: the profile check and live trend data are not connected yet. Ideas are written from sample templates and your handle is not looked up.</div>
   </section>
@@ -260,7 +260,7 @@ async function run(){
 
   stepEl.textContent='Almost there';
   await duke(LIVE?"Last thing. What's your Instagram handle? I'll take a quick look so this actually fits you."
-                 :"Last thing. What's your Instagram handle? In this preview I won't look it up yet, but it's saved if you join the waitlist.");
+                 :"Last thing. What's your Instagram handle? In this preview I won't look it up yet, but it's saved if you join the Free Waitlist.");
   let lookup=null;
   while(true){
     D.handle=await askText('@yourbusiness',{label:'Instagram handle',
@@ -343,7 +343,7 @@ async function result(N,out){
 }
 
 async function waitlist(){
-  await duke("Want more ideas like this? Join the waitlist. Access opens in groups, and I'll email you when yours does.",900);
+  await duke("Want more ideas like this? Join the Free Waitlist. Access opens in groups, and I'll email you when Duke is ready for you.",900);
   stepEl.textContent='Waitlist';
   let saved=false;
   while(true){
@@ -369,7 +369,7 @@ async function waitlist(){
       await duke("I couldn't save that just now, so you're not on the list yet. Want to try again?");
     }
   }
-  comp.innerHTML=`<div class="final">${saved?'<a class="send" href="../">Back to HustleQ</a>':'<a class="send" href="../#form">Go to the waitlist page</a>'}<button class="send ghost" type="button" id="again">Start over for the next person</button></div>`;
+  comp.innerHTML=`<div class="final">${saved?'<a class="send" href="../">Back to HustleQ</a>':'<a class="send" href="../#form">Go to the Free Waitlist</a>'}<button class="send ghost" type="button" id="again">Start over for the next person</button></div>`;
   document.getElementById('again').onclick=reset;
   requestAnimationFrame(down);
 }

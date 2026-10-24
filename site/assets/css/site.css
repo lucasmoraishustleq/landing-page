@@ -362,3 +362,114 @@ figcaption{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--mu
   .cs-closing{margin-top:64px}
   .cs-nav .btn{width:100%}
 }
+
+/* ===== refinement pass: typography, motion, carousel, anatomy, ways, modal ===== */
+/* Expressive accent: Instrument Serif italic, used only on selected words in headings */
+.ser{font-family:'Instrument Serif',Georgia,'Times New Roman',serif;font-style:italic;font-weight:400;letter-spacing:-.025em;font-size:1.04em;line-height:.9}
+.eyebrow{letter-spacing:.01em}
+.eyebrow::after{content:"";display:inline-block;width:28px;height:1px;background:currentColor;opacity:.45;margin-left:4px}
+.btn .arr{display:inline-block;transition:transform .25s ease}
+.btn:hover .arr,.btn:focus-visible .arr{transform:translateX(4px)}
+.btn.primary:hover{background:#EF6A22;border-color:#EF6A22}
+.btn:not(.primary):hover{background:rgba(42,10,61,.06)}
+.btn-pair{grid-template-columns:repeat(2,minmax(0,330px))}
+@media (max-width:600px){.btn-pair{grid-template-columns:1fr}.hcta a.primary{display:none}}
+
+/* Hero entrance: headline first, then copy, then actions, then the concept panel. JS-only, so content shows without JS. */
+@keyframes seqIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+@keyframes hIn{from{clip-path:inset(0 0 100% 0);transform:translateY(28px)}to{clip-path:inset(-10% -5% -20% -5%);transform:none}}
+.js .intro .seq{opacity:0;animation:seqIn .7s cubic-bezier(.2,.7,.2,1) forwards}
+.js .intro .seq-h{animation:hIn .9s cubic-bezier(.2,.7,.2,1) .12s both}
+.js .intro .s1{animation-delay:.02s}.js .intro .s2{animation-delay:.5s}.js .intro .s3{animation-delay:.62s}.js .intro .s4{animation-delay:.74s}.js .intro .s5{animation-delay:.9s}
+
+/* Scroll reveals */
+.js .rv:not(.stagger){opacity:0;transform:translateY(18px);transition:opacity .7s ease,transform .7s cubic-bezier(.2,.7,.2,1)}
+.js .rv.stagger > *{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s cubic-bezier(.2,.7,.2,1);transition-delay:calc(var(--i,0) * 70ms)}
+.js .rv.in:not(.stagger),.js .rv.stagger.in > *{opacity:1;transform:none}
+/* Color sections open with a short wipe */
+.js .wipe{clip-path:inset(3% 2% 0 2%);transition:clip-path .9s cubic-bezier(.2,.7,.2,1)}
+.js .wipe.in{clip-path:inset(0)}
+@media (prefers-reduced-motion:reduce){
+  .js .intro .seq,.js .intro .seq-h{animation:none;opacity:1;transform:none;clip-path:none}
+  .js .rv:not(.stagger),.js .rv.stagger > *{opacity:1;transform:none;transition:none}
+  .js .wipe{clip-path:none;transition:none}
+  .btn .arr,.an-panel,.fa-dialog{transition:none;animation:none !important}
+}
+
+/* Section 06: outlined star */
+.star-outline{flex:none}
+
+/* Weekly plan carousel */
+.carousel{margin-top:18px}
+.track{display:flex;gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;list-style:none;margin:0;padding:2px 2px 10px;scrollbar-width:thin;overscroll-behavior-x:contain;scroll-behavior:smooth}
+.track:focus-visible{outline:2px solid var(--signal);outline-offset:2px}
+.slide{flex:0 0 calc((100% - 28px) / 2.4);scroll-snap-align:start;display:flex;flex-direction:column;gap:8px;min-width:0}
+.slide > .ph,.slide > .frames{aspect-ratio:4/5;width:100%}
+.slide .frames{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;border:1px solid var(--ink);padding:4px;background:var(--surface)}
+.slide .frames .ph{aspect-ratio:auto;height:100%;padding:4px;font-size:11px}
+.slide .fmt{font-family:var(--mono);font-size:11px}
+.slide .ttl{font-size:17px;line-height:1.25;font-weight:600}
+.slide .meta{font-size:12px;color:var(--body)}
+.car-ctrl{display:flex;gap:10px;align-items:center;justify-content:flex-end;margin-top:8px}
+.car-btn{width:44px;height:44px;border:1px solid var(--ink);background:transparent;color:var(--ink);font-size:18px;cursor:pointer;border-radius:var(--r)}
+.car-btn:hover{background:var(--ink);color:var(--cream)}
+.car-btn:disabled{opacity:.3;cursor:default;background:transparent;color:var(--ink)}
+.car-pos{font-size:12px;min-width:44px;text-align:center}
+@media (max-width:600px){.slide{flex-basis:82%}}
+@media (prefers-reduced-motion:reduce){.track{scroll-behavior:auto}}
+
+/* Content item anatomy */
+.anatomy{display:grid;grid-template-columns:4fr 8fr;gap:48px;border-top:1px solid var(--dark-line);padding-top:48px}
+.anatomy > *{min-width:0}
+.an-head{display:flex;flex-direction:column;gap:12px}
+.an-head h3{margin:4px 0 0;font-size:clamp(32px,3.6vw,52px);line-height:1;letter-spacing:-.04em;font-weight:500}
+.an-head p{margin:0;font-size:16px;line-height:1.5;color:var(--on-dark)}
+.an-card{background:var(--cream);color:var(--ink);display:grid;grid-template-columns:250px 1fr;min-height:360px;border:1px solid var(--dark-line)}
+.an-tabs{display:flex;flex-direction:column;border-right:1px solid var(--line)}
+.an-tabs button{appearance:none;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);text-align:left;cursor:pointer;display:flex;gap:12px;align-items:center;padding:12px 18px;font:500 15px var(--sans);min-height:44px}
+.an-tabs button .mono{font-size:11px;color:var(--muted)}
+.an-tabs button:hover{background:rgba(42,10,61,.06)}
+.an-tabs button[aria-selected="true"]{background:var(--ink);color:var(--cream)}
+.an-tabs button[aria-selected="true"] .mono{color:var(--signal)}
+.an-tabs button:focus-visible{outline:2px solid var(--signal);outline-offset:-2px}
+.an-panel{padding:clamp(22px,3vw,40px);display:flex;flex-direction:column;gap:14px;justify-content:center}
+.an-panel.swap{animation:seqIn .35s ease both}
+.an-what{font-family:var(--mono);font-size:12px;color:var(--signal-ink)}
+.an-val{margin:0;font-size:clamp(20px,2vw,28px);line-height:1.3;letter-spacing:-.015em}
+@media (max-width:900px){
+  .anatomy{grid-template-columns:1fr;gap:24px}
+  .an-card{grid-template-columns:1fr;min-height:0}
+  .an-tabs{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .an-tabs button{flex:none;border-bottom:0;border-right:1px solid var(--line);white-space:nowrap}
+  .an-panel{min-height:220px;justify-content:flex-start}
+}
+
+/* Section 08 · Ways In on deep purple */
+.ways.ways-dark{display:block;background:var(--ink);color:var(--cream);border-top:0}
+.ways-in{display:flex;flex-direction:column;gap:48px}
+.ways-dark .h2{color:#fff}
+.ways-dark .ways-head .mono{color:#D8CCE2}
+.way.fpp-dark{background:transparent;border-color:rgba(244,238,227,.55);color:#fff}
+.fpp-dark ul{border-top-color:var(--dark-line)}
+.fpp-dark li{border-bottom-color:var(--dark-line);color:var(--cream)}
+.btn.on-dark{border-color:var(--cream);color:var(--cream)}
+.btn.on-dark:hover{background:var(--cream);color:var(--ink)}
+
+/* Duke First Access modal */
+body.modal-open{overflow:hidden}
+.fa-backdrop{position:fixed;inset:0;background:rgba(30,7,48,.62);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
+.fa-dialog{background:var(--cream);color:var(--ink);border:1px solid var(--ink);border-radius:var(--r);width:100%;max-width:520px;max-height:calc(100vh - 32px);overflow:auto;padding:clamp(22px,4vw,36px);position:relative;animation:seqIn .35s ease both}
+.fa-close{position:absolute;top:8px;right:8px;width:44px;height:44px;border:0;background:transparent;color:var(--ink);font-size:28px;line-height:1;cursor:pointer}
+.fa-dialog h2{margin:12px 0 6px;font-size:clamp(30px,4vw,40px);line-height:1;letter-spacing:-.035em;font-weight:500}
+.fa-dialog > div > p{margin:0;font-size:16px;color:var(--body)}
+.fa-box{margin-top:22px;border-top:1px solid var(--ink);padding-top:20px;display:flex;flex-direction:column;gap:12px}
+.fa-box h3{margin:0;font-size:22px;letter-spacing:-.015em;font-weight:600}
+.fa-box p{margin:0;font-size:15px;line-height:1.5;color:var(--body)}
+.fa-box .btn{min-height:54px;font-size:16px}
+.fa-note{font-size:13px !important}
+.fa-state{margin-top:8px;padding:14px 16px;border:1px solid var(--ink);font-size:15px;line-height:1.5}
+.fa-state.bad{border-color:var(--signal-ink);color:var(--signal-ink)}
+.fa-state-actions{display:flex;flex-direction:column;gap:8px;margin-top:12px}
+.ways-dark .way:not(.fpp-dark){color:var(--ink)}
+.ways-dark .way:not(.fpp-dark) .textlink{color:var(--ink)}
+@media (max-width:600px){.eyebrow::after{display:none}}
