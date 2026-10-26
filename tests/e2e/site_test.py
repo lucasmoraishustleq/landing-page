@@ -30,7 +30,7 @@ async def layout(b):
             rec(f'[{path or "/"}] inputs >=16px @{w}', small==0, small)
             tiny=await p.evaluate('''()=>{const s=[];document.querySelectorAll('main *').forEach(e=>{if(e.children.length===0&&e.offsetParent&&e.textContent.trim().length>20&&parseFloat(getComputedStyle(e).fontSize)<11)s.push(e.textContent.trim().slice(0,30))});return s.slice(0,4)}''')
             rec(f'[{path or "/"}] no long text under 11px @{w}', not tiny, tiny)
-            imgs=await p.evaluate('''async()=>{for(let y=0;y<document.body.scrollHeight;y+=500){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,60))};await Promise.all([...document.images].map(i=>i.complete?0:new Promise(r=>{i.addEventListener('load',r);i.addEventListener('error',r);setTimeout(r,6000)})));window.scrollTo(0,0);return [...document.images].filter(i=>!i.complete||i.naturalWidth===0).map(i=>i.src)}''')
+            imgs=await p.evaluate('''async()=>{document.querySelectorAll('.track').forEach(t=>{t.style.scrollBehavior='auto';t.scrollLeft=t.scrollWidth});for(let y=0;y<document.body.scrollHeight;y+=500){window.scrollTo(0,y);await new Promise(r=>setTimeout(r,60))};await Promise.all([...document.images].map(i=>i.complete?0:new Promise(r=>{i.addEventListener('load',r);i.addEventListener('error',r);setTimeout(r,6000)})));window.scrollTo(0,0);document.querySelectorAll('.track').forEach(t=>t.scrollLeft=0);return [...document.images].filter(i=>!i.complete||i.naturalWidth===0).map(i=>i.src)}''')
             rec(f'[{path or "/"}] all images load @{w}', not imgs, imgs)
             if w in (1440,390): await p.screenshot(path=f'{SHOTS}{(path or "home").strip("/").replace("/","_") or "home"}_{w}.png', full_page=True)
             await p.context.close()
@@ -311,6 +311,64 @@ async def ux(b):
     rec('reduced motion: everything visible immediately, no entrance animation', allv)
     await p.context.close()
 
+async def content(b):
+    # CTA wording and accent color
+    bad=[]
+    for path in ['', 'meet-duke/', 'work/', 'work/bahia-taste/']:
+        p=await newpage(b); await p.goto(BASE+path); await p.wait_for_timeout(200)
+        if 'among the first' in (await p.content()): bad.append(path or '/')
+        await p.context.close()
+    p=await newpage(b); await p.goto(BASE); await p.wait_for_timeout(2600)
+    n=await p.evaluate('[...document.querySelectorAll("a")].filter(a=>a.textContent.trim().startsWith("Be the first to try Duke")).length')
+    rec('CTA reads "Be the first to try Duke" everywhere, "among" removed', not bad and n>=4, (bad,n))
+    col=await p.evaluate('getComputedStyle(document.querySelector("#hero h1 em")).color')
+    rec('hero "post" uses the signal orange', col=='rgb(232, 89, 12)', col)
+    q=await newpage(b); await q.goto(BASE+'meet-duke/'); c2=await q.evaluate('[document.querySelector("#md-h .acc").textContent, getComputedStyle(document.querySelector("#md-h .acc")).color]'); await q.context.close()
+    rec('demo title "Duke" uses the same orange', c2==['Duke','rgb(232, 89, 12)'], c2)
+    # FAQ
+    faq=await p.evaluate('({n:document.querySelectorAll("#faq details").length,g:[...document.querySelectorAll("#faq .faq-g")].map(e=>e.textContent),t:document.getElementById("faq").textContent,open:document.querySelectorAll("#faq details[open]").length})')
+    rec('FAQ: 15 questions in 4 groups, no draft brackets left', faq['n']==15 and faq['g']==['Getting to know Duke','How Duke works','Access and pricing','Done for you'] and '[' not in faq['t'], faq['g'])
+    t=faq['t']
+    rec('FAQ: states no auto-posting, refund terms, $20 separate, no date promise', 'Duke plans your content and tells you how to make each post. You publish it.' in t and 'any time before you get access' in t and 'doesn’t count toward a subscription' in t and 'doesn’t guarantee a specific access date' in t and 'not promising a fixed date' in t)
+    rec('FAQ: FPP selective, $750, no acceptance promise', 'starts at $750/month' in t and 'reviewed one by one' in t)
+    # real media replaces the placeholders
+    ph=await p.evaluate('document.querySelectorAll("#hero .ph, #plan-track .ph").length')
+    names=await p.evaluate('[...document.querySelectorAll("#plan-track img, #plan-track video, #hero .rec img")].map(e=>(e.currentSrc||e.getAttribute("src")||e.querySelector("source").getAttribute("src")).split("/").pop())')
+    rec('weekly plan and hero use the provided Bahia Taste media, no placeholders left', ph==0 and names==['event-spread-thumb.jpg','table-set-800.jpg','event-bites-800.jpg','event-spread.mp4','meal-prep.mp4','menu-tradicional-540.jpg','menu-healthy-540.jpg'], (ph,names))
+    alts=await p.evaluate('[...document.querySelectorAll("#plan-track img, #hero .rec img, .shot img")].filter(i=>!i.alt).length + [...document.querySelectorAll("#plan-track video")].filter(v=>!v.getAttribute("aria-label")).length')
+    rec('new images have alt text, videos have labels', alts==0, alts)
+    shots=await p.evaluate('[...document.querySelectorAll(".shot")].map(f=>[f.querySelector("img").getAttribute("src").split("/").pop(), f.querySelector(".shot-bar .mono").textContent])')
+    rec('Duke beta screenshots are the Bahia Taste account and labeled as such', [x[0] for x in shots][:2]==['beta-content-plan-bahia.jpg','beta-strategy-bahia.jpg'] or set(x[0] for x in shots)>={'beta-content-plan-bahia.jpg','beta-strategy-bahia.jpg'} and all('Bahia Taste' in x[1] for x in shots if 'bahia' in x[0]), shots)
+    # video: plays when in view, button pauses and resumes
+    await p.evaluate('document.getElementById("product").scrollIntoView()'); await p.wait_for_timeout(300)
+    await p.evaluate('(()=>{const t=document.getElementById("plan-track");t.style.scrollBehavior="auto";t.scrollLeft=t.querySelectorAll(".slide")[2].offsetLeft-t.offsetLeft;document.querySelectorAll(".vid")[0].scrollIntoView({block:"center"})})()')
+    await p.wait_for_timeout(1500)
+    playing=await p.evaluate('!document.querySelectorAll(".vid video")[0].paused')
+    await p.click('.vid >> nth=0 >> .vid-btn'); await p.wait_for_timeout(200)
+    paused=await p.evaluate('document.querySelectorAll(".vid video")[0].paused'); lab=await p.inner_text('.vid >> nth=0 >> .vid-btn')
+    rec('weekly plan video plays muted when visible and can be paused', playing and paused and lab=='Play' and await p.evaluate('document.querySelectorAll(".vid video")[0].muted'), (playing,paused,lab))
+    await p.locator('.carousel').screenshot(path=SHOTS+'carousel_media_1440.png')
+    await p.context.close()
+    p=await newpage(b,390,844,reduce=True); await p.goto(BASE); await p.evaluate('document.querySelectorAll(".vid")[0].scrollIntoView({block:"center"})'); await p.wait_for_timeout(1200)
+    rec('reduced motion: videos do not autoplay', await p.evaluate('[...document.querySelectorAll(".vid video")].every(v=>v.paused)'))
+    await p.context.close()
+    p=await newpage(b,390,844); await p.goto(BASE+'#faq-refund'); await p.wait_for_timeout(400)
+    rec('refund link opens the refund answer', await p.evaluate('document.getElementById("faq-refund").open'))
+    await p.goto(BASE+'?preview=first-access#form'); await p.wait_for_timeout(400)
+    rec('First Access offer links to the refund terms', await p.evaluate('(document.querySelector("#fa-refund a")||{}).getAttribute&&document.querySelector("#fa-refund a").getAttribute("href")')=='/#faq-refund')
+    await p.context.close()
+    # utm attribution reaches the payload
+    cfg={'APPS_SCRIPT_URL':MOCK+'/exec','TIMEOUT_MS':2500}
+    p=await newpage(b,390,844,cfg); sent=[]
+    async def route(r): sent.append(json.loads(r.request.post_data)); await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'signup_id':'s_u'}))
+    await p.route(MOCK+'/exec', route)
+    await p.goto(BASE+'?utm_source=linkedin&utm_medium=social&utm_campaign=fpp2'); await p.wait_for_timeout(200)
+    await p.click('a[data-source="hero"]'); await p.wait_for_timeout(300)
+    await fill(p); await p.click('#submit-btn'); await p.wait_for_timeout(600)
+    pl=sent[0] if sent else {}
+    rec('utm source, medium and campaign are sent with the registration', pl.get('utm_source')=='linkedin' and pl.get('utm_medium')=='social' and pl.get('utm_campaign')=='fpp2' and pl.get('source')=='hero', pl)
+    await p.context.close()
+
 async def demo(b):
     async def text(p,v,timeout=8000):
         await p.wait_for_selector('#in', timeout=timeout); await p.fill('#in', v); await p.click('#go')
@@ -472,7 +530,7 @@ async def main():
     try:
         async with async_playwright() as pw:
             b=await pw.chromium.launch()
-            await layout(b); await links(b); await nav(b); await forms(b); await priority(b); await ux(b); await demo(b); await case(b)
+            await layout(b); await links(b); await nav(b); await forms(b); await priority(b); await ux(b); await content(b); await demo(b); await case(b)
             await b.close()
     finally: srv.terminate()
     real=[e for e in ERRS]

@@ -21,6 +21,7 @@ npm run dev          # serve site/ at http://localhost:5173
 npm run build        # copy site/ to dist/ and check every route exists
 npm run preview      # build, then serve dist/ at http://localhost:4173
 npm run lint         # eslint on site JS, scripts and the Apps Script
+npm run test:gs      # Apps Script logic against an in-memory mock
 npm run test:e2e     # build, then browser tests (needs Python 3 + Playwright with Chromium)
 npm test             # lint + e2e
 ```
@@ -50,7 +51,7 @@ Everything external is configured in `assets/js/config.js`. Empty value = not co
 
 The browser sends `POST` with `Content-Type: text/plain` and a JSON body (avoids a CORS preflight, which Apps Script cannot answer).
 
-Payload v3:
+Payload v4:
 
 | Field | Notes |
 |---|---|
@@ -65,7 +66,8 @@ Payload v3:
 | `source` | which CTA: `hero`, `header`, `ways-in`, `faq`, `footer`, `menu`, `link-waitlist`, `link-fpp`, `meet-duke` |
 | `page_version` | `landing-v3` |
 | `request_id` | one id per submit attempt, reused on retry so the script does not save the same registration twice |
-| `segment`, `demo` | only from `/meet-duke/`: `tech founder` or `small business`, and `{offer, month, niche_custom, instagram_confirmed, profile_simulated}` |
+| `utm_source`, `utm_medium`, `utm_campaign` | from the landing URL, kept for the visit, empty when absent |
+| `segment`, `demo` | only from `/meet-duke/`: `tech founder` or `small business`, and `{niche, offer, month, niche_custom, instagram_confirmed, profile_simulated}` |
 
 Required response (JSON):
 
@@ -77,9 +79,9 @@ Required response (JSON):
 - `signup_id` is needed to offer priority access. Without it, no offer is shown.
 - `email_sent: false` = the page says the signup is saved but the email failed.
 
-`APPS_SCRIPT_URL` points to the live web app carried over from the previous v3. That deployment still runs the old script: it stores only email, business, marketing and hardest in the `Waitlist` tab, returns `{ ok: true }` without `signup_id`, and drops `path`, `name`, `business_name`, `instagram`, `website` and `source`. Until it is redeployed, Founding Partner applications cannot be told apart from waitlist signups and the priority offer never appears.
+`APPS_SCRIPT_URL` still points to the old live web app: it stores only email, business, marketing and hardest, and returns no `signup_id`, so FPP applications cannot be told apart and the First Access offer never appears.
 
-`google-apps-script/waitlist.gs` contains the v3 script (not deployed yet): writes by column name into a new `leads` tab (the old `Waitlist` tab is never touched), generates `signup_id`, optionally sends the confirmation email with MailApp (`SEND_CONFIRMATION`), reports `email_sent`, and escapes values that would run as sheet formulas. Redeploy it as a new version of the same deployment so the URL does not change.
+`google-apps-script/registrations.gs` is the v4 script (not deployed yet), for a new Google Sheet "HustleQ · Site Registrations" with the tabs `Waitlist` and `FPP Applications`. It validates on the server, writes by column name, dedupes retries by `request_id`, marks repeat emails with `duplicate_of` without overwriting, stores UTC ISO timestamps, neutralizes formula-like values, optionally emails a confirmation (`SEND_CONFIRMATION` Script Property) and can import the old tab once (`importLegacyWaitlist`). Full setup, schemas and field mapping: [`docs/spreadsheet-setup.md`](docs/spreadsheet-setup.md). Logic tested with mocks by `npm run test:gs`.
 
 ### 2. Duke First Access ($20, one-time, refundable) · `FIRST_ACCESS_CHECKOUT_URL`, `FIRST_ACCESS_STATUS_URL`, `REFUND_POLICY_URL`
 
@@ -94,10 +96,10 @@ Flow on the landing page:
 
 While the Stripe link is missing the modal is not shown to visitors. For design review: `/?preview=first-access#form` (only while `SHOW_DEV_BAR` is true; the checkout button is disabled).
 
-Server side (in `google-apps-script/waitlist.gs`, not deployed yet):
+Server side (in `google-apps-script/registrations.gs`, not deployed yet):
 - `GET ?action=first_access_status&signup_id=...` is the status endpoint. Set `FIRST_ACCESS_STATUS_URL` to `APPS_SCRIPT_URL + '?action=first_access_status'` after deploying.
-- `POST ?action=stripe&token=...` is the Stripe webhook. Apps Script cannot read the Stripe-Signature header, so it requires a secret token in the URL and re-fetches every event from the Stripe API with the secret key (Script Properties) before changing `priority_status`. A confirmed payment is never downgraded.
-- `buildLaunchQueue()` writes the `launch_queue` tab: confirmed First Access by payment time, then the Free Waitlist by signup time. Priority comes only from these server-written fields.
+- `POST ?action=stripe&token=...` is the Stripe webhook. Apps Script cannot read the Stripe-Signature header, so it requires a secret token in the URL and re-fetches every event from the Stripe API with the secret key (Script Properties) before changing `payment_status` and `access_type` in the Waitlist tab. A confirmed payment is never downgraded.
+- `buildLaunchQueue()` writes the `launch_queue` tab: confirmed First Access by payment time, then the Free Waitlist by signup time, one place per email. Priority comes only from these server-written fields.
 - Stripe Payment Link settings: after payment, redirect to `https://hustleq.tech/?first_access=return#form`.
 
 `REFUND_POLICY_URL`: the offer says "refundable". Add the policy page and its URL before launch.
@@ -127,8 +129,8 @@ Device framing: smartphone frame up to 900px, desktop app window (title bar, pro
 
 Tested in a browser by `npm run test:e2e` (all external services mocked, the real Apps Script is blocked during tests): navigation and anchors, `#waitlist` and `#fpp` aliases, both form paths, validation, sending/success/error states, email-failure state, priority offer and every payment state, demo flow in preview and live mode including profile confirmation, portfolio from data, case page (direct URL, headings, alt text, noindex, placeholders hidden in production), 404, responsive layout at 1440/1024/390/375/360, keyboard focus, reduced motion.
 
-Not verified against real services: Apps Script (old version live), priority checkout and webhook (not built), confirmation email, Duke demo API.
+Not verified against real services: the v4 Apps Script and Google Sheet (no real write yet), Stripe checkout and webhook (link pending), confirmation email, Duke demo API.
 
-Placeholders: the hero concept panel (DUKE_EXAMPLE_01, Duke Stream is in development), the illustrative weekly-plan card (DUKE_WEEKLY_PLAN, CLIENT_PHOTO_01–03, CLIENT_VIDEO_01), and the Bahia Taste case blocks CASE_STRATEGY, CASE_POST_01–06 and CASE_METRICS_PENDING. The Product and Content Strategy sections use real Duke beta screenshots with test business data.
+Placeholders and images: see [`docs/image-inventory.md`](docs/image-inventory.md). The weekly plan, hero thumbnail and Duke beta screenshots now use real Bahia Taste material; open slots are DUKE_EXAMPLE_01 (concept text) and the Bahia Taste case blocks CASE_STRATEGY, CASE_POST_01–06 and CASE_METRICS_PENDING.
 
 Before launch: set `SHOW_DEV_BAR: false` in `assets/js/config.js`, and remove `noindex` from the case page once it is approved.
