@@ -236,6 +236,32 @@
     }
   });
 
+  // ---- full-screen viewer: weekly plan (one gallery) and Duke beta screenshots ----
+  if (window.HQLightbox) {
+    var plan = [], hosts = [];
+    document.querySelectorAll('#plan-track .slide').forEach(function (sl) {
+      var host = sl.querySelector('.vid, .stories, img.media');
+      if (!host) return;
+      var start = plan.length;
+      if (host.classList.contains('vid')) {
+        var v = host.querySelector('video');
+        plan.push({ type: 'video', src: v.getAttribute('data-full') || v.querySelector('source').getAttribute('src'), poster: v.getAttribute('poster'), alt: v.getAttribute('aria-label') });
+      } else if (host.classList.contains('stories')) {
+        host.querySelectorAll('img').forEach(function (im) { plan.push({ type: 'img', src: im.getAttribute('src'), alt: im.alt }); });
+      } else {
+        plan.push({ type: 'img', src: host.getAttribute('src'), alt: host.alt });
+      }
+      if (host.tagName === 'IMG') { var w = document.createElement('div'); w.className = 'media-wrap'; host.parentNode.insertBefore(w, host); w.appendChild(host); host = w; }
+      hosts.push([host, start]);
+    });
+    hosts.forEach(function (h) { window.HQLightbox.attach(h[0], plan, h[1]); });
+    document.querySelectorAll('.shot').forEach(function (fig) {
+      var im = fig.querySelector('img'); if (!im) return;
+      var w = document.createElement('div'); w.className = 'shot-media'; im.parentNode.insertBefore(w, im); w.appendChild(im);
+      window.HQLightbox.attach(w, [{ type: 'img', src: im.getAttribute('src'), alt: im.alt }], 0);
+    });
+  }
+
   // ---- mobile menu ----
   var mb = document.querySelector('.menu-btn'), mm = $('mmenu');
   mb.addEventListener('click', function () { var o = mm.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); });

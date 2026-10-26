@@ -22,8 +22,18 @@
     return '<img src="' + base + '-800.jpg" srcset="' + base + '-800.jpg 800w, ' + base + '-1400.jpg 1400w" sizes="' + (opts.sizes || '100vw') + '" alt="' + esc(b.alt) + '" ' + lazy +
       (b.position ? ' style="object-position:' + esc(b.position) + '"' : '') + '>';
   }
+  // Full-screen viewer: each frame registers the items it opens (see lightbox.js)
+  var LB = [];
+  function full(b) { var base = root + 'assets/img/' + b.img; return { type: 'img', src: base + '-1400.jpg', srcset: base + '-800.jpg 800w, ' + base + '-1400.jpg 1400w', alt: b.alt }; }
+  function lbItems(b) {
+    if (!b.slides) return [full(b)];
+    return b.slides.map(function (s) {
+      return s.video ? { type: 'video', src: root + 'assets/video/' + s.video + '.mp4', poster: root + 'assets/img/' + s.img + '-800.jpg', alt: s.alt } : full(s);
+    });
+  }
+  function lb(b) { LB.push(lbItems(b)); return ' data-lb="' + (LB.length - 1) + '"'; }
   function fig(b, sizes) {
-    return '<figure class="cs-fig"><div class="cs-frame" style="aspect-ratio:' + esc(b.ratio || '4/5') + '">' + img(b, { sizes: sizes }) + '</div>' +
+    return '<figure class="cs-fig"><div class="cs-frame"' + lb(b) + ' style="aspect-ratio:' + esc(b.ratio || '4/5') + '">' + img(b, { sizes: sizes }) + '</div>' +
       (b.caption ? '<figcaption>' + esc(b.caption) + '</figcaption>' : '') + '</figure>';
   }
 
@@ -44,7 +54,7 @@
         html.push('<section class="cs-text wrap"><span class="cs-label">' + esc(b.label) + '</span><div><h2>' + esc(b.heading) + '</h2><p>' + esc(b.body) + '</p></div></section>');
         break;
       case 'full':
-        html.push('<figure class="cs-full"><div class="cs-frame" style="aspect-ratio:' + esc(b.ratio || '16/9') + '">' + img(b) + '</div>' + (b.caption ? '<figcaption class="wrap">' + esc(b.caption) + '</figcaption>' : '') + '</figure>');
+        html.push('<figure class="cs-full"><div class="cs-frame"' + lb(b) + ' style="aspect-ratio:' + esc(b.ratio || '16/9') + '">' + img(b) + '</div>' + (b.caption ? '<figcaption class="wrap">' + esc(b.caption) + '</figcaption>' : '') + '</figure>');
         break;
       case 'pair':
         html.push('<div class="cs-pair wrap' + (b.offset ? ' offset' : '') + '">' + b.items.map(function (it) { return fig(it, '(max-width:900px) 100vw, 50vw'); }).join('') + '</div>');
@@ -60,14 +70,15 @@
         if (b.items) {
           html.push('<section class="cs-text wrap"><span class="cs-label">' + esc(b.label) + '</span><div><div class="cs-posts">' + b.items.map(function (it) {
             var cap = it.caption && (showPH || !/^\[.*\]$/.test(it.caption)) ? '<figcaption>' + esc(it.caption) + '</figcaption>' : '';
-            return '<figure class="cs-fig"><div class="cs-frame" style="aspect-ratio:4/5">' + img(it, { sizes: '(max-width:600px) 50vw, 25vw' }) + '</div>' + cap + '</figure>';
+            var n = it.slides ? '<span class="cs-count mono">1 / ' + it.slides.length + '</span>' : '';
+            return '<figure class="cs-fig"><div class="cs-frame' + (it.fit === 'contain' ? ' contain' : '') + '"' + lb(it) + ' style="aspect-ratio:4/5">' + img(it, { sizes: '(max-width:600px) 50vw, 25vw' }) + n + '</div>' + cap + '</figure>';
           }).join('') + '</div>' + (showPH && b.note ? '<span class="todo" style="margin-top:16px">' + esc(b.note) + '</span>' : '') + '</div></section>');
         } else if (showPH) {
           html.push('<section class="cs-text wrap"><span class="cs-label">' + esc(b.label) + '</span><div class="cs-posts">' + b.ids.map(function (id) { return '<div class="ph" style="aspect-ratio:4/5">' + esc(id) + '</div>'; }).join('') + '</div></section>');
         }
         break;
       case 'closing':
-        html.push('<figure class="cs-full cs-closing"><div class="cs-frame" style="aspect-ratio:16/9">' + img(b) + '</div></figure>');
+        if (b.img) html.push('<figure class="cs-full cs-closing"><div class="cs-frame" style="aspect-ratio:16/9">' + img(b) + '</div></figure>');
         var next = window.HQ_WORK.length > 1 ? window.HQ_WORK[(idx + 1) % window.HQ_WORK.length] : null;
         html.push('<section class="cs-end wrap"><p>' + esc(b.text) + '</p><nav class="cs-nav" aria-label="Case navigation">' +
           '<a class="btn" href="' + root + 'work/">All work</a>' +
@@ -78,4 +89,5 @@
     }
   });
   main.innerHTML = html.join('\n');
+  if (window.HQLightbox) main.querySelectorAll('[data-lb]').forEach(function (el) { window.HQLightbox.attach(el, LB[+el.getAttribute('data-lb')], 0); });
 })();
