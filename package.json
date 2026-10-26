@@ -10,7 +10,8 @@
     "preview": "npm run build && node scripts/serve.mjs dist 4173",
     "lint": "eslint .",
     "test:e2e": "npm run build && python3 tests/e2e/site_test.py",
-    "test": "npm run lint && npm run test:e2e"
+    "test": "npm run lint && npm run test:gs && npm run test:e2e",
+    "test:gs": "node tests/gs/registrations_test.mjs"
   },
   "devDependencies": {
     "@eslint/js": "^9.25.0",
