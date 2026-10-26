@@ -141,13 +141,13 @@ body{min-height:100vh;display:flex;flex-direction:column}
 <a class="skip" href="#chat">Skip to the demo</a>
 <header class="site"><div class="in wrap">
   <a class="logo" href="../"><img src="../assets/img/brand/hustleq-wordmark-ink.png" alt="HustleQ" width="108" height="22"></a>
-  <div class="hcta"><a href="../" style="border-color:transparent">← Back</a><a class="primary" href="../#form" data-source="meet-duke-header">Be among the first to try Duke</a></div>
+  <div class="hcta"><a href="../" style="border-color:transparent">← Back</a><a class="primary" href="../#form" data-source="meet-duke-header">Be the first to try Duke</a></div>
 </div></header>
 
 <main class="demo-wrap wrap">
   <section class="intro" aria-labelledby="md-h">
     <span class="sn sn-serif"><span class="n" aria-hidden="true">Duke</span><span class="l">Demo</span></span>
-    <h1 id="md-h">Meet Duke, your content <em class="ser">planner.</em></h1>
+    <h1 id="md-h">Meet <span class="acc">Duke</span>, your content <em class="ser">planner.</em></h1>
     <p>A short conversation: share your business's Instagram, answer three questions, and Duke turns that context into one content idea.</p>
     <ol>
       <li><span>01</span><span>Your business's Instagram handle</span></li>
@@ -470,7 +470,7 @@ async function waitlist(){
         marketing:'', hardest:'', instagram:'@'+D.handle, website:'',
         source:'meet-duke', page_version:C.PAGE_VERSION, request_id:window.HQLeads.uuid(),
         segment:D.niche==='startup'?'tech founder':'small business',
-        demo:{offer:D.offer, month:D.month, niche_custom:D.nicheCustom||'', instagram_confirmed:D.confirmed, profile_simulated:!!(D.profile&&D.profile.simulated)}
+        demo:{niche:D.niche, offer:D.offer, month:D.month, niche_custom:D.nicheCustom||'', instagram_confirmed:D.confirmed, profile_simulated:!!(D.profile&&D.profile.simulated)}
       });
       saved=true;
       const tail = res.email_sent===true ? ` I sent a confirmation to ${esc(D.email)}.` : res.email_sent===false ? ' Your spot is saved, but the confirmation email did not go out. No need to sign up again.' : '';

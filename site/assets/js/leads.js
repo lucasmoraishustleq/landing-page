@@ -26,8 +26,23 @@
     return 'r' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10);
   }
 
+  // Campaign attribution: utm_source / utm_medium / utm_campaign from the landing URL, kept for the visit.
+  var UTM_KEYS = ['utm_source', 'utm_medium', 'utm_campaign'];
+  function utm() {
+    var q = new URLSearchParams(location.search), found = {}, has = false;
+    UTM_KEYS.forEach(function (k) { var v = q.get(k); if (v) { found[k] = v.slice(0, 120); has = true; } });
+    try {
+      if (has) sessionStorage.setItem('hq_utm', JSON.stringify(found));
+      else found = JSON.parse(sessionStorage.getItem('hq_utm') || '{}') || {};
+    } catch { /* storage unavailable */ }
+    return found;
+  }
+  utm(); // capture on page load, before any in-page navigation drops the query
+
   function submit(payload) {
     if (!C.APPS_SCRIPT_URL) return Promise.reject(err('not_configured'));
+    var u = utm();
+    payload = Object.assign({}, payload, { utm_source: u.utm_source || '', utm_medium: u.utm_medium || '', utm_campaign: u.utm_campaign || '' });
     return request(C.APPS_SCRIPT_URL, {
       method: 'POST',
       // text/plain avoids a CORS preflight, which Apps Script cannot answer

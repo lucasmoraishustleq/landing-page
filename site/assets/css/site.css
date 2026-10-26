@@ -514,3 +514,19 @@ body.modal-open{overflow:hidden}
   .sn-vert .l{writing-mode:horizontal-tb;transform:none}
   .sn-outline{font-size:64px}
 }
+
+/* brand accent on single words (hero "post", demo "Duke"); large text, contrast over 3:1 on cream */
+.acc{color:var(--signal)}
+.faq-list{border-top:1px solid var(--ink)}
+.faq-g{font-family:var(--mono);font-size:12px;font-weight:500;color:var(--muted);margin:36px 0 0;padding-bottom:4px}
+.faq-g:first-child{margin-top:20px}
+/* real client media in the hero concept and the weekly plan */
+.rec-img{width:100%;height:140px;object-fit:cover;display:block}
+@media (max-width:600px){.rec-img{height:110px}}
+.slide > .media,.slide > .vid,.slide > .stories{aspect-ratio:4/5;width:100%}
+.slide .media{display:block;width:100%;height:100%;object-fit:cover;background:var(--line)}
+.slide > img.media{height:auto}
+.vid{position:relative;background:var(--line)}
+.vid-btn{position:absolute;left:10px;bottom:10px;border:1px solid var(--ink);background:var(--cream);color:var(--ink);font:500 12px var(--mono);padding:7px 10px;border-radius:var(--r);cursor:pointer;min-height:36px}
+.stories{display:grid;grid-template-columns:1fr 1fr;gap:6px;background:var(--surface);border:1px solid var(--ink);padding:6px;align-items:center}
+.stories img{width:100%;height:auto;max-height:100%;object-fit:contain;display:block}

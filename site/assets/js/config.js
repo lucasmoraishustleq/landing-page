@@ -6,7 +6,9 @@
 window.HQ_CONFIG = Object.assign({
   // Lead form (waitlist + Founding Partner). Google Apps Script web app URL.
   // Must return JSON: { ok: true, signup_id: "...", email_sent: true|false|null }
-  // Live endpoint carried over from v3 (google-apps-script/waitlist.gs). Redeploy the updated script to store the new fields.
+  // Still the OLD live script (stores only email, business, marketing, hardest; returns no signup_id).
+  // After deploying google-apps-script/registrations.gs on the new sheet, replace this with its /exec URL.
+  // See docs/spreadsheet-setup.md, step 5.
   APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbylBUhaYEmXIy9sGUiTpcYLCirgZXzyxw-ozdmekynOzgv_8Q3RC74XcINlLfQMCim2Rw/exec',
 
   // Duke First Access: optional, one-time, refundable $20 payment offered after a saved Free Waitlist signup.
@@ -15,14 +17,15 @@ window.HQ_CONFIG = Object.assign({
   // SESSION_URL: optional alternative, a HustleQ server endpoint: POST { signup_id, return_url } -> { checkout_url }.
   // STATUS_URL:  GET ?signup_id=... -> { status: "none"|"pending"|"confirmed"|"failed"|"abandoned" }.
   //   Status comes only from the server (verified Stripe event), never from the browser redirect.
-  //   With the v3 Apps Script deployed this is: APPS_SCRIPT_URL + '?action=first_access_status'
+  //   With registrations.gs deployed this is: <new /exec URL> + '?action=first_access_status'
   FIRST_ACCESS_CHECKOUT_URL: '',
   FIRST_ACCESS_SESSION_URL: '',
   FIRST_ACCESS_STATUS_URL: '',
-  REFUND_POLICY_URL: '',
+  // Approved refund terms live in the FAQ (email before you get access, full refund).
+  REFUND_POLICY_URL: '/#faq-refund',
 
   // Meet Duke demo. HustleQ's own API (the browser never calls Apify directly).
-  // POST {base}/demo/profile { handle } -> { ok, insight }   POST {base}/demo/idea { answers, profile } -> { ok, idea }
+  // POST {base}/demo/profile { handle } -> { ok, profile, insight }   POST {base}/demo/idea { answers, profile } -> { ok, idea }
   DUKE_API_BASE: '',
 
   // Legacy: old $50/month beta checkout. No longer used as a primary path. Kept so the boundary is documented.

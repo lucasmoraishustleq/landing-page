@@ -218,6 +218,24 @@
   }, { rootMargin: '-45% 0px -50% 0px' });
   ['hero', 'product', 'work', 'ways-in'].forEach(function (id) { io.observe($(id)); });
 
+  // ---- a link to a FAQ answer (for example /#faq-refund) opens it ----
+  var openFromHash = function () { var d = /^#[A-Za-z][\w-]*$/.test(location.hash) && document.querySelector('details' + location.hash); if (d) d.open = true; };
+  openFromHash(); window.addEventListener('hashchange', openFromHash);
+
+  // ---- weekly plan videos: muted, play while visible, always pausable; never autoplay with reduced motion ----
+  document.querySelectorAll('.vid').forEach(function (box) {
+    var v = box.querySelector('video'), b = box.querySelector('.vid-btn'), userPaused = reduce;
+    var label = function () { var p = !v.paused; b.textContent = p ? 'Pause' : 'Play'; b.setAttribute('aria-label', (p ? 'Pause' : 'Play') + ' video'); };
+    var play = function () { var pr = v.play(); if (pr && pr.catch) pr.catch(function () { /* blocked or unavailable: the poster stays */ }); };
+    v.addEventListener('play', label); v.addEventListener('pause', label);
+    b.addEventListener('click', function () { if (v.paused) { userPaused = false; play(); } else { userPaused = true; v.pause(); } });
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (en) { if (en.intersectionRatio > 0.6) { if (!userPaused) play(); } else if (!v.paused) v.pause(); });
+      }, { threshold: [0, 0.6] }).observe(v);
+    }
+  });
+
   // ---- mobile menu ----
   var mb = document.querySelector('.menu-btn'), mm = $('mmenu');
   mb.addEventListener('click', function () { var o = mm.classList.toggle('open'); mb.setAttribute('aria-expanded', String(o)); });
