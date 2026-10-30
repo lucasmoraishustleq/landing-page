@@ -38,49 +38,22 @@
     }, 2800);
   }
 
-  // ---- weekly plan carousel: user-controlled, no autoplay ----
-  var track = $('plan-track');
-  if (track) {
-    var slides = track.querySelectorAll('.slide');
-    var prev = document.querySelector('.car-btn[data-dir="-1"]'), next = document.querySelector('.car-btn[data-dir="1"]');
-    var pos = $('plan-pos');
-    var step = function () { return slides.length > 1 ? slides[1].offsetLeft - slides[0].offsetLeft : track.clientWidth; };
-    var current = function () { return Math.round(track.scrollLeft / step()); };
-    var update = function () {
-      var max = track.scrollWidth - track.clientWidth - 2;
-      prev.disabled = track.scrollLeft <= 2;
-      next.disabled = track.scrollLeft >= max;
-      pos.textContent = Math.min(current() + 1, slides.length) + ' / ' + slides.length;
-    };
-    var go = function (dir) { track.scrollBy({ left: dir * step(), behavior: reduce ? 'auto' : 'smooth' }); };
-    prev.addEventListener('click', function () { go(-1); });
-    next.addEventListener('click', function () { go(1); });
-    track.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
-      if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+  // ---- example week: one tab per day, arrow keys move between days ----
+  var wkTabs = document.querySelectorAll('.days [role="tab"]');
+  function selectDay(btn, focus) {
+    wkTabs.forEach(function (b) {
+      var on = b === btn;
+      b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1;
+      $(b.getAttribute('aria-controls')).hidden = !on;
     });
-    var t; track.addEventListener('scroll', function () { clearTimeout(t); t = setTimeout(update, 60); }, { passive: true });
-    window.addEventListener('resize', update);
-    update();
-  }
-
-  // ---- content item anatomy: tabs with arrow-key support ----
-  var anTabs = document.querySelectorAll('[data-an]'), anPanel = $('an-p');
-  function selectPart(btn, focus) {
-    anTabs.forEach(function (b) { var on = b === btn; b.setAttribute('aria-selected', String(on)); b.tabIndex = on ? 0 : -1; });
-    var tpl = document.querySelector('template[data-an-tpl="' + btn.dataset.an + '"]');
-    anPanel.innerHTML = ''; anPanel.appendChild(tpl.content.cloneNode(true));
-    anPanel.setAttribute('aria-labelledby', btn.id);
-    if (!reduce) { anPanel.classList.remove('swap'); void anPanel.offsetWidth; anPanel.classList.add('swap'); }
     if (focus) btn.focus();
-    if (btn.scrollIntoView) btn.scrollIntoView({ block: 'nearest', inline: 'nearest' });
   }
-  anTabs.forEach(function (b, i) {
-    b.addEventListener('click', function () { selectPart(b); });
+  wkTabs.forEach(function (b, i) {
+    b.addEventListener('click', function () { selectDay(b); });
     b.addEventListener('keydown', function (e) {
       var d = e.key === 'ArrowDown' || e.key === 'ArrowRight' ? 1 : e.key === 'ArrowUp' || e.key === 'ArrowLeft' ? -1 : 0;
       if (!d) return; e.preventDefault();
-      selectPart(anTabs[(i + d + anTabs.length) % anTabs.length], true);
+      selectDay(wkTabs[(i + d + wkTabs.length) % wkTabs.length], true);
     });
   });
 
@@ -222,7 +195,7 @@
   var openFromHash = function () { var d = /^#[A-Za-z][\w-]*$/.test(location.hash) && document.querySelector('details' + location.hash); if (d) d.open = true; };
   openFromHash(); window.addEventListener('hashchange', openFromHash);
 
-  // ---- weekly plan videos: muted, play while visible, always pausable; never autoplay with reduced motion ----
+  // ---- example week videos: muted, play while visible, always pausable; never autoplay with reduced motion ----
   document.querySelectorAll('.vid').forEach(function (box) {
     var v = box.querySelector('video'), b = box.querySelector('.vid-btn'), userPaused = reduce;
     var label = function () { var p = !v.paused; b.textContent = p ? 'Pause' : 'Play'; b.setAttribute('aria-label', (p ? 'Pause' : 'Play') + ' video'); };
@@ -236,10 +209,10 @@
     }
   });
 
-  // ---- full-screen viewer: weekly plan (one gallery) and Duke beta screenshots ----
+  // ---- full-screen viewer: example week posts (one gallery) and Duke beta screenshots ----
   if (window.HQLightbox) {
     var plan = [], hosts = [];
-    document.querySelectorAll('#plan-track .slide').forEach(function (sl) {
+    document.querySelectorAll('.wk-res').forEach(function (sl) {
       var host = sl.querySelector('.vid, .stories, img.media');
       if (!host) return;
       var start = plan.length;
