@@ -1,4 +1,4 @@
-import asyncio, json, subprocess, sys, time, re
+import asyncio, base64, json, subprocess, sys, time, re
 from playwright.async_api import async_playwright
 import os
 HERE=os.path.dirname(os.path.abspath(__file__))
@@ -489,7 +489,12 @@ async def demo(b):
     rec('demo: chosen niche is used downstream', 'pet services business' in res and 'pet services' in chk, (res[-200:],chk[:120]))
     rec('demo preview: result labeled as sample, no profile insight invented', 'Sample idea' in res and 'Your profile' not in res and 'Reading @' not in chk)
     side=await p.inner_text('#ctx'); rec('demo @390: sidebar hidden on phone, context still tracked', 'Pet services' in side)
-    await text(p,'a@b.co'); await p.wait_for_timeout(1500)
+    await p.wait_for_selector('#join', timeout=8000); lg=await p.inner_text('#log')
+    rec('demo: final message invites to tag HustleQ with a copyable handle', "If you decide to post this idea, tag @hustleq.tech" in lg and await p.get_attribute('a.handle','href')=='https://www.instagram.com/hustleq.tech/', lg[-260:])
+    jb=await p.evaluate("""(()=>{const b=document.getElementById('join'),m=b.closest('.msg'),r=b.getBoundingClientRect();return {inmsg:!!m&&m.textContent.includes('Join the Free Waitlist. Access opens in groups'),label:b.textContent,h:r.height,input:!!document.getElementById('in')}})()""")
+    rec('demo: "Join the Free Waitlist" button sits under the waitlist message, email asked only after it', jb['inmsg'] and jb['label']=='Join the Free Waitlist' and jb['h']>=44 and not jb['input'], jb)
+    await p.screenshot(path=SHOTS+'demo_final_cta_390.png', full_page=False)
+    await p.click('#join'); await text(p,'a@b.co'); await p.wait_for_timeout(1500)
     lg=await p.inner_text('#log'); rec('demo preview: waitlist not connected is said plainly', "can't save signups from this preview" in lg, lg[-200:])
     await p.screenshot(path=SHOTS+'demo_result_390.png', full_page=False)
     await p.context.close()
@@ -497,8 +502,8 @@ async def demo(b):
     cfg={'DUKE_API_BASE':MOCK+'/duke','APPS_SCRIPT_URL':MOCK+'/exec','FIRST_ACCESS_CHECKOUT_URL':'https://buy.stripe.test/test_abc','FIRST_ACCESS_STATUS_URL':MOCK+'/status'}
     p=await newpage(b,1440,900,cfg); sent=[]; prof=[]
     async def pr(r):
-        prof.append(json.loads(r.request.post_data))
-        await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'profile':{'username':'bahiataste','name':'Bahia <i>Taste</i>','followers':1520,'following':310,'image_url':'javascript:alert(1)'},'insight':'Your last Reel was <b>3</b> weeks ago.'}))
+        prof.append(json.loads(r.request.post_data)); await asyncio.sleep(1.2)
+        await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'profile':{'username':'bahiataste','name':'Bahia <i>Taste</i>','biography':'Baianas <b>food</b>\nBrooklyn, NY','followers':1520,'following':310,'totalPosts':12345,'image_url':'javascript:alert(1)'},'insight':'Your last Reel was <b>3</b> weeks ago.'}))
     await p.route(MOCK+'/duke/demo/profile', pr)
     await p.route(MOCK+'/duke/demo/niches', J({'ok':True,'niches':[{'key':'restaurants','label':'Restaurants & food trucks'},{'key':'bbq','label':'BBQ <b>joints</b>'}]}))
     ideas=[]
@@ -508,10 +513,34 @@ async def demo(b):
     await p.route(MOCK+'/duke/demo/idea', ir)
     async def ex(r): sent.append(json.loads(r.request.post_data)); await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'signup_id':'s_d','email_sent':True}))
     await p.route(MOCK+'/exec', ex)
-    await p.goto(BASE+'meet-duke/'); await text(p,'@bahiataste'); await p.wait_for_selector('.ig', timeout=6000)
+    await p.goto(BASE+'meet-duke/')
+    hb=await p.evaluate("getComputedStyle(document.querySelector('.chat .head')).backgroundColor")
+    rec('demo: chat header uses the soft lilac #EDE1F6', hb=='rgb(237, 225, 246)', hb)
+    await text(p,'@bahiataste'); await p.wait_for_selector('.lookup', timeout=2000)
+    ld=await p.evaluate("""(()=>({t:document.querySelector('.lookup').innerText,bar:!!document.querySelector('.lookup .bar'),busy:document.getElementById('busy')?.disabled,send:!!document.getElementById('in')}))()""")
+    rec('demo live: lookup shows a loading message in the chat and blocks a second send', 'Looking up @bahiataste on Instagram' in ld['t'] and ld['bar'] and ld['busy'] is True and not ld['send'], ld)
+    await p.screenshot(path=SHOTS+'demo_lookup_loading_1440.png', full_page=False)
+    await p.wait_for_selector('.ig', timeout=6000)
+    rec('demo live: loading message is removed when the profile arrives', not await p.query_selector('.lookup') and not await p.query_selector('#busy'))
     card=await p.inner_html('.ig'); ctext=await p.inner_text('.ig')
+    rec('demo live: card shows posts and biography from the API, escaped', '12.3K' in ctext and 'posts' in ctext and 'Brooklyn, NY' in ctext and '&lt;b&gt;food' in card, ctext)
     rec('demo live: profile lookup goes to the HustleQ API, not Apify', prof==[{'handle':'bahiataste'}], prof)
     rec('demo live: profile card uses API data, escaped, no unsafe image', 'Bahia &lt;i&gt;Taste&lt;/i&gt;' in card and 'javascript:' not in card and '1,520' in ctext and '310' in ctext and 'From Instagram' in ctext and 'Sample' not in ctext, ctext)
+    p2=await newpage(b,390,844,cfg)
+    async def pr2(r): await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'profile':{'username':'bahiataste','name':'Bahia','followers':1,'following':2,'totalPosts':3,'image_url':'https://scontent.cdninstagram.com/x.jpg'}}))
+    pics=[]
+    async def img(r): pics.append(r.request.url); await r.fulfill(status=200,content_type='image/png',body=base64.b64decode('iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg=='))
+    await p2.route(MOCK+'/duke/demo/profile', pr2); await p2.route(MOCK+'/duke/demo/profile-image/**', img)
+    await p2.goto(BASE+'meet-duke/'); await text(p2,'@bahiataste'); await p2.wait_for_selector('.ig img', timeout=6000); await p2.wait_for_timeout(300)
+    ok=await p2.evaluate("(()=>{const i=document.querySelector('.ig img');return i&&i.complete&&i.naturalWidth>0})()")
+    rec('demo live: profile photo loads through the Duke API, never straight from Instagram', ok and pics==[MOCK+'/duke/demo/profile-image/bahiataste'], pics)
+    await p2.locator('.ig').screenshot(path=SHOTS+'demo_profile_live_390.png')
+    await p2.context.close()
+    p2=await newpage(b,390,844,cfg)
+    await p2.route(MOCK+'/duke/demo/profile', pr2); await p2.route(MOCK+'/duke/demo/profile-image/**', J({},404))
+    await p2.goto(BASE+'meet-duke/'); await text(p2,'@bahiataste'); await p2.wait_for_selector('.ig', timeout=6000); await p2.wait_for_timeout(500)
+    rec('demo live: missing photo falls back to the initial, no broken image', not await p2.query_selector('.ig img') and (await p2.inner_text('.ig-pic')).strip()=='B')
+    await p2.context.close()
     rec('demo live: ownership still has to be confirmed with real data', await p.is_visible('''.chips button:text-is("Yes, that's my business")'''))
     await chip(p,"Yes, that's my business"); await p.wait_for_selector('#nsel', timeout=8000)
     opts=await p.evaluate('[...document.querySelectorAll("#nsel option:not([disabled])")].map(o=>[o.value,o.textContent,o.innerHTML])')
@@ -526,7 +555,7 @@ async def demo(b):
     side=await p.inner_text('#ctx'); steps=await p.evaluate('[...document.querySelectorAll("#steps li.done")].length')
     rec('demo @1440: sidebar shows progress and what Duke knows', '@bahiataste · confirmed' in side and 'catering trays' in side and steps>=5, (side,steps))
     await p.screenshot(path=SHOTS+'demo_live_1440.png', full_page=False)
-    await text(p,'a@b.co'); await p.wait_for_timeout(1800)
+    await p.click('#join', timeout=8000); await text(p,'a@b.co'); await p.wait_for_timeout(1800)
     pl=sent[0] if sent else {}
     rec('demo live: waitlist payload has source, handle, confirmation and answers', pl.get('source')=='meet-duke' and pl.get('instagram')=='@bahiataste' and pl.get('business_name')=='Bahia <i>Taste</i>' and pl.get('demo',{}).get('month')=='event' and pl.get('demo',{}).get('instagram_confirmed') is True and pl.get('demo',{}).get('profile_simulated') is False, pl)
     vis=await p.eval_on_selector('#fa-modal',VIS); txt=await p.inner_text('#fa-modal') if vis else ''
@@ -537,7 +566,7 @@ async def demo(b):
     # save failure
     p=await newpage(b,390,844,{'APPS_SCRIPT_URL':MOCK+'/exec'})
     await p.route(MOCK+'/exec', J({},500)); await p.goto(BASE+'meet-duke/'); await run(p)
-    await text(p,'a@b.co'); await p.wait_for_timeout(1500)
+    await p.click('#join', timeout=8000); await text(p,'a@b.co'); await p.wait_for_timeout(1500)
     lg=await p.inner_text('#log'); rec('demo: save failure says not on the list and allows retry', "not on the list yet" in lg and await p.is_visible('#in'), lg[-160:])
     await p.context.close()
     # lookup failures: private, unavailable, timeout -> could not verify, ask again, never continue
