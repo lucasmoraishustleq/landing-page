@@ -106,7 +106,8 @@ body{min-height:100vh;display:flex;flex-direction:column}
 .sample{font-family:var(--mono);font-size:11px;border:1px dashed var(--ink);padding:3px 7px;display:inline-block;margin-bottom:8px}
 .composer{padding:10px 12px 14px;border-top:1px solid var(--line);background:var(--surface);min-height:72px;flex:none}
 .inrow{display:flex;gap:8px}
-.inrow input{flex:1;border:1px solid var(--ink);background:var(--surface);border-radius:var(--r);padding:13px 14px;font:16px var(--sans);color:var(--ink);min-width:0}
+.inrow input,.inrow select{flex:1;border:1px solid var(--ink);background:var(--surface);border-radius:var(--r);padding:13px 14px;font:16px var(--sans);color:var(--ink);min-width:0}
+.inrow select{cursor:pointer}
 .send{border:1px solid var(--ink);border-radius:var(--r);padding:0 16px;background:var(--ink);color:var(--cream);font:600 15px var(--sans);cursor:pointer;white-space:nowrap;min-height:48px}
 .send:disabled{opacity:.35;cursor:default}
 .send.ghost{background:transparent;color:var(--ink)}
@@ -199,7 +200,40 @@ const C = window.HQ_CONFIG;
 const LIVE = !!C.DUKE_API_BASE;
 if (!LIVE) document.getElementById('preview-note').hidden = false;
 
-/* ---------- sample content (from the agreed demo). Used only when the Duke API is not connected, and labeled as sample. ---------- */
+/* ---------- niche list. Live mode loads it from GET {DUKE_API_BASE}/demo/niches; this copy is the fallback.
+   Keys must match the backend (marketing-agent src/demo/niches.ts). "sample" picks the template below. ---------- */
+const LOCAL_NICHES=[
+  {key:'restaurants',label:'Restaurants & food trucks',sample:'food'},
+  {key:'bakery',label:'Bakery & desserts',sample:'food'},
+  {key:'coffee',label:'Coffee shop',sample:'food'},
+  {key:'catering',label:'Catering & events',sample:'food'},
+  {key:'hair',label:'Hair salon & barbershop',sample:'beauty'},
+  {key:'nails',label:'Nails & lashes',sample:'beauty'},
+  {key:'skincare',label:'Skincare & esthetics',sample:'beauty'},
+  {key:'fitness',label:'Fitness & personal training',sample:'services'},
+  {key:'wellness',label:'Health & wellness',sample:'services'},
+  {key:'fashion',label:'Fashion boutique',sample:'fashion'},
+  {key:'jewelry',label:'Jewelry & accessories',sample:'fashion'},
+  {key:'photography',label:'Photography & video',sample:'services'},
+  {key:'real_estate',label:'Real estate',sample:'services'},
+  {key:'home_services',label:'Home services',sample:'services'},
+  {key:'coaching',label:'Coaching & consulting',sample:'services'},
+  {key:'creators',label:'Creators & personal brand',sample:'generic'},
+  {key:'startup',label:'Tech startup',sample:'startup'},
+  {key:'pets',label:'Pet services',sample:'services'}
+];
+let NICHE_LIST=LOCAL_NICHES;
+const SAMPLE_BY_KEY=Object.fromEntries(LOCAL_NICHES.map(n=>[n.key,n.sample]));
+async function loadNiches(){
+  if(!LIVE) return;
+  try{
+    const d=await api('/demo/niches',null,{method:'GET'});
+    const list=(d.niches||[]).filter(n=>n&&typeof n.key==='string'&&typeof n.label==='string'&&n.key&&n.label);
+    if(list.length) NICHE_LIST=list.map(n=>({key:n.key,label:n.label,sample:SAMPLE_BY_KEY[n.key]||'generic'}));
+  }catch(e){ /* keep the local list */ }
+}
+
+/* ---------- sample content (from the agreed demo). Used only when the Duke API is not connected or fails, and labeled as sample. ---------- */
 const NICHES={
   startup:{label:'Startup or tech product',short:'tech startups',offerPh:'e.g. demo calls for our app',
     trend:{name:'Founder face to camera',what:'Founders talking straight to the camera about the problem they are solving. Filmed on a phone, no polish.',
@@ -241,7 +275,7 @@ const NICHES={
     film:()=>`You, talking straight to the camera. Put the question on screen in the first second, then answer it in plain words, like you would on a call.`,
     cap:(d,m)=>`If you've been wondering this too, you're not alone. ${m}Still have questions? DM me or book a call through the link in bio.`,
     time:'Wednesday, 12:30 PM'},
-  other:{label:'Other',short:'businesses like yours',offerPh:'What you want to sell more of',
+  generic:{label:'Other',short:'businesses like yours',offerPh:'What you want to sell more of',
     trend:{name:'Behind the scenes',what:'A quick look at the work most customers never see. The prep, the process, the details.',
       signal:'this format is working across almost every industry right now. People trust a business more when they can see the work behind it.'},
     format:'20 second Reel',
@@ -259,7 +293,7 @@ const MONTH={
 };
 
 /* ---------- state ---------- */
-const D={handle:'',profile:null,confirmed:false,niche:'',nicheCustom:'',offer:'',month:'',email:''};
+const D={handle:'',profile:null,confirmed:false,niche:'',nicheName:'',offer:'',month:'',email:''};
 const log=document.getElementById('log'), comp=document.getElementById('composer'), stepEl=document.getElementById('step');
 const esc=s=>String(s).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const reduce=window.matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -268,7 +302,7 @@ const down=()=>{log.scrollTop=log.scrollHeight};
 const star=fill=>`<svg width="12" height="12" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="${fill}"/></svg>`;
 const AV='<div class="av sm"><img src="../assets/img/duke/duke-avatar.png" alt="" width="26" height="26"></div>';
 let lastSpeaker='';
-const nicheLabel=()=>D.niche==='other'?D.nicheCustom:NICHES[D.niche].label;
+const nicheLabel=()=>D.nicheName;
 const bizName=()=>(D.profile&&!D.profile.simulated&&D.profile.name)?D.profile.name:'@'+D.handle;
 const E=()=>({name:esc(bizName()),offer:esc(D.offer)});
 
@@ -309,6 +343,14 @@ function askText(ph,{validate,clean,type='text',label,value='',autofocus=true}={
     b.onclick=submit;i.onkeydown=e=>{if(e.key==='Enter')submit()};
   });
 }
+function askSelect(list,{ph,label}){
+  return new Promise(res=>{
+    comp.innerHTML=`<div class="inrow"><label class="sr" for="nsel">${esc(label)}</label><select id="nsel"><option value="" disabled selected>${esc(ph)}</option>${list.map(n=>`<option value="${esc(n.key)}">${esc(n.label)}</option>`).join('')}</select><button class="send" id="go" type="button" disabled>Send</button></div>`;
+    const s=document.getElementById('nsel'),b=document.getElementById('go');
+    s.onchange=()=>{b.disabled=!s.value};
+    b.onclick=()=>{if(!s.value)return;const n=list.find(x=>x.key===s.value);comp.innerHTML='';res(n);};
+  });
+}
 function askChips(obj){
   return new Promise(res=>{
     comp.innerHTML=`<div class="chips" role="group">${Object.entries(obj).map(([k,v])=>`<button type="button" data-v="${k}">${esc(v.label)}</button>`).join('')}</div>`;
@@ -318,10 +360,11 @@ function askChips(obj){
 }
 
 /* ---------- HustleQ API (live only when DUKE_API_BASE is set) ---------- */
-async function api(path, body){
-  const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(), C.TIMEOUT_MS);
+async function api(path, body, {method='POST', timeout=C.TIMEOUT_MS}={}){
+  const ctrl=new AbortController(); const t=setTimeout(()=>ctrl.abort(), timeout);
   try{
-    const r=await fetch(C.DUKE_API_BASE.replace(/\/$/,'')+path,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctrl.signal});
+    const opts=method==='GET'?{method,signal:ctrl.signal}:{method,headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:ctrl.signal};
+    const r=await fetch(C.DUKE_API_BASE.replace(/\/$/,'')+path,opts);
     if(!r.ok) throw new Error('http');
     const d=await r.json(); if(!d||d.ok!==true) throw new Error('not_ok'); return d;
   } finally { clearTimeout(t); }
@@ -332,7 +375,7 @@ function num(v){return typeof v==='number'&&isFinite(v)&&v>=0?v:null;}
 async function lookupProfile(handle){
   if(LIVE){
     try{
-      const d=await api('/demo/profile',{handle});
+      const d=await api('/demo/profile',{handle},{timeout:C.PROFILE_TIMEOUT_MS||C.TIMEOUT_MS});
       const p=d.profile;
       if(!p||!p.username) return null;
       return {username:String(p.username),name:p.name?String(p.name):null,
@@ -369,7 +412,10 @@ async function run(){
     firstAsk=false; D.confirmed=false; D.profile=null;
     me('@'+D.handle); setCtx();
     await duke(LIVE?`Looking up @${esc(D.handle)}…`:`Here is a preview for @${esc(D.handle)}.`,400);
+    // A real lookup reads Instagram and takes 15 to 30 seconds: say so instead of looking stuck.
+    const slow=LIVE?setTimeout(()=>duke("I'm reading your recent posts. This can take up to half a minute.",0,true),6000):null;
     const p=await lookupProfile(D.handle);
+    clearTimeout(slow);
     if(!p){ await duke("I couldn't verify that profile. It may be private, misspelled or unavailable right now. Check the handle and try again."); continue; }
     D.profile=p;
     dukeRow(profileCard(p));
@@ -381,17 +427,14 @@ async function run(){
     await duke("No problem. Let's correct the handle and try again.");
   }
 
-  // 4: niche (Other opens a required follow-up)
+  // 4: niche, from a list (no free text, so every niche has trends behind it)
   setStep('niche','Step 3 of 5');
   await duke("Great. What kind of business do you run?");
-  D.niche=await askChips(NICHES); me(NICHES[D.niche].label);
-  if(D.niche==='other'){
-    await duke("Got it. What niche or industry would you describe your business as?");
-    D.nicheCustom=await askText('e.g. pet grooming, interior design',{label:'Your niche or industry',validate:v=>v.length<2?'Please describe your niche in a few words.':''});
-    me(D.nicheCustom);
-  }
+  await nichesReady;
+  const picked=await askSelect(NICHE_LIST,{ph:'Choose your type of business',label:'Your type of business'});
+  D.niche=picked.key; D.nicheName=picked.label; me(picked.label);
   setCtx();
-  const N=Object.assign({},NICHES[D.niche]); if(D.niche==='other') N.short=D.nicheCustom;
+  const N=Object.assign({},NICHES[picked.sample]||NICHES.generic); N.short=picked.label.toLowerCase();
 
   // 5: current focus (existing question)
   setStep('focus','Step 4 of 5');
@@ -423,7 +466,7 @@ async function checking(N){
   addRaw(items.map((i,x)=>`<li id="k${x}"><span class="dot">${star('var(--ink)')}</span><div>${i[0]}<small>${i[1]}</small></div></li>`).join(''),'checks');
   let idea=null;
   const live = LIVE ? (async()=>{
-    try{ idea=(await api('/demo/idea',{answers:{handle:D.handle,profile_confirmed:D.confirmed,niche:D.niche,niche_custom:D.nicheCustom,offer:D.offer,month:D.month},profile:real?D.profile.insight:null})).idea||null; }catch(e){ idea=null; }
+    try{ idea=(await api('/demo/idea',{answers:{handle:D.handle,profile_confirmed:D.confirmed,niche:D.niche,offer:D.offer,month:D.month},profile:real?D.profile.insight:null},{timeout:C.IDEA_TIMEOUT_MS||C.TIMEOUT_MS})).idea||null; }catch(e){ idea=null; }
   })() : Promise.resolve();
   for(let x=0;x<items.length;x++){ document.getElementById('k'+x).classList.add('on'); await wait(600); }
   await live; await wait(250);
@@ -470,7 +513,7 @@ async function waitlist(){
         marketing:'', hardest:'', instagram:'@'+D.handle, website:'',
         source:'meet-duke', page_version:C.PAGE_VERSION, request_id:window.HQLeads.uuid(),
         segment:D.niche==='startup'?'tech founder':'small business',
-        demo:{niche:D.niche, offer:D.offer, month:D.month, niche_custom:D.nicheCustom||'', instagram_confirmed:D.confirmed, profile_simulated:!!(D.profile&&D.profile.simulated)}
+        demo:{niche:D.niche, offer:D.offer, month:D.month, niche_custom:'', instagram_confirmed:D.confirmed, profile_simulated:!!(D.profile&&D.profile.simulated)}
       });
       saved=true;
       const tail = res.email_sent===true ? ` I sent a confirmation to ${esc(D.email)}.` : res.email_sent===false ? ' Your spot is saved, but the confirmation email did not go out. No need to sign up again.' : '';
@@ -490,7 +533,7 @@ async function waitlist(){
 }
 
 function reset(){
-  Object.assign(D,{handle:'',profile:null,confirmed:false,niche:'',nicheCustom:'',offer:'',month:'',email:''});
+  Object.assign(D,{handle:'',profile:null,confirmed:false,niche:'',nicheName:'',offer:'',month:'',email:''});
   log.innerHTML='';comp.innerHTML='';lastSpeaker='';setCtx();start();
 }
 function start(){
@@ -499,6 +542,7 @@ function start(){
   duke("First, what's your business's Instagram handle?<small>Let's start with your Instagram presence.</small>",0,true);
   run();
 }
+const nichesReady=loadNiches();
 setCtx(); start();
 })();
 </script>

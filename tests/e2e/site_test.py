@@ -418,14 +418,15 @@ async def demo(b):
     async def chip(p,t):
         sel=f'.chips button:text-is("{t}")'
         await p.wait_for_selector(sel, timeout=8000); await p.click(sel)
-    async def run(p, handle='bahiataste', reject_first=False, niche='Food and drinks', custom=None):
+    async def pick(p,label):
+        await p.wait_for_selector('#nsel', timeout=8000); await p.select_option('#nsel', label=label); await p.click('#go')
+    async def run(p, handle='bahiataste', reject_first=False, niche='Restaurants & food trucks'):
         await text(p,'@'+handle)
         if reject_first:
             await chip(p,"No, that's not my profile")
             await text(p,'@'+handle+'2')
         await chip(p,"Yes, that's my business")
-        await chip(p,niche)
-        if custom: await text(p,custom)
+        await pick(p,niche)
         await text(p,'catering trays'); await chip(p,'Hosting an event')
         await p.wait_for_selector('.result section:nth-of-type(3)', timeout=15000)
     # first frame: device, avatar, explanation, first question, no splash
@@ -469,23 +470,22 @@ async def demo(b):
     await text(p,'@anotherbiz'); await p.wait_for_timeout(900)
     cards=await p.evaluate('[...document.querySelectorAll(".ig .ig-user")].map(e=>e.textContent)')
     rec('demo: preview refreshes for the corrected handle', cards==['@Bahia.Taste','@anotherbiz'], cards)
-    await chip(p,"Yes, that's my business"); await chip(p,'Other'); await p.wait_for_timeout(700)
-    lg=await p.inner_text('#log')
-    rec('demo: "Other" opens the required niche question', 'What niche or industry would you describe your business as?' in lg and await p.is_visible('#in'))
-    await p.click('#go', force=True); await p.wait_for_timeout(100)
-    rec('demo: niche free text is required', await p.is_visible('#in'))
-    await text(p,'Pet grooming'); await p.wait_for_timeout(700)
+    await chip(p,"Yes, that's my business"); await p.wait_for_selector('#nsel', timeout=8000)
+    opts=await p.evaluate('[...document.querySelectorAll("#nsel option:not([disabled])")].map(o=>o.textContent)')
+    rec('demo: niche is a select with the 18 niches and no "Other"', len(opts)==18 and 'Other' not in opts and 'Pet services' in opts, opts)
+    rec('demo: Send stays disabled until a niche is chosen', await p.is_disabled('#go'))
+    await pick(p,'Pet services'); await p.wait_for_timeout(700)
     lg=await p.inner_text('#log')
     i_focus=lg.find('What is your business focusing on right now?')
-    rec('demo: current focus comes after niche', i_focus>lg.find('Pet grooming')>0, lg[-200:])
+    rec('demo: current focus comes after niche', i_focus>lg.find('Pet services')>0, lg[-200:])
     await text(p,'grooming packages'); await p.wait_for_timeout(700)
     lg=await p.inner_text('#log')
     rec('demo: upcoming month comes after current focus', lg.find('anything in mind for the upcoming month')>i_focus)
     await chip(p,'Nothing planned yet'); await p.wait_for_selector('.result section:nth-of-type(3)', timeout=15000)
     res=await p.inner_text('.result'); chk=await p.inner_text('.checks')
-    rec('demo: custom niche is used downstream', 'pet grooming business' in res and 'Pet grooming' in chk, (res[-200:],chk[:120]))
+    rec('demo: chosen niche is used downstream', 'pet services business' in res and 'pet services' in chk, (res[-200:],chk[:120]))
     rec('demo preview: result labeled as sample, no profile insight invented', 'Sample idea' in res and 'Your profile' not in res and 'Reading @' not in chk)
-    side=await p.inner_text('#ctx'); rec('demo @390: sidebar hidden on phone, context still tracked', 'Pet grooming' in side)
+    side=await p.inner_text('#ctx'); rec('demo @390: sidebar hidden on phone, context still tracked', 'Pet services' in side)
     await text(p,'a@b.co'); await p.wait_for_timeout(1500)
     lg=await p.inner_text('#log'); rec('demo preview: waitlist not connected is said plainly', "can't save signups from this preview" in lg, lg[-200:])
     await p.screenshot(path=SHOTS+'demo_result_390.png', full_page=False)
@@ -497,7 +497,12 @@ async def demo(b):
         prof.append(json.loads(r.request.post_data))
         await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'profile':{'username':'bahiataste','name':'Bahia <i>Taste</i>','followers':1520,'following':310,'image_url':'javascript:alert(1)'},'insight':'Your last Reel was <b>3</b> weeks ago.'}))
     await p.route(MOCK+'/duke/demo/profile', pr)
-    await p.route(MOCK+'/duke/demo/idea', J({'ok':True,'idea':{'trend':{'name':'Real kitchen sound','what':'Close-ups.','signal':'shared more'},'format':'Reel','hook':'Hook <img src=x onerror=alert(1)>','film':'Film it','caption':'Cap','time':''}}))
+    await p.route(MOCK+'/duke/demo/niches', J({'ok':True,'niches':[{'key':'restaurants','label':'Restaurants & food trucks'},{'key':'bbq','label':'BBQ <b>joints</b>'}]}))
+    ideas=[]
+    async def ir(r):
+        ideas.append(json.loads(r.request.post_data))
+        await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'idea':{'trend':{'name':'Real kitchen sound','what':'Close-ups.','signal':'shared more'},'format':'Reel','hook':'Hook <img src=x onerror=alert(1)>','film':'Film it','caption':'Cap','time':''}}))
+    await p.route(MOCK+'/duke/demo/idea', ir)
     async def ex(r): sent.append(json.loads(r.request.post_data)); await r.fulfill(status=200,content_type='application/json',body=json.dumps({'ok':True,'signup_id':'s_d','email_sent':True}))
     await p.route(MOCK+'/exec', ex)
     await p.goto(BASE+'meet-duke/'); await text(p,'@bahiataste'); await p.wait_for_selector('.ig', timeout=6000)
@@ -505,8 +510,13 @@ async def demo(b):
     rec('demo live: profile lookup goes to the HustleQ API, not Apify', prof==[{'handle':'bahiataste'}], prof)
     rec('demo live: profile card uses API data, escaped, no unsafe image', 'Bahia &lt;i&gt;Taste&lt;/i&gt;' in card and 'javascript:' not in card and '1,520' in ctext and '310' in ctext and 'From Instagram' in ctext and 'Sample' not in ctext, ctext)
     rec('demo live: ownership still has to be confirmed with real data', await p.is_visible('''.chips button:text-is("Yes, that's my business")'''))
-    await chip(p,"Yes, that's my business"); await chip(p,'Food and drinks'); await text(p,'catering trays'); await chip(p,'Hosting an event')
+    await chip(p,"Yes, that's my business"); await p.wait_for_selector('#nsel', timeout=8000)
+    opts=await p.evaluate('[...document.querySelectorAll("#nsel option:not([disabled])")].map(o=>[o.value,o.textContent,o.innerHTML])')
+    rec('demo live: niche list comes from the API, escaped', [o[1] for o in opts]==['Restaurants & food trucks','BBQ <b>joints</b>'] and '&lt;b&gt;' in opts[1][2], opts)
+    await pick(p,'Restaurants & food trucks'); await text(p,'catering trays'); await chip(p,'Hosting an event')
     await p.wait_for_selector('.result section:nth-of-type(3)', timeout=15000)
+    a=ideas[0]['answers'] if ideas else {}
+    rec('demo live: idea request sends the niche key and the answers', a.get('niche')=='restaurants' and a.get('offer')=='catering trays' and a.get('month')=='event' and a.get('profile_confirmed') is True, a)
     res=await p.inner_text('.result'); html=await p.inner_html('.result')
     rec('demo live: no sample label, profile reason from API', 'Sample idea' not in res and 'Your profile' in res and 'Reading @' in await p.inner_text('.checks'))
     rec('demo live: API text is escaped', '<img' not in html and '&lt;img' in html)
@@ -530,7 +540,7 @@ async def demo(b):
     # lookup failures: private, unavailable, timeout -> could not verify, ask again, never continue
     for name,h in [('HTTP 500',J({},500)),('ok:false (private)',J({'ok':False,'error':'private'})),('no profile',J({'ok':True})),('timeout','hang')]:
         async def hang(r): await asyncio.sleep(4)
-        p=await newpage(b,390,844,{'DUKE_API_BASE':MOCK+'/duke','TIMEOUT_MS':1500})
+        p=await newpage(b,390,844,{'DUKE_API_BASE':MOCK+'/duke','TIMEOUT_MS':1500,'PROFILE_TIMEOUT_MS':1500})
         await p.route(MOCK+'/duke/demo/profile', hang if h=='hang' else h)
         await p.goto(BASE+'meet-duke/'); await text(p,'@privatebiz')
         try: await p.wait_for_function('document.getElementById("log").innerText.includes("couldn\'t verify")', timeout=5000); await p.wait_for_timeout(200)
@@ -539,7 +549,7 @@ async def demo(b):
         rec(f'demo: lookup {name} says it could not verify and asks for the handle again', "couldn't verify that profile" in lg and await p.is_visible('#in') and not await p.query_selector('.ig') and 'What kind of business' not in lg, lg[-160:])
         await p.context.close()
     # reduced motion: the flow still works with no animation
-    p=await newpage(b,390,844,{'APPS_SCRIPT_URL':''},reduce=True); await p.goto(BASE+'meet-duke/'); await run(p, niche='Beauty and hair')
+    p=await newpage(b,390,844,{'APPS_SCRIPT_URL':''},reduce=True); await p.goto(BASE+'meet-duke/'); await run(p, niche='Hair salon & barbershop')
     rec('demo reduced motion: full flow completes', 'Sample idea' in await p.inner_text('.result'))
     await p.context.close()
 

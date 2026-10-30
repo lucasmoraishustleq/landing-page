@@ -25,8 +25,13 @@ window.HQ_CONFIG = Object.assign({
   REFUND_POLICY_URL: '/#faq-refund',
 
   // Meet Duke demo. HustleQ's own API (the browser never calls Apify directly).
+  // GET {base}/demo/niches -> { ok, niches: [{ key, label }] }
   // POST {base}/demo/profile { handle } -> { ok, profile, insight }   POST {base}/demo/idea { answers, profile } -> { ok, idea }
+  // Base is the marketing-agent on Railway (routes live in src/demo/).
   DUKE_API_BASE: '',
+  // The profile lookup reads Instagram through Apify (~17s); the idea is one model call (~5-15s).
+  PROFILE_TIMEOUT_MS: 40000,
+  IDEA_TIMEOUT_MS: 30000,
 
   // Legacy: old $50/month beta checkout. No longer used as a primary path. Kept so the boundary is documented.
   STRIPE_BETA_LINK: null,
