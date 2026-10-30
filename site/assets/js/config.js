@@ -28,7 +28,7 @@ window.HQ_CONFIG = Object.assign({
   // GET {base}/demo/niches -> { ok, niches: [{ key, label }] }
   // POST {base}/demo/profile { handle } -> { ok, profile, insight }   POST {base}/demo/idea { answers, profile } -> { ok, idea }
   // Base is the marketing-agent on Railway (routes live in src/demo/).
-  DUKE_API_BASE: '',
+  DUKE_API_BASE: 'https://hustleq-agent-v1-production.up.railway.app',
   // The profile lookup reads Instagram through Apify (~17s); the idea is one model call (~5-15s).
   PROFILE_TIMEOUT_MS: 40000,
   IDEA_TIMEOUT_MS: 30000,

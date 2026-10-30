@@ -17,7 +17,10 @@ async def newpage(b, w=1440, h=900, cfg=None, reduce=False):
     await p.route(re.compile(r'https://fonts\.(googleapis|gstatic)\.com/.*'), lambda r: r.abort())
     # never send test data to the real Apps Script
     await p.route(re.compile(r'https://script\.google\.com/.*'), lambda r: r.abort())
-    if cfg: await p.add_init_script('window.HQ_CONFIG='+json.dumps(cfg))
+    # never call the real Duke API (each profile lookup spends Apify credit); live tests mock DUKE_API_BASE
+    await p.route(re.compile(r'https://[^/]*\.railway\.app/.*'), lambda r: r.abort())
+    cfg={'DUKE_API_BASE':'', **(cfg or {})}
+    await p.add_init_script('window.HQ_CONFIG='+json.dumps(cfg))
     return p
 
 async def layout(b):
