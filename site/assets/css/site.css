@@ -562,39 +562,26 @@ html.lb-open,html.lb-open body{overflow:hidden;overscroll-behavior:none}
 .slide > .media-wrap img.media{height:100%}
 .shot-media{position:relative}
 .shot-media img{display:block;width:100%;height:auto}
-/* "Before Duke" process composition: art-directed, not a photo of real material */
-.process{margin:0;min-height:440px;background:var(--line);position:relative;overflow:hidden;display:grid;grid-template-columns:repeat(12,1fr);grid-template-rows:repeat(10,1fr);padding:clamp(20px,3vw,40px);gap:12px}
-.process > *{min-width:0}
-.process .pc-lbl,.pc-h{font-family:var(--mono);font-size:11px;color:var(--body)}
-.pc-cal{grid-column:1 / 9;grid-row:1 / 7;background:var(--surface);border:1px solid var(--ink);padding:14px;display:flex;flex-direction:column;gap:10px}
-.pc-h{display:flex;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:8px}
-.pc-grid{flex:1;display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:auto 1fr 1fr;gap:6px}
-.pc-grid .d{font-family:var(--mono);font-size:10px;color:var(--muted);align-self:end}
-.pc-grid i{border:1px solid var(--line);min-height:28px;background:linear-gradient(var(--line),var(--line)) 8px 22px/60% 4px no-repeat,linear-gradient(var(--line),var(--line)) 8px 32px/40% 4px no-repeat}
-.pc-grid i.t1,.pc-grid i.t2,.pc-grid i.t3{border-top-width:6px}
-.pc-grid i.t1{border-top-color:var(--ink)}.pc-grid i.t2{border-top-color:#B3A794}.pc-grid i.t3{border-top-color:var(--signal)}
-.pc-key .t1{background:var(--ink)}.pc-key .t2{background:#B3A794}.pc-key .t3{background:var(--signal)}
-.pc-key{display:flex;gap:12px;font-family:var(--mono);font-size:10px;color:var(--body)}
-.pc-key b{display:inline-block;width:8px;height:8px;margin-right:5px}
-.pc-brief{grid-column:7 / 13;grid-row:5 / 10;background:var(--cream);border:1px solid var(--ink);padding:14px;display:flex;flex-direction:column;gap:9px;transform:translateY(8px)}
-.pc-line{display:block;height:6px;background:var(--line)}
-.pc-line.w90{width:90%}.pc-line.w70{width:70%}.pc-line.w80{width:80%}
-.pc-note{margin-top:auto;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:22px;line-height:1.05;color:var(--signal-ink)}
-.pc-refs{grid-column:1 / 6;grid-row:7 / 11;display:flex;flex-direction:column;gap:6px}
-.pc-refs div{flex:1;display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.pc-refs i{background:#CFC6B8;border:1px solid #BDB2A2}
-.pc-refs i:nth-child(2){background:var(--ink)}.pc-refs i:nth-child(3){background:var(--surface)}
-.pc-pal{grid-column:10 / 13;grid-row:1 / 3;display:flex;gap:4px;align-self:start}
-.pc-pal i{flex:1;aspect-ratio:1;border:1px solid var(--ink)}
-.pc-cap{position:absolute;right:12px;bottom:10px;font-size:11px;color:var(--body)}
-@media (max-width:900px){.process{min-height:380px;margin-left:var(--gutter)}}
+/* "Before Duke" desk: real screenshots of the tools we used by hand, framed as app windows */
+.desk{margin:0;position:relative;overflow:hidden;min-height:560px;background:var(--line)}
+.dk-win{position:absolute;background:var(--surface);border:1px solid rgba(42,10,61,.85);border-radius:4px;overflow:hidden;box-shadow:0 2px 4px rgba(42,10,61,.08),0 24px 48px -20px rgba(42,10,61,.45)}
+.dk-win img{display:block;width:100%;height:auto}
+.dk-bar{display:flex;align-items:center;gap:10px;height:30px;padding:0 12px;border-bottom:1px solid rgba(42,10,61,.18);background:#FBF8F3;font-family:var(--mono);font-size:11px;color:var(--body)}
+.dk-bar b{font-weight:500;color:var(--ink)}
+.dk-dots{display:flex;gap:5px}.dk-dots i{width:8px;height:8px;border-radius:50%;background:var(--line)}
+.dk-lbl{margin-left:auto;color:var(--muted);white-space:nowrap}
+.dk-dark{background:#191919}.dk-dark .dk-bar{background:#232323;border-bottom-color:#000;color:#9B9B9B}.dk-dark .dk-bar b{color:#F1F1F1}.dk-dark .dk-dots i{background:#4A4A4A}
+.dk-cal{left:5%;top:6%;width:64%;transform:rotate(-1deg);z-index:1}
+.dk-notion{right:4%;top:23%;width:55%;transform:rotate(.8deg);z-index:2}
+.dk-drive{left:5%;top:53%;width:40%;transform:rotate(.6deg);z-index:3}
+.dk-canva{right:4%;bottom:8%;width:56%;transform:rotate(-.7deg);z-index:4}
+.dk-note{position:absolute;left:7%;top:41%;z-index:5;background:var(--signal);color:#fff;font-family:'Instrument Serif',Georgia,serif;font-style:italic;font-size:24px;line-height:1.05;padding:12px 16px 14px;transform:rotate(-4deg);box-shadow:0 12px 24px -10px rgba(0,0,0,.45)}
+.dk-cap{position:absolute;right:12px;bottom:10px;font-size:11px;color:var(--body)}
+@media (max-width:900px){
+  .desk{min-height:620px}
+  .dk-cal{width:80%;top:3%;left:4%}.dk-notion{width:76%;top:23%}.dk-drive{width:62%;top:50%;left:4%}.dk-canva{width:72%;bottom:5%}
+  .dk-note{font-size:17px;left:auto;right:3%;top:15%;padding:9px 12px 11px}
+  .dk-bar{height:24px;font-size:9.5px;padding:0 8px}.dk-lbl{display:none}.dk-dots i{width:6px;height:6px}
+}
 .cs-posts .lb-btn .t{display:none}
 .cs-posts .lb-btn{min-width:36px}
-@media (max-width:600px){
-  .pc-cal{grid-column:1 / 12;grid-row:1 / 6}
-  .pc-pal{display:none}
-  .pc-brief{grid-column:6 / 13;grid-row:6 / 11;transform:none}
-  .process{padding-bottom:34px}
-  .pc-refs{grid-column:1 / 6;grid-row:6 / 11}
-  .pc-note{font-size:19px}
-}

@@ -330,8 +330,8 @@ async def content(b):
     rec('demo title "Duke" is back to the deep purple', c2==[False,'rgb(42, 10, 61)'], c2)
     txt=await p.evaluate('document.body.innerText')
     rec('no internal placeholder text in the hero (DUKE_EXAMPLE_01, Illustrative text, [from the profile])', all(x not in txt for x in ['DUKE_EXAMPLE','Illustrative text','[from the profile]']) and 'Real Duke beta output' in txt and 'The Brazilian Dish Everyone’s Curious About' in txt)
-    br=await p.evaluate('[!!document.querySelector(".bridge img"), !!document.querySelector(".bridge .process"), document.querySelector(".bridge .pc-cap").textContent]')
-    rec('"Before Duke" section uses the process composition, no food photo, labeled as an illustration', br==[False,True,'Illustration of the process'], br)
+    br=await p.evaluate('[...document.querySelectorAll(".bridge .desk .dk-win img")].map(i=>i.getAttribute("src").split("/").pop())')
+    rec('"Before Duke" section shows the four real tool screenshots', br==['cal.webp','notion.webp','drive.webp','canva.webp'], br)
     fg=await p.evaluate('[parseFloat(getComputedStyle(document.querySelector(".faq-g")).fontSize), parseFloat(getComputedStyle(document.querySelector(".faq summary")).fontSize), getComputedStyle(document.querySelector(".faq-g")).color]')
     rec('FAQ group headings are larger than the questions and in deep purple', fg[0]>fg[1] and fg[2]=='rgb(42, 10, 61)', fg)
     # FAQ
