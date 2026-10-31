@@ -269,17 +269,19 @@ async def ux(b):
     await p.context.close()
     # example week: day tabs
     for w in (1440,390):
-        p=await newpage(b,w,900 if w>600 else 844); await p.goto(BASE); await p.evaluate('document.querySelector(".showcase").scrollIntoView()'); await p.wait_for_timeout(700)
+        p=await newpage(b,w,900 if w>600 else 844); await p.goto(BASE); await p.evaluate('document.querySelector(".ew").scrollIntoView()'); await p.wait_for_timeout(700)
         vis='[...document.querySelectorAll(".wk-p")].map(x=>!x.hidden)'
-        days=await p.evaluate('[...document.querySelectorAll(".days [role=tab] .f")].map(e=>e.textContent.slice(0,3))')
+        days=await p.evaluate('[...document.querySelectorAll(".ew-days [role=tab]")].map(e=>e.textContent)')
         v0=await p.evaluate(vis)
         await p.click('#wk-t2'); v1=await p.evaluate(vis); h=await p.inner_text('#wk-p2')
         await p.keyboard.press('ArrowRight'); v2=await p.evaluate(vis); foc=await p.evaluate('document.activeElement.id')
         sw=await p.evaluate('document.documentElement.scrollWidth')
-        rec(f'example week @{w}: Mon to Thu, tabs and arrow keys switch the brief, no page overflow', days==['Mon','Tue','Wed','Thu'] and v0==[True,False,False,False] and v1==[False,True,False,False] and v2==[False,False,True,False] and foc=='wk-t3' and 'Everything you see at an event starts here' in h and sw<=w, (days,v0,v1,v2,foc,sw))
-        await p.locator('.showcase').screenshot(path=SHOTS+f'showcase_{w}.png'); await p.context.close()
+        rec(f'example week @{w}: Mon to Thu, tabs and arrow keys switch the post, no page overflow', days==['Mon','Tue','Wed','Thu'] and v0==[True,False,False,False] and v1==[False,True,False,False] and v2==[False,False,True,False] and foc=='wk-t3' and 'The hour before the doors open' in h and 'Everything you see at an event starts here' not in h and sw<=w, (days,v0,v1,v2,foc,sw))
+        await p.click('#wk-p3 .ew-more'); o3=await p.inner_text('#wk-p3'); await p.click('#wk-t4'); o4=await p.evaluate('[!document.getElementById("wk-f4").hidden, document.querySelector("#wk-p4 .ew-more").getAttribute("aria-expanded"), document.querySelector("#wk-p4 .ew-more").textContent.trim()]')
+        rec(f'example week @{w}: "See the full brief" opens the 7 parts and stays open when the day changes', '80 guests. One hour to go.' in o3 and o4[:2]==[True,'true'] and 'Hide the full brief' in o4[2], (o3[:60],o4))
+        await p.locator('.ew').screenshot(path=SHOTS+f'week_{w}.png'); await p.context.close()
     p=await newpage(b,1440,900); await p.goto(BASE)
-    br=await p.evaluate('[...document.querySelectorAll(".wk-p")].map(x=>[x.querySelectorAll(".fields dt").length, x.querySelector(".result").textContent.includes("Duke doesn’t design or post")])')
+    br=await p.evaluate('[...document.querySelectorAll(".wk-p")].map(x=>[x.querySelectorAll(".ew-full dt").length, x.querySelector(".ew-head .note").textContent.includes("Duke doesn’t design or post")])')
     flow=await p.evaluate('[...document.querySelectorAll(".flow .st")].map(e=>e.querySelector(".t").textContent)')
     rec('every brief shows its 7 parts and says Duke does not design or post; the flow ends with "You make it"', br==[[7,True]]*4 and flow[-1]=='You make it' and len(flow)==5, (br,flow))
     await p.context.close()
@@ -353,7 +355,7 @@ async def content(b):
     await p.click('.vid >> nth=0 >> .vid-btn'); await p.wait_for_timeout(200)
     paused=await p.evaluate('document.querySelectorAll(".vid video")[0].paused'); lab=await p.inner_text('.vid >> nth=0 >> .vid-btn')
     rec('example week video plays muted when visible and can be paused', playing and paused and lab=='Play' and await p.evaluate('document.querySelectorAll(".vid video")[0].muted'), (playing,paused,lab))
-    await p.locator('.showcase').screenshot(path=SHOTS+'showcase_video_1440.png')
+    await p.locator('.ew').screenshot(path=SHOTS+'week_video_1440.png')
     await p.context.close()
     p=await newpage(b,390,844,reduce=True); await p.goto(BASE); await p.evaluate('document.querySelectorAll(".vid")[0].scrollIntoView({block:"center"})'); await p.wait_for_timeout(1200)
     rec('reduced motion: videos do not autoplay', await p.evaluate('[...document.querySelectorAll(".vid video")].every(v=>v.paused)'))
@@ -378,7 +380,7 @@ async def content(b):
 async def viewer(b):
     for w,h in [(1440,900),(390,844)]:
         p=await newpage(b,w,h); await p.goto(BASE); await p.wait_for_timeout(300)
-        await p.evaluate('document.documentElement.style.scrollBehavior="auto";document.querySelector(".showcase").scrollIntoView({block:"center"})'); await p.wait_for_timeout(400)
+        await p.evaluate('document.documentElement.style.scrollBehavior="auto";document.querySelector(".ew").scrollIntoView({block:"center"})'); await p.wait_for_timeout(400)
         await p.click('.wk-res >> nth=0 >> .lb-btn'); await p.wait_for_timeout(300)
         y0=await p.evaluate('scrollY')
         st=await p.evaluate('({open:!document.querySelector(".lb").hidden,count:document.querySelector(".lb-count").textContent,img:!!document.querySelector(".lb-stage img"),locked:document.documentElement.classList.contains("lb-open"),focus:document.activeElement.className,sw:document.documentElement.scrollWidth})')

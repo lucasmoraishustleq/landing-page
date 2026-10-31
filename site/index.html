@@ -112,67 +112,89 @@
   <div class="show-h rv">
     <span class="eyebrow"><svg class="star" viewBox="0 0 24 24" aria-hidden="true"><use href="#sp" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Inside a weekly plan</span>
     <h3 id="wk-h">Duke writes the brief. <em class="ser">You make the post.</em></h3>
-    <p>Pick a day to open its brief. Next to it, a finished post from Bahia Taste, so you can picture the result.</p>
+    <p>Pick a day. Open the full brief only if you want the details.</p>
   </div>
-  <div class="showcase rv">
-    <div class="sc-top"><b>Example week · Bahia Taste</b><span class="mono">Brazilian catering, NYC + NJ · example plan</span></div>
-    <div class="days" role="tablist" aria-labelledby="wk-h">
-      <button type="button" role="tab" id="wk-t1" aria-controls="wk-p1" aria-selected="true"><img src="assets/img/plan/event-bites-800.jpg" alt="" loading="lazy"><span><span class="f">Mon<span class="ff"> · Static image</span></span><span class="t">Three dishes for your next event</span><span class="s">Consideration</span></span></button>
-      <button type="button" role="tab" id="wk-t2" aria-controls="wk-p2" aria-selected="false" tabindex="-1"><img src="assets/img/plan/event-spread-poster.jpg" alt="" loading="lazy"><span><span class="f">Tue<span class="ff"> · Video</span></span><span class="t">The hour before the doors open</span><span class="s">Awareness</span></span></button>
-      <button type="button" role="tab" id="wk-t3" aria-controls="wk-p3" aria-selected="false" tabindex="-1"><img src="assets/img/plan/table-set-800.jpg" alt="" loading="lazy"><span><span class="f">Wed<span class="ff"> · Static image</span></span><span class="t">A table set for 80, one hour early</span><span class="s">Awareness</span></span></button>
-      <button type="button" role="tab" id="wk-t4" aria-controls="wk-p4" aria-selected="false" tabindex="-1"><img src="assets/img/plan/menu-tradicional-540.jpg" alt="" loading="lazy"><span><span class="f">Thu<span class="ff"> · Story</span></span><span class="t">This week’s delivery menu</span><span class="s">Conversion</span></span></button>
-    </div>
+  <div class="ew rv">
+    <div class="ew-top"><b>Example week · Bahia Taste</b><div class="ew-days" role="tablist" aria-labelledby="wk-h"><button type="button" role="tab" id="wk-t1" aria-controls="wk-p1" aria-selected="true">Mon</button><button type="button" role="tab" id="wk-t2" aria-controls="wk-p2" aria-selected="false" tabindex="-1">Tue</button><button type="button" role="tab" id="wk-t3" aria-controls="wk-p3" aria-selected="false" tabindex="-1">Wed</button><button type="button" role="tab" id="wk-t4" aria-controls="wk-p4" aria-selected="false" tabindex="-1">Thu</button></div></div>
     <div class="wk-p" role="tabpanel" id="wk-p1" aria-labelledby="wk-t1">
-      <div class="brief"><div class="bh"><span class="bk"><i>Duke’s brief</i>Mon · Static image</span><h4>Three dishes for your next event</h4></div>
-        <dl class="fields">
-          <div class="w"><dt>Idea</dt><dd>Answer the question people ask before booking: what would you actually serve?</dd></div>
-          <div class="w hook"><dt>Hook</dt><dd>“What goes into catering your event?”</dd></div>
-          <div><dt>Goal</dt><dd>Help people who are comparing caterers picture the menu.</dd></div>
-          <div><dt>Funnel stage</dt><dd>Consideration · middle of funnel</dd></div>
-          <div class="w"><dt>Creative direction</dt><dd>Close-up of a full tray, warm light, shallow focus. The question as large text across the photo.</dd></div>
-          <div class="w"><dt>Caption</dt><dd>Coxinhas, pastéis and pão de queijo, made fresh for every event. Which one is your crowd’s favorite? Ask us about a tasting.</dd></div>
-          <div class="w"><dt>How to film it</dt><dd>Photograph a finished tray from 45°. Clean background, no plastic wrap.</dd></div>
-        </dl></div>
-      <div class="result"><span class="rk">The finished post</span><div class="wk-res"><img class="media" src="assets/img/plan/event-bites-800.jpg" width="800" height="1000" loading="lazy" alt="Trays of coxinhas on skewers, with the text: What goes into catering your event?"></div><p><b>Duke doesn’t design or post.</b> It tells you what to make. Photo: Bahia Taste’s own post.</p></div>
+      <div class="ew-body">
+        <figure class="ew-media"><div class="wk-res"><img class="media" src="assets/img/plan/event-bites-800.jpg" width="800" height="1000" loading="lazy" alt="Trays of coxinhas on skewers, with the text: What goes into catering your event?"></div><figcaption>The finished post · Bahia Taste</figcaption></figure>
+        <div class="ew-head">
+          <span class="ew-kick"><i>Duke’s brief</i>Mon · Static image</span>
+          <h4>Three dishes for your next event</h4>
+          <p class="note">Duke doesn’t design or post. It tells you what to make, and you make it.</p>
+          <button type="button" class="ew-more" aria-expanded="false" aria-controls="wk-f1"><span class="pm" aria-hidden="true">+</span><span class="tx">See the full brief</span></button>
+        </div>
+      </div>
+      <div class="ew-full" id="wk-f1" hidden><dl>
+        <div class="hook"><dt>Hook</dt><dd>“What goes into catering your event?”</dd></div>
+        <div class="w2"><dt>Idea</dt><dd>Answer the question people ask before booking: what would you actually serve?</dd></div>
+        <div><dt>Goal</dt><dd>Help people who are comparing caterers picture the menu.</dd></div>
+        <div><dt>Funnel stage</dt><dd>Consideration · middle of funnel</dd></div>
+        <div><dt>How to film it</dt><dd>Photograph a finished tray from 45°. Clean background, no plastic wrap.</dd></div>
+        <div class="w2"><dt>Creative direction</dt><dd>Close-up of a full tray, warm light, shallow focus. The question as large text across the photo.</dd></div>
+        <div><dt>Caption</dt><dd>Coxinhas, pastéis and pão de queijo, made fresh for every event. Which one is your crowd’s favorite? Ask us about a tasting.</dd></div>
+      </dl></div>
     </div>
     <div class="wk-p" role="tabpanel" id="wk-p2" aria-labelledby="wk-t2" hidden>
-      <div class="brief"><div class="bh"><span class="bk"><i>Duke’s brief</i>Tue · Video</span><h4>The hour before the doors open</h4></div>
-        <dl class="fields">
-          <div class="w"><dt>Idea</dt><dd>Show the setup before an event, so people see the care before they see the party.</dd></div>
-          <div class="w hook"><dt>Hook</dt><dd>“Everything you see at an event starts here.”</dd></div>
-          <div><dt>Goal</dt><dd>Reach people who don’t know the business yet.</dd></div>
-          <div><dt>Funnel stage</dt><dd>Awareness · top of funnel</dd></div>
-          <div class="w"><dt>Creative direction</dt><dd>Close-ups of hands finishing a dish, natural light. A wide shot of the room being set. Cut on the doors opening.</dd></div>
-          <div class="w"><dt>Caption</dt><dd>Before the first guest arrives, there are hours of work you never see. This is that hour. Planning an event? Send us a message.</dd></div>
-          <div class="w"><dt>How to film it</dt><dd>Shoot on a phone, vertical. Three clips of 3 to 5 seconds. Film before guests arrive. Keep the real sound.</dd></div>
-        </dl></div>
-      <div class="result"><span class="rk">The finished post</span><div class="wk-res"><div class="vid"><video class="media" muted loop playsinline preload="none" data-full="assets/video/posts/catering-02.mp4" poster="assets/img/plan/event-spread-poster.jpg" width="540" height="675" aria-label="Video: an outdoor event spread being set out, with the text: It starts with the details"><source src="assets/video/event-spread.mp4" type="video/mp4"></video><button type="button" class="vid-btn" aria-label="Play video">Play</button></div></div><p><b>Duke doesn’t design or post.</b> It tells you what to make. Video: Bahia Taste’s own post.</p></div>
+      <div class="ew-body">
+        <figure class="ew-media"><div class="wk-res"><div class="vid"><video class="media" muted loop playsinline preload="none" data-full="assets/video/posts/catering-02.mp4" poster="assets/img/plan/event-spread-poster.jpg" width="540" height="675" aria-label="Video: an outdoor event spread being set out, with the text: It starts with the details"><source src="assets/video/event-spread.mp4" type="video/mp4"></video><button type="button" class="vid-btn" aria-label="Play video">Play</button></div></div><figcaption>The finished post · Bahia Taste</figcaption></figure>
+        <div class="ew-head">
+          <span class="ew-kick"><i>Duke’s brief</i>Tue · Video</span>
+          <h4>The hour before the doors open</h4>
+          <p class="note">Duke doesn’t design or post. It tells you what to make, and you make it.</p>
+          <button type="button" class="ew-more" aria-expanded="false" aria-controls="wk-f2"><span class="pm" aria-hidden="true">+</span><span class="tx">See the full brief</span></button>
+        </div>
+      </div>
+      <div class="ew-full" id="wk-f2" hidden><dl>
+        <div class="hook"><dt>Hook</dt><dd>“Everything you see at an event starts here.”</dd></div>
+        <div class="w2"><dt>Idea</dt><dd>Show the setup before an event, so people see the care before they see the party.</dd></div>
+        <div><dt>Goal</dt><dd>Reach people who don’t know the business yet.</dd></div>
+        <div><dt>Funnel stage</dt><dd>Awareness · top of funnel</dd></div>
+        <div><dt>How to film it</dt><dd>Shoot on a phone, vertical. Three clips of 3 to 5 seconds. Film before guests arrive. Keep the real sound.</dd></div>
+        <div class="w2"><dt>Creative direction</dt><dd>Close-ups of hands finishing a dish, natural light. A wide shot of the room being set. Cut on the doors opening.</dd></div>
+        <div><dt>Caption</dt><dd>Before the first guest arrives, there are hours of work you never see. This is that hour. Planning an event? Send us a message.</dd></div>
+      </dl></div>
     </div>
     <div class="wk-p" role="tabpanel" id="wk-p3" aria-labelledby="wk-t3" hidden>
-      <div class="brief"><div class="bh"><span class="bk"><i>Duke’s brief</i>Wed · Static image</span><h4>A table set for 80, one hour early</h4></div>
-        <dl class="fields">
-          <div class="w"><dt>Idea</dt><dd>Show the room ready before guests arrive, so people see the scale and the care of a real event.</dd></div>
-          <div class="w hook"><dt>Hook</dt><dd>“80 guests. One hour to go.”</dd></div>
-          <div><dt>Goal</dt><dd>Reach people planning parties who don’t know Bahia Taste yet.</dd></div>
-          <div><dt>Funnel stage</dt><dd>Awareness · top of funnel</dd></div>
-          <div class="w"><dt>Creative direction</dt><dd>Wide shot down the length of the table, candles lit, natural light. No people. Add the event size as text on the image.</dd></div>
-          <div class="w"><dt>Caption</dt><dd>Every place set, every candle lit, an hour before the doors open. Planning something big? Send us a message.</dd></div>
-          <div class="w"><dt>How to film it</dt><dd>One photo from the end of the table, phone at chest height. Shoot before the lights go down.</dd></div>
-        </dl></div>
-      <div class="result"><span class="rk">The finished post</span><div class="wk-res"><img class="media" src="assets/img/plan/table-set-800.jpg" width="800" height="1000" loading="lazy" alt="A long event table set with candles, woven placemats and green runners before guests arrive"></div><p><b>Duke doesn’t design or post.</b> It tells you what to make. Photo: Bahia Taste’s own post.</p></div>
+      <div class="ew-body">
+        <figure class="ew-media"><div class="wk-res"><img class="media" src="assets/img/plan/table-set-800.jpg" width="800" height="1000" loading="lazy" alt="A long event table set with candles, woven placemats and green runners before guests arrive"></div><figcaption>The finished post · Bahia Taste</figcaption></figure>
+        <div class="ew-head">
+          <span class="ew-kick"><i>Duke’s brief</i>Wed · Static image</span>
+          <h4>A table set for 80, one hour early</h4>
+          <p class="note">Duke doesn’t design or post. It tells you what to make, and you make it.</p>
+          <button type="button" class="ew-more" aria-expanded="false" aria-controls="wk-f3"><span class="pm" aria-hidden="true">+</span><span class="tx">See the full brief</span></button>
+        </div>
+      </div>
+      <div class="ew-full" id="wk-f3" hidden><dl>
+        <div class="hook"><dt>Hook</dt><dd>“80 guests. One hour to go.”</dd></div>
+        <div class="w2"><dt>Idea</dt><dd>Show the room ready before guests arrive, so people see the scale and the care of a real event.</dd></div>
+        <div><dt>Goal</dt><dd>Reach people planning parties who don’t know Bahia Taste yet.</dd></div>
+        <div><dt>Funnel stage</dt><dd>Awareness · top of funnel</dd></div>
+        <div><dt>How to film it</dt><dd>One photo from the end of the table, phone at chest height. Shoot before the lights go down.</dd></div>
+        <div class="w2"><dt>Creative direction</dt><dd>Wide shot down the length of the table, candles lit, natural light. No people. Add the event size as text on the image.</dd></div>
+        <div><dt>Caption</dt><dd>Every place set, every candle lit, an hour before the doors open. Planning something big? Send us a message.</dd></div>
+      </dl></div>
     </div>
     <div class="wk-p" role="tabpanel" id="wk-p4" aria-labelledby="wk-t4" hidden>
-      <div class="brief"><div class="bh"><span class="bk"><i>Duke’s brief</i>Thu · Story</span><h4>This week’s delivery menu</h4></div>
-        <dl class="fields">
-          <div class="w"><dt>Idea</dt><dd>Post the menu so people can order before the weekend cutoff.</dd></div>
-          <div class="w hook"><dt>Hook</dt><dd>“This week’s menu is here.”</dd></div>
-          <div><dt>Goal</dt><dd>Get orders in before Friday’s cutoff.</dd></div>
-          <div><dt>Funnel stage</dt><dd>Conversion · bottom of funnel</dd></div>
-          <div class="w"><dt>Creative direction</dt><dd>One story per menu, same layout each week so regulars recognize it. Price on every dish.</dd></div>
-          <div class="w"><dt>Caption</dt><dd>Two menus this week: Tradicional and Healthy. DM us your order or tap the link.</dd></div>
-          <div class="w"><dt>How to film it</dt><dd>Use the weekly menu template. Add a link sticker and a “DM to order” sticker.</dd></div>
-        </dl></div>
-      <div class="result"><span class="rk">The finished post</span><div class="wk-res"><div class="stories"><img src="assets/img/plan/menu-tradicional-540.jpg" width="540" height="960" loading="lazy" alt="Weekly menu story, Tradicional: shrimp bobó special for $20, and spaghetti bolognese, pork chop and chicken parmesan for $18"><img src="assets/img/plan/menu-healthy-540.jpg" width="540" height="960" loading="lazy" alt="Weekly menu story, Healthy/Fitness: salmon with orange and ginger sauce special for $20, and three $18 dishes"></div></div><p><b>Duke doesn’t design or post.</b> It tells you what to make. Stories: Bahia Taste’s own posts.</p></div>
+      <div class="ew-body">
+        <figure class="ew-media"><div class="wk-res"><div class="stories"><img src="assets/img/plan/menu-tradicional-540.jpg" width="540" height="960" loading="lazy" alt="Weekly menu story, Tradicional: shrimp bobó special for $20, and spaghetti bolognese, pork chop and chicken parmesan for $18"><img src="assets/img/plan/menu-healthy-540.jpg" width="540" height="960" loading="lazy" alt="Weekly menu story, Healthy/Fitness: salmon with orange and ginger sauce special for $20, and three $18 dishes"></div></div><figcaption>The finished post · Bahia Taste</figcaption></figure>
+        <div class="ew-head">
+          <span class="ew-kick"><i>Duke’s brief</i>Thu · Story</span>
+          <h4>This week’s delivery menu</h4>
+          <p class="note">Duke doesn’t design or post. It tells you what to make, and you make it.</p>
+          <button type="button" class="ew-more" aria-expanded="false" aria-controls="wk-f4"><span class="pm" aria-hidden="true">+</span><span class="tx">See the full brief</span></button>
+        </div>
+      </div>
+      <div class="ew-full" id="wk-f4" hidden><dl>
+        <div class="hook"><dt>Hook</dt><dd>“This week’s menu is here.”</dd></div>
+        <div class="w2"><dt>Idea</dt><dd>Post the menu so people can order before the weekend cutoff.</dd></div>
+        <div><dt>Goal</dt><dd>Get orders in before Friday’s cutoff.</dd></div>
+        <div><dt>Funnel stage</dt><dd>Conversion · bottom of funnel</dd></div>
+        <div><dt>How to film it</dt><dd>Use the weekly menu template. Add a link sticker and a “DM to order” sticker.</dd></div>
+        <div class="w2"><dt>Creative direction</dt><dd>One story per menu, same layout each week so regulars recognize it. Price on every dish.</dd></div>
+        <div><dt>Caption</dt><dd>Two menus this week: Tradicional and Healthy. DM us your order or tap the link.</dd></div>
+      </dl></div>
     </div>
   </div>
   <div class="beta-proof rv">

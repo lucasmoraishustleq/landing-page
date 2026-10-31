@@ -39,7 +39,7 @@
   }
 
   // ---- example week: one tab per day, arrow keys move between days ----
-  var wkTabs = document.querySelectorAll('.days [role="tab"]');
+  var wkTabs = document.querySelectorAll('.ew-days [role="tab"]');
   function selectDay(btn, focus) {
     wkTabs.forEach(function (b) {
       var on = b === btn;
@@ -194,6 +194,20 @@
   // ---- a link to a FAQ answer (for example /#faq-refund) opens it ----
   var openFromHash = function () { var d = /^#[A-Za-z][\w-]*$/.test(location.hash) && document.querySelector('details' + location.hash); if (d) d.open = true; };
   openFromHash(); window.addEventListener('hashchange', openFromHash);
+
+  // ---- example week: one "full brief" toggle, shared by every day ----
+  var wkMore = document.querySelectorAll('.ew-more');
+  wkMore.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      var open = btn.getAttribute('aria-expanded') !== 'true';
+      wkMore.forEach(function (b) {
+        b.setAttribute('aria-expanded', String(open));
+        $(b.getAttribute('aria-controls')).hidden = !open;
+        b.querySelector('.pm').textContent = open ? '−' : '+';
+        b.querySelector('.tx').textContent = open ? 'Hide the full brief' : 'See the full brief';
+      });
+    });
+  });
 
   // ---- example week videos: muted, play while visible, always pausable; never autoplay with reduced motion ----
   document.querySelectorAll('.vid').forEach(function (box) {
