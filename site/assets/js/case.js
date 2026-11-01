@@ -76,6 +76,11 @@
           html.push('<section class="cs-text wrap"><span class="cs-label">' + esc(b.label) + '</span><div class="cs-posts">' + b.ids.map(function (id) { return '<div class="ph" style="aspect-ratio:4/5">' + esc(id) + '</div>'; }).join('') + '</div></section>');
         }
         break;
+      case 'results':
+        html.push('<section class="cs-text cs-results wrap"><span class="cs-label">' + esc(b.label) + '</span><div><h2>' + esc(b.heading) + '</h2>' + (b.body ? '<p>' + esc(b.body) + '</p>' : '') +
+          '<dl class="cs-stats">' + b.stats.map(function (r) { return '<div><dt>' + esc(r[1]) + '</dt><dd>' + esc(r[0]) + '</dd></div>'; }).join('') + '</dl>' +
+          (b.audience ? '<p class="cs-aud">' + esc(b.audience) + '</p>' : '') + '<p class="cs-src">' + esc(b.source) + '</p></div></section>');
+        break;
       case 'closing':
         if (b.img) html.push('<figure class="cs-full cs-closing"><div class="cs-frame" style="aspect-ratio:16/9">' + img(b) + '</div></figure>');
         var next = window.HQ_WORK.length > 1 ? window.HQ_WORK[(idx + 1) % window.HQ_WORK.length] : null;

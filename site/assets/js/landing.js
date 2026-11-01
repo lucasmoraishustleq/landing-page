@@ -65,12 +65,14 @@
       var a = document.createElement('a');
       a.className = 'tile'; a.href = 'work/' + p.slug + '/';
       a.innerHTML = '<div class="img"><img loading="lazy" sizes="(max-width:900px) 100vw, 60vw"></div>' +
-        '<div class="row1"><span class="name"></span><span class="go">View case →</span></div><span class="meta"></span>';
+        '<div class="row1"><span class="name"></span><span class="go">View case →</span></div><span class="meta"></span>' +
+        (p.highlight ? '<span class="hl"></span>' : '');
       var img = a.querySelector('img');
       img.src = p.image.src; img.srcset = p.image.srcset; img.alt = p.image.alt;
       if (p.image.position) img.style.objectPosition = p.image.position;
       a.querySelector('.name').textContent = p.name;
       a.querySelector('.meta').textContent = p.meta || '';
+      if (p.highlight) a.querySelector('.hl').textContent = p.highlight;
       a.setAttribute('aria-label', p.name + ', view case');
       grid.appendChild(a);
     });

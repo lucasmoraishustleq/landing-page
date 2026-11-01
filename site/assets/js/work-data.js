@@ -9,7 +9,8 @@
  * Image paths are written without size suffix and without the site root, e.g. 'work/bahia-taste/meal-box'.
  * Only use verified facts and client-approved material. Leave unknown facts out or as a placeholder block.
  *
- * Case block types: hero (fit: 'contain' for logos), meta, text, full, pair, mark, placeholder, posts, closing.
+ * Case block types: hero (fit: 'contain' for logos), meta, text, full, pair, mark, placeholder, posts, results, closing.
+ * results: sourced, client-approved numbers only, always with the period in `source`.
  * Placeholder blocks and post captions in [brackets] render only while HQ_CONFIG.SHOW_DEV_BAR is true.
  */
 window.HQ_WORK = [
@@ -17,6 +18,7 @@ window.HQ_WORK = [
     slug: 'bahia-taste',
     name: 'Bahia Taste',
     meta: 'Brazilian food · events and meal delivery',
+    highlight: 'One reel: 15K views, 201 new followers',
     image: {
       src: 'assets/img/work/bahia-taste/plated-series-800.jpg',
       srcset: 'assets/img/work/bahia-taste/plated-series-800.jpg 800w, assets/img/work/bahia-taste/plated-series-1400.jpg 1400w',
@@ -32,7 +34,7 @@ window.HQ_WORK = [
           ['Client', 'Bahia Taste'],
           ['Sector', 'Brazilian food, events and meal delivery'],
           ['HustleQ', 'Content planning and creation'],
-          ['Case', 'In progress']
+          ['Results', 'August 2026, Instagram Insights']
         ] },
         { type: 'text', label: '01 · The kitchen', heading: 'Food from Bahia, made in front of people.',
           body: 'Bahia Taste cooks Bahian food for events and for meal delivery. At its event table, the printed menu lists acarajé, abará and bobó de camarão.' },
@@ -71,7 +73,16 @@ window.HQ_WORK = [
           { video: 'posts/afternoon-event', img: 'work/bahia-taste/posts/afternoon-event', alt: 'Video from the Uma Tarde na Bahia event: frying, chopping and plating in the kitchen, then guests in Brazil jerseys getting their plates and a singer performing', caption: 'Reel · Uma Tarde na Bahia, the event' },
           { video: 'posts/afternoon-menu', img: 'work/bahia-taste/posts/afternoon-menu', alt: 'Video: the Uma Tarde na Bahia menu, one dish per card, including bolinho, quiabada, fish and shrimp moqueca, abará, ceviche, cozido and cocada', caption: 'Reel · Uma Tarde na Bahia, the menu' }
         ] },
-        { type: 'placeholder', label: '05 · Results', id: 'CASE_METRICS_PENDING', note: 'Results still to be confirmed. Shown only with an approved, sourced result.' },
+        { type: 'results', label: '05 · Results', heading: 'One reel, 201 new followers.',
+          body: 'The Uma Tarde na Bahia reel was the account’s top post in August. Most of the month’s views came from people who did not follow Bahia Taste yet.',
+          stats: [
+            ['15K', 'views on the Uma Tarde na Bahia reel'],
+            ['201', 'new followers from that one reel'],
+            ['+10%', 'followers in August (+122)'],
+            ['57%', 'of August views came from people who didn’t follow yet']
+          ],
+          audience: 'Who watches: 80% in the US, two thirds women, 7 in 10 aged 25 to 44.',
+          source: 'Source: Instagram Insights for the Bahia Taste account, August 2–31, 2026. Shared with the client’s permission.' },
         { type: 'closing', text: 'The service came first. Duke is how we package what it taught us.', position: '50% 50%' }
       ]
     }
