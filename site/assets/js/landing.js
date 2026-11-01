@@ -223,25 +223,36 @@
     }
   });
 
-  // ---- full-screen viewer: example week posts (one gallery) and Duke beta screenshots ----
+  // ---- full-screen viewer: example week posts (one gallery per day) and Duke beta screenshots ----
   if (window.HQLightbox) {
-    var plan = [], hosts = [];
-    document.querySelectorAll('.wk-res').forEach(function (sl) {
-      var host = sl.querySelector('.vid, .stories, img.media');
+    // a day opens its own post; data-post names a case post in work-data.js and opens all its slides
+    var findPost = function (img) {
+      var hit = null;
+      (window.HQ_WORK || []).forEach(function (pr) { pr.case.blocks.forEach(function (bl) { (bl.items || []).forEach(function (it) { if (it.img === img) hit = it; }); }); });
+      return hit;
+    };
+    var caseItem = function (sl) {
+      var base = 'assets/img/' + sl.img;
+      return sl.video ? { type: 'video', src: 'assets/video/' + sl.video + '.mp4', poster: base + '-800.jpg', alt: sl.alt }
+        : { type: 'img', src: base + '-1400.jpg', srcset: base + '-800.jpg 800w, ' + base + '-1400.jpg 1400w', alt: sl.alt };
+    };
+    document.querySelectorAll('.wk-res').forEach(function (res) {
+      var host = res.querySelector('.vid, .stories, img.media');
       if (!host) return;
-      var start = plan.length;
-      if (host.classList.contains('vid')) {
+      var items = [], post = res.getAttribute('data-post') && findPost(res.getAttribute('data-post'));
+      if (post && post.slides) {
+        items = post.slides.map(caseItem);
+      } else if (host.classList.contains('vid')) {
         var v = host.querySelector('video');
-        plan.push({ type: 'video', src: v.getAttribute('data-full') || v.querySelector('source').getAttribute('src'), poster: v.getAttribute('poster'), alt: v.getAttribute('aria-label') });
+        items.push({ type: 'video', src: v.getAttribute('data-full') || v.querySelector('source').getAttribute('src'), poster: v.getAttribute('poster'), alt: v.getAttribute('aria-label') });
       } else if (host.classList.contains('stories')) {
-        host.querySelectorAll('img').forEach(function (im) { plan.push({ type: 'img', src: im.getAttribute('src'), alt: im.alt }); });
+        host.querySelectorAll('img').forEach(function (im) { items.push({ type: 'img', src: im.getAttribute('src'), alt: im.alt }); });
       } else {
-        plan.push({ type: 'img', src: host.getAttribute('src'), alt: host.alt });
+        items.push({ type: 'img', src: host.getAttribute('src'), alt: host.alt });
       }
       if (host.tagName === 'IMG') { var w = document.createElement('div'); w.className = 'media-wrap'; host.parentNode.insertBefore(w, host); w.appendChild(host); host = w; }
-      hosts.push([host, start]);
+      window.HQLightbox.attach(host, items, 0);
     });
-    hosts.forEach(function (h) { window.HQLightbox.attach(h[0], plan, h[1]); });
     document.querySelectorAll('.shot').forEach(function (fig) {
       var im = fig.querySelector('img'); if (!im) return;
       var w = document.createElement('div'); w.className = 'shot-media'; im.parentNode.insertBefore(w, im); w.appendChild(im);

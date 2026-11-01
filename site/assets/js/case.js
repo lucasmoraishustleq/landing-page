@@ -25,11 +25,10 @@
   // Full-screen viewer: each frame registers the items it opens (see lightbox.js)
   var LB = [];
   function full(b) { var base = root + 'assets/img/' + b.img; return { type: 'img', src: base + '-1400.jpg', srcset: base + '-800.jpg 800w, ' + base + '-1400.jpg 1400w', alt: b.alt }; }
+  function vid(s) { return { type: 'video', src: root + 'assets/video/' + s.video + '.mp4', poster: root + 'assets/img/' + s.img + '-800.jpg', alt: s.alt }; }
   function lbItems(b) {
-    if (!b.slides) return [full(b)];
-    return b.slides.map(function (s) {
-      return s.video ? { type: 'video', src: root + 'assets/video/' + s.video + '.mp4', poster: root + 'assets/img/' + s.img + '-800.jpg', alt: s.alt } : full(s);
-    });
+    if (!b.slides) return [b.video ? vid(b) : full(b)];
+    return b.slides.map(function (s) { return s.video ? vid(s) : full(s); });
   }
   function lb(b) { LB.push(lbItems(b)); return ' data-lb="' + (LB.length - 1) + '"'; }
   function fig(b, sizes) {
@@ -70,7 +69,7 @@
         if (b.items) {
           html.push('<section class="cs-text wrap"><span class="cs-label">' + esc(b.label) + '</span><div><div class="cs-posts">' + b.items.map(function (it) {
             var cap = it.caption && (showPH || !/^\[.*\]$/.test(it.caption)) ? '<figcaption>' + esc(it.caption) + '</figcaption>' : '';
-            var n = it.slides ? '<span class="cs-count mono">1 / ' + it.slides.length + '</span>' : '';
+            var n = it.slides ? '<span class="cs-count mono">1 / ' + it.slides.length + '</span>' : it.video ? '<span class="cs-count mono">Video</span>' : '';
             return '<figure class="cs-fig"><div class="cs-frame' + (it.fit === 'contain' ? ' contain' : '') + '"' + lb(it) + ' style="aspect-ratio:4/5">' + img(it, { sizes: '(max-width:600px) 50vw, 25vw' }) + n + '</div>' + cap + '</figure>';
           }).join('') + '</div>' + (showPH && b.note ? '<span class="todo" style="margin-top:16px">' + esc(b.note) + '</span>' : '') + '</div></section>');
         } else if (showPH) {

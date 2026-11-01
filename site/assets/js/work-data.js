@@ -48,7 +48,6 @@ window.HQ_WORK = [
           { img: 'work/bahia-taste/meal-box', alt: 'A delivery container with rice, beans, beef and farofa, seen from above', caption: 'A meal packed for delivery.', ratio: '3/4' },
           { img: 'work/bahia-taste/eggplant-series', alt: 'Rows of small bowls with an eggplant spread and toasted bread', caption: 'Small plates made in series.', ratio: '3/4' }
         ] },
-        { type: 'full', img: 'work/bahia-taste/plate', alt: 'A plate with rice, farofa, tomato vinaigrette and a seafood stew, seen from above', caption: 'Rice, farofa, vinaigrette and a seafood stew.', ratio: '21/9', position: '50% 50%' },
         { type: 'placeholder', label: '03 · What HustleQ did', id: 'CASE_STRATEGY', note: '[Creative approach placeholder] What HustleQ planned and produced. Final text still to be written.' },
         { type: 'posts', label: '04 · Posts', items: [
           { img: 'work/bahia-taste/posts/mealprep-01', alt: 'Cover of the Weekly Meal Prep carousel: meal containers with the words Weekly Meal Prep', caption: 'Carousel · Weekly meal prep',
@@ -69,8 +68,8 @@ window.HQ_WORK = [
               { img: 'work/bahia-taste/posts/catering-06', alt: 'A charcuterie and dessert spread with flowers, with the text Every occasion is different' },
               { img: 'work/bahia-taste/posts/catering-07', alt: 'A long table set for an event, with the text From our kitchen to your celebration' }
             ] },
-          { img: 'work/bahia-taste/posts/menu-tradicional', alt: 'Weekly menu story, Tradicional: shrimp bobó special for $20, and spaghetti bolognese, pork chop and chicken parmesan for $18', caption: 'Story · Weekly menu, Tradicional', fit: 'contain' },
-          { img: 'work/bahia-taste/posts/menu-healthy', alt: 'Weekly menu story, Healthy/Fitness: salmon with orange and ginger sauce special for $20, and three $18 dishes', caption: 'Story · Weekly menu, Healthy/Fitness', fit: 'contain' }
+          { video: 'posts/afternoon-event', img: 'work/bahia-taste/posts/afternoon-event', alt: 'Video from the Uma Tarde na Bahia event: frying, chopping and plating in the kitchen, then guests in Brazil jerseys getting their plates and a singer performing', caption: 'Reel · Uma Tarde na Bahia, the event' },
+          { video: 'posts/afternoon-menu', img: 'work/bahia-taste/posts/afternoon-menu', alt: 'Video: the Uma Tarde na Bahia menu, one dish per card, including bolinho, quiabada, fish and shrimp moqueca, abará, ceviche, cozido and cocada', caption: 'Reel · Uma Tarde na Bahia, the menu' }
         ] },
         { type: 'placeholder', label: '05 · Results', id: 'CASE_METRICS_PENDING', note: 'Results still to be confirmed. Shown only with an approved, sourced result.' },
         { type: 'closing', text: 'The service came first. Duke is how we package what it taught us.', position: '50% 50%' }

@@ -116,7 +116,9 @@ nav.main a.active .star{visibility:visible}
 .wk-p[hidden]{display:none}
 .ew-body{display:grid;grid-template-columns:400px minmax(0,1fr);gap:56px;align-items:start;padding:32px}
 .ew-media{margin:0;width:100%}
-.ew-media .wk-res > *{border:1px solid var(--ink)}
+.ew-media .wk-res{position:relative}
+.ew-media .wk-res > :not(.cs-count){border:1px solid var(--ink)}
+.ew-media .cs-count{z-index:2}
 .ew-media figcaption{margin-top:10px;font-family:var(--mono);font-size:11px;color:var(--muted)}
 .ew-head{display:flex;flex-direction:column;gap:16px;padding-top:24px}
 .ew-kick{font-family:var(--mono);font-size:14px;color:var(--signal-ink);display:flex;gap:8px;align-items:center}
