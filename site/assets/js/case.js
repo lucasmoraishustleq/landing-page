@@ -81,6 +81,11 @@
           '<dl class="cs-stats">' + b.stats.map(function (r) { return '<div><dt>' + esc(r[1]) + '</dt><dd>' + esc(r[0]) + '</dd></div>'; }).join('') + '</dl>' +
           (b.audience ? '<p class="cs-aud">' + esc(b.audience) + '</p>' : '') + '<p class="cs-src">' + esc(b.source) + '</p></div></section>');
         break;
+      case 'quotes':
+        html.push('<section class="cs-text cs-quotes wrap"><span class="cs-label">' + esc(b.label) + '</span><div>' + b.items.map(function (q) {
+          return '<figure class="cs-quote"><blockquote><p>“' + esc(q) + '”</p></blockquote><figcaption>' + esc(b.by) + '</figcaption></figure>';
+        }).join('') + '</div></section>');
+        break;
       case 'closing':
         if (b.img) html.push('<figure class="cs-full cs-closing"><div class="cs-frame" style="aspect-ratio:16/9">' + img(b) + '</div></figure>');
         var next = window.HQ_WORK.length > 1 ? window.HQ_WORK[(idx + 1) % window.HQ_WORK.length] : null;

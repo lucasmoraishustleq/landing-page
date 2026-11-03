@@ -19,7 +19,8 @@ async def newpage(b, w=1440, h=900, cfg=None, reduce=False):
     await p.route(re.compile(r'https://script\.google\.com/.*'), lambda r: r.abort())
     # never call the real Duke API (each profile lookup spends Apify credit); live tests mock DUKE_API_BASE
     await p.route(re.compile(r'https://[^/]*\.railway\.app/.*'), lambda r: r.abort())
-    cfg={'DUKE_API_BASE':'', **(cfg or {})}
+    # First Access is live in config.js; tests turn it on only where they mean to
+    cfg={'DUKE_API_BASE':'','FIRST_ACCESS_CHECKOUT_URL':'','FIRST_ACCESS_SESSION_URL':'','FIRST_ACCESS_STATUS_URL':'', **(cfg or {})}
     await p.add_init_script('window.HQ_CONFIG='+json.dumps(cfg))
     return p
 
@@ -237,7 +238,7 @@ async def priority(b):
     p=await newpage(b,390,844,{'APPS_SCRIPT_URL':MOCK+'/exec',**PC}); await p.goto(BASE+'?first_access=return#form'); await p.wait_for_timeout(300)
     rec('First Access: return without a saved signup does not claim payment', 'could not find' in await p.inner_text('#fa-state')); await p.context.close()
     # design preview while Stripe is pending: CTA disabled, never charges
-    p=await newpage(b,390,844); await p.goto(BASE+'?preview=first-access#form'); await p.wait_for_timeout(400)
+    p=await newpage(b,390,844); await p.goto(BASE+'?dev=1&preview=first-access#form'); await p.wait_for_timeout(400)
     rec('First Access preview: modal opens with checkout disabled while link is pending', await p.eval_on_selector('#fa-modal',VIS) and await p.evaluate('document.getElementById("fa-pay").disabled') and 'pending' in await p.inner_text('#fa-pay'))
     await p.context.close()
     # idempotent retry: same request_id after a failure, new one after success
@@ -347,8 +348,8 @@ async def content(b):
     rec('example week and hero use the provided Bahia Taste media, no placeholders left', ph==0 and names==['plate-800.jpg','afternoon-teaser.mp4','event-bites-800.jpg','afternoon-venue.mp4','menu-tradicional-540.jpg','menu-healthy-540.jpg'], (ph,names))
     alts=await p.evaluate('[...document.querySelectorAll(".wk-res img, #hero .rec img, .shot img")].filter(i=>!i.alt).length + [...document.querySelectorAll(".wk-res video")].filter(v=>!v.getAttribute("aria-label")).length')
     rec('new images have alt text, videos have labels', alts==0, alts)
-    shots=await p.evaluate('[...document.querySelectorAll(".shot")].map(f=>[f.querySelector("img").getAttribute("src").split("/").pop(), f.querySelector(".shot-bar .mono").textContent])')
-    rec('Duke beta screenshots are the Bahia Taste account and labeled as such', [x[0] for x in shots][:2]==['beta-content-plan-bahia.jpg','beta-strategy-bahia.jpg'] or set(x[0] for x in shots)>={'beta-content-plan-bahia.jpg','beta-strategy-bahia.jpg'} and all('Bahia Taste' in x[1] for x in shots if 'bahia' in x[0]), shots)
+    shots=await p.evaluate('[...document.querySelectorAll(".shot")].map(f=>[f.querySelector("img").getAttribute("src").split("/").pop(), f.querySelector("img").alt, !!f.querySelector(".shot-bar")])')
+    rec('Duke beta screenshots are the Bahia Taste account, described in alt text, without the label bar', [x[0] for x in shots]==['beta-content-plan-bahia.jpg','beta-strategy-bahia.jpg'] and all('Bahia Taste' in x[1] and not x[2] for x in shots), shots)
     # video: plays when in view, button pauses and resumes
     await p.evaluate('document.getElementById("product").scrollIntoView()'); await p.wait_for_timeout(300)
     await p.evaluate('document.querySelectorAll(".vid")[0].scrollIntoView({block:"center"})')
@@ -364,7 +365,7 @@ async def content(b):
     await p.context.close()
     p=await newpage(b,390,844); await p.goto(BASE+'#faq-refund'); await p.wait_for_timeout(400)
     rec('refund link opens the refund answer', await p.evaluate('document.getElementById("faq-refund").open'))
-    await p.goto(BASE+'?preview=first-access#form'); await p.wait_for_timeout(400)
+    await p.goto(BASE+'?dev=1&preview=first-access#form'); await p.wait_for_timeout(400)
     rec('First Access offer links to the refund terms', await p.evaluate('(document.querySelector("#fa-refund a")||{}).getAttribute&&document.querySelector("#fa-refund a").getAttribute("href")')=='/#faq-refund')
     await p.context.close()
     # utm attribution reaches the payload
@@ -587,7 +588,13 @@ async def demo(b):
     await p.context.close()
 
 async def case(b):
-    for cfg,label in [(None,'preview'),({'SHOW_DEV_BAR':False},'production')]:
+    p=await newpage(b,1440,900); await p.goto(BASE); await p.wait_for_timeout(300)
+    d0=await p.evaluate('document.getElementById("devbar").hidden'); await p.goto(BASE+'?dev=1'); await p.wait_for_timeout(300)
+    d1=await p.evaluate('document.getElementById("devbar").hidden'); await p.context.close()
+    hn=await newpage(b,1440,900); await hn.goto(BASE); txt=await hn.evaluate('document.body.innerText'); await hn.context.close()
+    rec('removed home texts stay removed', all(x not in txt for x in ['Answer five questions','From the Duke beta','Real beta account','The Work ↓']))
+    rec('dev bar is hidden for visitors and shown with ?dev=1', d0 is True and d1 is False, (d0,d1))
+    for cfg,label in [({'SHOW_DEV_BAR':True},'preview'),(None,'production')]:
         p=await newpage(b,1440,900,cfg); await p.goto(BASE+'work/bahia-taste/'); await p.wait_for_timeout(500)
         html=await p.content()
         rec(f'case [{label}]: opens directly by URL with title and h1', await p.title()=='Bahia Taste · The Work · HustleQ' and await p.inner_text('h1')=='Bahia Taste')
@@ -600,6 +607,8 @@ async def case(b):
         cs=await p.evaluate('[!!document.querySelector("main img[src*=\'bahia-taste/plate-\']"), [...document.querySelectorAll(".cs-posts .cs-count")].map(e=>e.textContent), document.querySelector(".cs-posts").innerHTML.includes("menu-tradicional")||document.querySelector(".cs-posts").innerHTML.includes("menu-healthy")]')
         rec(f'case [{label}]: seafood stew photo removed, menu stories replaced by two event reels', cs==[False,['1 / 5','1 / 7','Video','Video'],False], cs)
         rs=await p.evaluate('(()=>{const r=document.querySelector(".cs-results");return r?[[...r.querySelectorAll(".cs-stats dd")].map(e=>e.textContent),r.querySelector(".cs-src").textContent.includes("August 2–31, 2026")]:null})()')
+        qs=await p.evaluate('[[...document.querySelectorAll(".cs-quote p")].length, (document.querySelector(".cs-quote figcaption")||{}).textContent, [...document.querySelectorAll(".cs-text h2")].map(e=>e.textContent)]')
+        rec(f'case [{label}]: two approved client quotes and the context and strategy texts', qs[0]==2 and qs[1]=='Owner and chef, Bahia Taste' and 'Every post had one job.' in qs[2], qs)
         rec(f'case [{label}]: Results shows the four sourced August numbers', rs==[['15K','201','+10%','57%'],True], rs)
         rec(f'case [{label}]: Posts shows the 4 provided Bahia Taste posts with real captions', n==4 and 'Carousel · Weekly meal prep' in caps and 'placeholder' not in caps and await p.evaluate('[...document.querySelectorAll(".cs-label")].some(e=>e.textContent==="04 · Posts")'), (n,caps[:80]))
         h2=await p.evaluate('[...document.querySelectorAll("main h2")].length'); h1=await p.evaluate('document.querySelectorAll("h1").length')
@@ -607,7 +616,7 @@ async def case(b):
         alts=await p.evaluate('[...document.querySelectorAll("main img")].filter(i=>!i.getAttribute("alt")).length')
         rec(f'case [{label}]: every image has alt text', alts==0, alts)
         ph=await p.evaluate('document.querySelectorAll("main .todo").length')
-        rec(f'case [{label}]: placeholders {"shown" if label=="preview" else "hidden"}', (ph>0) if label=='preview' else ph==0, ph)
+        rec(f'case [{label}]: no draft placeholders left', ph==0, ph)
         await p.context.close()
     p=await newpage(b,390,844); await p.goto(BASE+'work/bahia-taste/'); await p.wait_for_timeout(300)
     await p.click('.cs-nav a[href="../../work/"]'); await p.wait_for_load_state()

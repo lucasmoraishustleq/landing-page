@@ -6,21 +6,21 @@
 window.HQ_CONFIG = Object.assign({
   // Lead form (waitlist + Founding Partner). Google Apps Script web app URL.
   // Must return JSON: { ok: true, signup_id: "...", email_sent: true|false|null }
-  // Still the OLD live script (stores only email, business, marketing, hardest; returns no signup_id).
-  // After deploying google-apps-script/registrations.gs on the new sheet, replace this with its /exec URL.
-  // See docs/spreadsheet-setup.md, step 5.
-  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbylBUhaYEmXIy9sGUiTpcYLCirgZXzyxw-ozdmekynOzgv_8Q3RC74XcINlLfQMCim2Rw/exec',
+  // registrations.gs (v4) deployed 2026-11-03 from the "HustleQ · Site Registrations" sheet (lucas@hustleqai.com).
+  // Returns signup_id; writes the Waitlist and FPP Applications tabs. Update it via Manage deployments → New version (keeps the URL).
+  APPS_SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzKsrrjEZB_7z-IQEYJ_LoDX1Zc6BDpX_RynFyDQOnpQvEP3Ww3AbNAwZSves0D4HjX/exec',
 
   // Duke First Access: optional, one-time, refundable $20 payment offered after a saved Free Waitlist signup.
-  // CHECKOUT_URL: the Stripe Payment Link (pending). The page appends client_reference_id=<signup_id>
+  // CHECKOUT_URL: the Stripe Payment Link (Duke First Access, US$20, created 2026-11-03; returns to hustleq.tech/?first_access=return#form).
+  //   Stripe webhook "hustleq-site-registrations" (4 checkout.session events) confirms payments in the sheet. The page appends client_reference_id=<signup_id>
   //   so the verified Stripe webhook can tie the payment to the saved registration.
   // SESSION_URL: optional alternative, a HustleQ server endpoint: POST { signup_id, return_url } -> { checkout_url }.
   // STATUS_URL:  GET ?signup_id=... -> { status: "none"|"pending"|"confirmed"|"failed"|"abandoned" }.
   //   Status comes only from the server (verified Stripe event), never from the browser redirect.
   //   With registrations.gs deployed this is: <new /exec URL> + '?action=first_access_status'
-  FIRST_ACCESS_CHECKOUT_URL: '',
+  FIRST_ACCESS_CHECKOUT_URL: 'https://buy.stripe.com/28E00k2rD9LQ6ozajee7m08',
   FIRST_ACCESS_SESSION_URL: '',
-  FIRST_ACCESS_STATUS_URL: '',
+  FIRST_ACCESS_STATUS_URL: 'https://script.google.com/macros/s/AKfycbzKsrrjEZB_7z-IQEYJ_LoDX1Zc6BDpX_RynFyDQOnpQvEP3Ww3AbNAwZSves0D4HjX/exec?action=first_access_status',
   // Approved refund terms live in the FAQ (email before you get access, full refund).
   REFUND_POLICY_URL: '/#faq-refund',
 
@@ -40,5 +40,6 @@ window.HQ_CONFIG = Object.assign({
   TIMEOUT_MS: 15000,
   PRIORITY_POLL_MS: 3000,
   PRIORITY_POLL_MAX: 40,
-  SHOW_DEV_BAR: true
+  // Reviewer bar and draft placeholders. Off for visitors; add ?dev=1 to any page to see them.
+  SHOW_DEV_BAR: /[?&]dev=1(&|$)/.test(location.search)
 }, window.HQ_CONFIG || {});

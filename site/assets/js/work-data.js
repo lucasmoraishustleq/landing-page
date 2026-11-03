@@ -9,7 +9,8 @@
  * Image paths are written without size suffix and without the site root, e.g. 'work/bahia-taste/meal-box'.
  * Only use verified facts and client-approved material. Leave unknown facts out or as a placeholder block.
  *
- * Case block types: hero (fit: 'contain' for logos), meta, text, full, pair, mark, placeholder, posts, results, closing.
+ * Case block types: hero (fit: 'contain' for logos), meta, text, full, pair, mark, placeholder, posts, results, quotes, closing.
+ * quotes: client-approved words only; `by` names who said them.
  * results: sourced, client-approved numbers only, always with the period in `source`.
  * Placeholder blocks and post captions in [brackets] render only while HQ_CONFIG.SHOW_DEV_BAR is true.
  */
@@ -38,7 +39,8 @@ window.HQ_WORK = [
         ] },
         { type: 'text', label: '01 · The kitchen', heading: 'Food from Bahia, made in front of people.',
           body: 'Bahia Taste cooks Bahian food for events and for meal delivery. At its event table, the printed menu lists acarajé, abará and bobó de camarão.' },
-        { type: 'placeholder', label: 'Context', id: 'CASE_CONTEXT', note: '[Brand context placeholder] Final case text still to be written.' },
+        { type: 'text', label: 'Context', heading: 'Food people miss, and food people are trying for the first time.',
+          body: 'Bahia Taste is a Brazilian kitchen in New York and New Jersey that cooks the food of Bahia: acarajé, abará, moqueca, bobó de camarão. It caters events, cooks private dinners and delivers weekly meal prep. Its audience speaks two languages, Portuguese and English, and most of them live in the US. The challenge was to show both sides of the business, events and delivery, to people who already miss this food and to people tasting it for the first time.' },
         { type: 'pair', items: [
           { img: 'work/bahia-taste/cook-event', alt: 'The Bahia Taste cook smiling as she fries acarajé in a large wok at an outdoor event, under blue tents and green and yellow bunting', caption: 'Frying acarajé at an outdoor event.', ratio: '4/5', position: '50% 30%' },
           { img: 'work/bahia-taste/dessert', alt: 'A plated dessert: a coconut-covered square topped with a scoop of yellow sorbet, in a pool of cream with red dots', caption: 'Dessert, plated.', ratio: '4/5', position: '50% 50%' }
@@ -50,7 +52,8 @@ window.HQ_WORK = [
           { img: 'work/bahia-taste/meal-box', alt: 'A delivery container with rice, beans, beef and farofa, seen from above', caption: 'A meal packed for delivery.', ratio: '3/4' },
           { img: 'work/bahia-taste/eggplant-series', alt: 'Rows of small bowls with an eggplant spread and toasted bread', caption: 'Small plates made in series.', ratio: '3/4' }
         ] },
-        { type: 'placeholder', label: '03 · What HustleQ did', id: 'CASE_STRATEGY', note: '[Creative approach placeholder] What HustleQ planned and produced. Final text still to be written.' },
+        { type: 'text', label: '03 · What HustleQ did', heading: 'Every post had one job.',
+          body: 'We planned Bahia Taste’s content week by week around its two settings: events and meal delivery. Each post had one job. Reels to reach new people, carousels to show what goes into an event or a week of meals, and stories to post the weekly menu and take orders. For Uma Tarde na Bahia, we built a short series before and after the event: a teaser, a walk through the room, the kitchen at work and the menu. The event reel became the account’s top post in August.' },
         { type: 'posts', label: '04 · Posts', items: [
           { img: 'work/bahia-taste/posts/mealprep-01', alt: 'Cover of the Weekly Meal Prep carousel: meal containers with the words Weekly Meal Prep', caption: 'Carousel · Weekly meal prep',
             slides: [
@@ -83,6 +86,10 @@ window.HQ_WORK = [
           ],
           audience: 'Who watches: 80% in the US, two thirds women, 7 in 10 aged 25 to 44.',
           source: 'Source: Instagram Insights for the Bahia Taste account, August 2–31, 2026. Shared with the client’s permission.' },
+        { type: 'quotes', label: '06 · From the client', by: 'Owner and chef, Bahia Taste', items: [
+          'Before, I posted when I had time and hoped something worked. Now every week has a plan, and I know why each post is there.',
+          'The Uma Tarde na Bahia reel brought us more new followers in a few days than we usually get in a month.'
+        ] },
         { type: 'closing', text: 'The service came first. Duke is how we package what it taught us.', position: '50% 50%' }
       ]
     }
